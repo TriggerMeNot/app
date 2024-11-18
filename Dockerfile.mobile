@@ -77,14 +77,19 @@ RUN apt-get autoremove -y \
 
 WORKDIR /workdir
 
+# Generate the keystore
+RUN keytool -genkey -v -keystore keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias key
+
+# Copy the source code and build the project
 COPY package*.json .
 RUN npm ci
-
 COPY . .
 RUN npm run build
+
+# Build the APK
 RUN npx cap add android
 RUN npx cap sync
-RUN npx cap build android
+RUN npx cap build android --androidreleasetype APK --keystorepath keystore.jks --keystorealias key --keystorepassword password --storepassword password
 
 # Copy the built APK to /static
 CMD cp android/app/build/outputs/apk/debug/app-debug.apk /static/app-debug.apk
