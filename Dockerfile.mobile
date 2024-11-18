@@ -9,11 +9,11 @@ ARG ANDROID_BUILD_TOOLS_VERSION=34.0.0
 # See https://developer.android.com/studio/releases/platforms
 ARG ANDROID_PLATFORMS_VERSION=34
 # See https://gradle.org/releases/
-ARG GRADLE_VERSION=8.2.1
+ARG GRADLE_VERSION=8.11
 # See https://www.npmjs.com/package/@ionic/cli
 ARG IONIC_VERSION=7.2.0
 # See https://www.npmjs.com/package/@capacitor/cli
-ARG CAPACITOR_VERSION=6.0.0
+ARG CAPACITOR_VERSION=6.1.2
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=en_US.UTF-8
@@ -94,9 +94,8 @@ RUN keytool -genkey -v \
     -alias area \
     -storepass password \
     -keypass password \
-    -dname "CN=Equipe, OU=Equipe, O=Epitech, L=Rennes, S=Britany, C=33" \
-    -noprompt
-RUN npx cap build android --androidreleasetype APK --keystorepath /workdir/android/keystore --keystorealias area --keystorepass password --keystorealiaspass password
+    -dname "CN=Equipe, OU=Equipe, O=Epitech, L=Rennes, S=Britany, C=33"
+RUN npx cap build android --androidreleasetype APK --keystorepath /workdir/android/keystore --keystorealias area --keystorepass password --keystorealiaspass password --signing-type apksigner
 
 # Copy the built APK to /static
 CMD cp /workdir/android/app/build/outputs/apk/release/app-release-signed.apk /static/client.apk
