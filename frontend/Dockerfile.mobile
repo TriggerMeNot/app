@@ -78,7 +78,17 @@ RUN apt-get autoremove -y \
 WORKDIR /workdir
 
 # Generate the keystore
-RUN keytool -genkey -v -keystore /workdir/android/keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias key
+RUN mkdir -p /workdir/android && \
+    keytool -genkey -v \
+    -keystore /workdir/android/keystore.jks \
+    -keyalg RSA \
+    -keysize 2048 \
+    -validity 10000 \
+    -alias key \
+    -storepass password \
+    -keypass password \
+    -dname "CN=App, OU=Mobile Team, O=Company, L=City, S=State, C=US" \
+    -noprompt
 
 # Copy the source code and build the project
 COPY package*.json .
