@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  server:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+
+  client_mobile:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.mobile
+    volumes:
+      - shared-volume:/static
+    depends_on:
+      - server
+
+  client_web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.web
+    ports:
+      - "8081:8081"
+    volumes:
+      - shared-volume:/home/static
+    depends_on:
+      - client_mobile
+      - server
+
+volumes:
+  shared-volume:
