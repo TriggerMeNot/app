@@ -97,6 +97,7 @@ RUN keytool -genkey -v \
     -dname "CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, S=Unknown, C=Unknown" \
     -noprompt
 RUN npx cap build android --androidreleasetype APK --keystorepath /workdir/android/keystore.jks --keystorealias key --keystorepass password --keystorealiaspass password
+RUN jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /workdir/android/keystore.jks -storepass password -keypass password /workdir/android/app/build/outputs/apk/release/app-release-signed.apk key
 
 # Copy the built APK to /static
-CMD cp /workdir/android/app/build/outputs/apk/release/app-release-unsigned.apk /static/client.apk
+CMD cp /workdir/android/app/build/outputs/apk/release/app-release-signed.apk /static/client.apk
