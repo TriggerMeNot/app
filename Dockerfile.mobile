@@ -77,7 +77,15 @@ RUN apt-get autoremove -y \
 
 WORKDIR /workdir
 
-# Generate the keystore
+# Copy the source code and build the project
+COPY package*.json .
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# Build the APK
+RUN npx cap add android
+RUN npx cap sync
 RUN mkdir -p /workdir/android && \
     keytool -genkey -v \
     -keystore /workdir/android/keystore.jks \
@@ -89,16 +97,6 @@ RUN mkdir -p /workdir/android && \
     -keypass password \
     -dname "CN=App, OU=Mobile Team, O=Company, L=City, S=State, C=US" \
     -noprompt
-
-# Copy the source code and build the project
-COPY package*.json .
-RUN npm ci
-COPY . .
-RUN npm run build
-
-# Build the APK
-RUN npx cap add android
-RUN npx cap sync
 RUN npx cap build android --androidreleasetype APK --keystorepath /workdir/android/keystore.jks --keystorealias key --keystorepass password --keystorealiaspass password
 
 # Copy the built APK to /static
