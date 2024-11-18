@@ -1,4 +1,4 @@
-FROM ubuntu:noble
+FROM ubuntu:22.04
 
 ARG JAVA_VERSION=17
 ARG NODEJS_VERSION=20
@@ -57,7 +57,10 @@ RUN curl -sL https://dl.google.com/android/repository/commandlinetools-linux-${A
 ENV PATH=$PATH:${ANDROID_HOME}/cmdline-tools:${ANDROID_HOME}/platform-tools
 
 # Install NodeJS
-RUN apt-get install -qy nodejs npm
+RUN curl -sL https://deb.nodesource.com/setup_${NODEJS_VERSION}.x | bash - \
+    && apt-get update -q && apt-get install -qy nodejs
+ENV NPM_CONFIG_PREFIX=${HOME}/.npm-global
+ENV PATH=$PATH:${HOME}/.npm-global/bin
 
 # Install NPX
 RUN npm install -g npx
@@ -94,6 +97,7 @@ COPY . .
 RUN npm run build
 
 # Build the APK
+RUN npx cap add android
 RUN npx cap sync
 RUN npx cap build android --androidreleasetype APK --keystorepath /workdir/android/keystore.jks --keystorealias key --keystorepass password --keystorealiaspass password
 
