@@ -99,4 +99,4 @@ RUN keytool -genkey -v \
 RUN npx cap build android --androidreleasetype APK --keystorepath /workdir/android/keystore.jks --keystorealias key --keystorepass password --keystorealiaspass password
 
 # Copy the built APK to /static
-CMD cp /workdir/android/app/build/outputs/apk/release/app-release-signed.apk /static/client.apk
+CMD cp /workdir/android/app/build/outputs/apk/release/app-release-unsigned.apk /static/client.apk
