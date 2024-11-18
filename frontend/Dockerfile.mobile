@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:noble
 
 ARG JAVA_VERSION=17
 ARG NODEJS_VERSION=20
