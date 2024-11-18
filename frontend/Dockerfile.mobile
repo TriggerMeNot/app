@@ -87,17 +87,16 @@ RUN npm run build
 RUN npx cap add android
 RUN npx cap sync
 RUN keytool -genkey -v \
-    -keystore /workdir/android/keystore.jks \
+    -keystore /workdir/android/keystore \
     -keyalg RSA \
     -keysize 2048 \
     -validity 10000 \
-    -alias key \
+    -alias area \
     -storepass password \
     -keypass password \
-    -dname "CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, S=Unknown, C=Unknown" \
+    -dname "CN=Equipe, OU=Equipe, O=Epitech, L=Rennes, S=Britany, C=33" \
     -noprompt
-RUN npx cap build android --androidreleasetype APK --keystorepath /workdir/android/keystore.jks --keystorealias key --keystorepass password --keystorealiaspass password
-RUN jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /workdir/android/keystore.jks -storepass password -keypass password /workdir/android/app/build/outputs/apk/release/app-release-signed.apk key
+RUN npx cap build android --androidreleasetype APK --keystorepath /workdir/android/keystore --keystorealias area --keystorepass password --keystorealiaspass password
 
 # Copy the built APK to /static
 CMD cp /workdir/android/app/build/outputs/apk/release/app-release-signed.apk /static/client.apk
