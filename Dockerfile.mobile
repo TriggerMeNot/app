@@ -97,7 +97,6 @@ COPY . .
 RUN npm run build
 
 # Build the APK
-RUN npx cap add android
 RUN npx cap sync
 RUN npx cap build android --androidreleasetype APK --keystorepath /workdir/android/keystore.jks --keystorealias key --keystorepass password --keystorealiaspass password
 
