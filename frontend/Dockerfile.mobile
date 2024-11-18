@@ -82,8 +82,9 @@ RUN npm ci
 
 COPY . .
 RUN npm run build
+RUN npx cap add android
 RUN npx cap sync
 RUN npx cap build android
 
 # Copy the built APK to /static
-RUN cp android/app/build/outputs/apk/debug/app-debug.apk /static/app-debug.apk
+CMD cp android/app/build/outputs/apk/debug/app-debug.apk /static/app-debug.apk
