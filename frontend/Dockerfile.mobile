@@ -94,6 +94,7 @@ RUN keytool -genkey -v \
     -alias key \
     -storepass password \
     -keypass password \
+    -dname "CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, S=Unknown, C=Unknown" \
     -noprompt
 RUN npx cap build android --androidreleasetype APK --keystorepath /workdir/android/keystore.jks --keystorealias key --keystorepass password --keystorealiaspass password
 
