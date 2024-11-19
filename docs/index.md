@@ -5,21 +5,23 @@ layout: home
 hero:
   name: "AREA"
   text: "AREA Documentation"
-  tagline: My great project tagline
+  tagline: Action REAction
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: Contribute
+      link: http://github.com/AREA-equipe/app
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: Getting started
+      link: /getting-started/
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Getting Started
+    details: Explore the basics of AREA
+    link: /getting-started/
+  - title: Server
+    details: AREA server documentation
+    link: /server/
+  - title: Client
+    details: AREA client documentation
 ---
 
