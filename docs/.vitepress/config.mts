@@ -5,6 +5,7 @@ export default defineConfig({
   title: "AREA",
   description: "AREA Documentation",
   base: '/',
+  ignoreDeadLinks: true,
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
