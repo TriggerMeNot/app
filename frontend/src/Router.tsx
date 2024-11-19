@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import {
-  Login
+  Login,
+  NotFound
 } from "./pages";
 
 function Router() {
@@ -8,6 +9,7 @@ function Router() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
     </BrowserRouter>
   )
