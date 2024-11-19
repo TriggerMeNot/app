@@ -23,5 +23,6 @@ features:
     link: /server/
   - title: Client
     details: AREA client documentation
+    link: /client/
 ---
 
