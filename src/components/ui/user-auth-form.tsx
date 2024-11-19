@@ -36,7 +36,6 @@ const RegisterSchema = LoginSchema.extend({
   }
 );
 
-
 interface UserAuthFormState {
   isLoading: boolean
   onSuccess: (success: boolean) => void
@@ -90,7 +89,7 @@ function UserLoginAuthForm({ formState, className, ...props }: UserAuthFormProps
           />
           <p className="text-red-600">{form.formState.errors.password?.message}</p>
         </div>
-        <Button disabled={formState.isLoading}>
+        <Button disabled={formState.isLoading} className="w-full">
           {formState.isLoading && (
             <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
           )}
@@ -154,7 +153,7 @@ function UserRegisterAuthForm({ formState, className, ...props }: UserAuthFormPr
           />
           <p className="text-red-600">{form.formState.errors.confirmPassword?.message?.toString()}</p>
         </div>
-        <Button disabled={formState.isLoading}>
+        <Button disabled={formState.isLoading} className="w-full">
           {formState.isLoading && (
             <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
           )}
