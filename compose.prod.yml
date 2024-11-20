@@ -13,8 +13,6 @@ services:
       - shared-volume:/usr/share/nginx/html
     depends_on:
       - client_mobile
-    environment:
-      - PORT=80
 
 volumes:
   shared-volume:
