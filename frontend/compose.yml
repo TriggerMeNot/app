@@ -14,7 +14,7 @@ services:
     depends_on:
       - client_mobile
     environment:
-      - PORT=8080
+      - PORT=80
 
 volumes:
   shared-volume:
