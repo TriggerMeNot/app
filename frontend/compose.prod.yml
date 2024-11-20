@@ -1,18 +1,21 @@
 services:
-  client_mobile:
-    build:
-      dockerfile: Dockerfile.mobile
-    command: cp /workdir/android/app/build/outputs/apk/release/app-release-signed.apk /static/client.apk
-    volumes:
-      - shared-volume:/static
-
   client_web:
     build:
       dockerfile: Dockerfile.web
     volumes:
-      - shared-volume:/usr/share/nginx/html
-    depends_on:
-      - client_mobile
+      - shared-volume:/usr/share/nginx/html/
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "7474:7474"
+
+  # client_mobile:
+  #   build:
+  #     dockerfile: Dockerfile.mobile
+  #   command: cp /workdir/android/app/build/outputs/apk/release/app-release-signed.apk /static/client.apk
+  #   volumes:
+  #     - shared-volume:/static
+  #   depends_on:
+  #     - client_web
 
 volumes:
   shared-volume:
