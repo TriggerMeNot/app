@@ -8,10 +8,14 @@ services:
       - db
     env_file:
       - .env
+    networks:
+      - app-network
   db:
     image: postgres:17
     env_file:
       - .env
+    networks:
+      - app-network
 
 networks:
   app-network:
