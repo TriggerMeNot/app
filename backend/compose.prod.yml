@@ -12,3 +12,7 @@ services:
     image: postgres:17
     env_file:
       - .env
+
+networks:
+  app-network:
+    driver: bridge
