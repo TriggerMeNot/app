@@ -1,0 +1,20 @@
+services:
+  client_mobile:
+    build:
+      dockerfile: Dockerfile.mobile
+    command: cp /workdir/android/app/build/outputs/apk/release/app-release-signed.apk /static/client.apk
+    volumes:
+      - shared-volume:/static
+
+  client_web:
+    build:
+      dockerfile: Dockerfile.web
+    volumes:
+      - shared-volume:/usr/share/nginx/html
+    depends_on:
+      - client_mobile
+    environment:
+      - PORT=8080
+
+volumes:
+  shared-volume:

@@ -1,7 +1,6 @@
-FROM ubuntu:22.04
+FROM node:23-bookworm-slim
 
 ARG JAVA_VERSION=17
-ARG NODEJS_VERSION=20
 # See https://developer.android.com/studio/index.html#command-tools
 ARG ANDROID_SDK_VERSION=11076708
 # See https://developer.android.com/tools/releases/build-tools
@@ -57,15 +56,6 @@ RUN curl -sL https://dl.google.com/android/repository/commandlinetools-linux-${A
 ENV PATH=$PATH:${ANDROID_HOME}/cmdline-tools:${ANDROID_HOME}/platform-tools
 RUN apt-get install -qy apksigner
 
-# Install NodeJS
-RUN curl -sL https://deb.nodesource.com/setup_${NODEJS_VERSION}.x | bash - \
-    && apt-get update -q && apt-get install -qy nodejs
-ENV NPM_CONFIG_PREFIX=${HOME}/.npm-global
-ENV PATH=$PATH:${HOME}/.npm-global/bin
-
-# Install NPX
-RUN npm install -g npx
-
 # Install Ionic CLI and Capacitor CLI
 RUN npm install -g @ionic/cli@${IONIC_VERSION} \
     && npm install -g @capacitor/cli@${CAPACITOR_VERSION}
@@ -97,6 +87,3 @@ RUN keytool -genkey -v \
     -keypass password \
     -dname "CN=Equipe, OU=Equipe, O=Epitech, L=Rennes, S=Britany, C=33"
 RUN npx cap build android --androidreleasetype APK --keystorepath /workdir/android/keystore --keystorealias area --keystorepass password --keystorealiaspass password --signing-type apksigner
-
-# Copy the built APK to /static
-CMD cp /workdir/android/app/build/outputs/apk/release/app-release-signed.apk /static/client.apk
