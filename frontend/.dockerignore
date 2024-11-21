@@ -10,6 +10,8 @@ node_modules
 # Ignore build folder
 dist
 build
+android
+ios
 
 # Ignore ESLint, Prettier, and other configuration files that aren't needed in the final image
 .eslint*
