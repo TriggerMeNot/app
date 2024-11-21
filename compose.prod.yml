@@ -1,12 +1,7 @@
-services:
-  client_web:
-    build:
-      dockerfile: Dockerfile.web
-    volumes:
-      - shared-volume:/app/dist
-    depends_on:
-      - nginx
+include:
+  - ./compose.base.yml
 
+services:
   nginx:
     image: nginx:alpine
     volumes:
@@ -14,15 +9,3 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
     ports:
       - "80:80"
-
-  client_mobile:
-    build:
-      dockerfile: Dockerfile.mobile
-    command: cp /workdir/android/app/build/outputs/apk/release/app-release-signed.apk /static/client.apk
-    volumes:
-      - shared-volume:/static
-    depends_on:
-      - client_web
-
-volumes:
-  shared-volume:
