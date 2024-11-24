@@ -1,7 +1,7 @@
-import { defineConfig } from 'vitepress'
+import { withMermaid } from 'vitepress-plugin-mermaid'
 
 // https://vitepress.dev/reference/site-config
-export default defineConfig({
+export default withMermaid({
   title: "AREA",
   description: "AREA Documentation",
   base: '/',
@@ -32,7 +32,8 @@ export default defineConfig({
         text: 'Server',
         items: [
           { text: 'API', link: '/server/api' },
-          { text: 'Database', link: '/server/database' }
+          { text: 'Database', link: '/server/database' },
+          { text: 'Build', link: '/server/build' },
         ]
       },
       {
