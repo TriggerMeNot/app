@@ -84,6 +84,10 @@ Set the environment variables in the `.env.prod` file.
 docker compose -f compose.prod.yml up -d
 ```
 
+## Routes Documentation
+
+Go on running server and open the `/doc` or `/reference` route to see Routes Documentation.
+
 ## Database
 
 ```mermaid
