@@ -50,8 +50,8 @@ Comparison with Oak and Drash:
 | Built-in validation      | Requires external tools  | Requires external tools  |
 | Best performance         | Good performance         | Good performance         |
 
-::: error Nestjs is not used because it depends on other framework (Express or
-Fastify). :::
+> [!CAUTION]
+> Nestjs is not used because it depends on other framework (Express or Fastify).
 
 [![Drizzle](https://img.shields.io/badge/drizzle-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black)](https://orm.drizzle.team/)
 
