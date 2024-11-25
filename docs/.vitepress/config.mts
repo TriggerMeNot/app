@@ -39,7 +39,8 @@ export default withMermaid({
       {
         text: 'Client',
         items: [
-          { text: 'Web app', link: '/client/app' },
+          { text: 'Technical Stack', link: '/client/stack' },
+          { text: 'Build', link: '/client/build' },
         ]
       }
     ],
