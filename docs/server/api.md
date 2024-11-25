@@ -16,6 +16,17 @@
 - Format / linting and testing tools
 - Built with web standards
 
+Comparison with Node.js and Bun:
+
+| Deno                        | Node.js                      | Bun                          |
+| --------------------------- | ---------------------------- | ---------------------------- |
+| Secure by default           | Insecure by default          | Secure by default            |
+| Built-in TypeScript support | Requires TypeScript compiler | Requires TypeScript compiler |
+| Built-in formatting         | Requires external tools      | Requires external tools      |
+| Built-in linting            | Requires external tools      | Requires external tools      |
+| Built-in testing            | Requires external tools      | Requires external tools      |
+| Built with web standards    | Not built with web standards | Not built with web standards |
+
 [![Hono](https://img.shields.io/badge/hono-E36002?style=for-the-badge&logo=hono&logoColor=white)](https://hono.dev/)
 
 - Fast and lightweight web framework
@@ -24,11 +35,33 @@
 - Middleware support
 - Build with web standards
 
+Comparison with Oak and Drash:
+
+| Hono                     | Oak                      | Drash                    |
+| ------------------------ | ------------------------ | ------------------------ |
+| Fast and lightweight     | Fast and lightweight     | Fast and lightweight     |
+| Easy to use              | Easy to use              | Easy to use              |
+| Middleware support       | Middleware support       | Middleware support       |
+| Build with web standards | Build with web standards | Build with web standards |
+| Built-in validation      | Requires external tools  | Requires external tools  |
+| Best performance         | Good performance         | Good performance         |
+
+> [!NOTE]
+> Nestjs is not used because it depends on other framework (Express or Fastify).
+
 [![Drizzle](https://img.shields.io/badge/drizzle-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black)](https://orm.drizzle.team/)
 
 - Fast and lightweight ORM [Benchmarks](https://orm.drizzle.team/benchmarks)
 - Easy to use
 - Built for SQL databases
+
+Comparison with Prisma:
+
+| Drizzle          | Prisma                  |
+| ---------------- | ----------------------- |
+| Best performance | Good performance        |
+| Easy to use      | Easy to use             |
+| Built for SQL    | Built for SQL and NoSQL |
 
 ## Routes Documentation
 
