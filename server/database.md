@@ -7,6 +7,14 @@
 - Powerful and open-source relational database
 - Supports JSON and JSONB data types
 
+Comparison with MySQL, SQLite, and MongoDB:
+
+| PostgreSQL | MySQL      | SQLite      | MongoDB  |
+| ---------- | ---------- | ----------- | -------- |
+| Powerful   | Popular    | Lightweight | Flexible |
+| SQL        | SQL        | SQL         | NoSQL    |
+| Relational | Relational | Relational  | Document |
+
 ## Schema
 
 ```mermaid
