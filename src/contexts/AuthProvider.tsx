@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod"
 import { ReactNode } from "react";
@@ -30,36 +30,129 @@ export const RegisterSchema = LoginSchema.extend({
   }
 );
 
-const AuthContext = createContext({
+type AuthContextType = {
+  user: any;
+  token: string | undefined;
+  backendAddress: string;
+  setBackendAddress: (address: string) => void;
+  registerWithUsernameAndPassword: (data: z.infer<typeof RegisterSchema>) => Promise<void>;
+  loginWithUsernameAndPassword: (data: z.infer<typeof LoginSchema>) => Promise<void>;
+  loginWithGithub: () => Promise<void>;
+  logOut: () => void;
+  checkIfLoggedIn: () => boolean;
+};
+
+const AuthContext = createContext<AuthContextType>({
   user: null,
-  token: "",
-  //@ts-ignore
-  loginWithUsernameAndPassword: async (data: z.infer<typeof LoginSchema>) => {},
+  token: undefined,
+  backendAddress: import.meta.env.VITE_BACKEND_DEFAULT_ADDRESS as string || "http://localhost:8080",
+  setBackendAddress: (_address: string) => {},
+  registerWithUsernameAndPassword: async (_data: z.infer<typeof RegisterSchema>) => {},
+  loginWithUsernameAndPassword: async (_data: z.infer<typeof LoginSchema>) => {},
   loginWithGithub: async () => {},
   logOut: () => {},
-  checkIfLoggedIn: () => true as boolean | false as boolean,
+  checkIfLoggedIn: () => false,
 });
 
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("site") || "");
+  const [user, setUser] = useState<any>(null);
+  const [token, setToken] = useState<string | undefined>(() => localStorage.getItem("token") || undefined);
+  const [backendAddress, setBackendAddress] = useState<string>(import.meta.env.VITE_BACKEND_DEFAULT_ADDRESS as string || "http://localhost:8080");
   const navigate = useNavigate();
 
-  //@ts-ignore
-  const loginWithUsernameAndPassword = async (data: z.infer<typeof LoginSchema>) => {};
+  useEffect(() => {
+    if (backendAddress) {
+      let sanitizedAddress = backendAddress.trim();
+      if (!sanitizedAddress.startsWith("http")) {
+        sanitizedAddress = `http://${sanitizedAddress}`;
+      }
+      if (sanitizedAddress.endsWith("/")) {
+        sanitizedAddress = sanitizedAddress.slice(0, -1);
+      }
+      setBackendAddress(sanitizedAddress);
+    }
+  }, [backendAddress]);
 
-  const loginWithGithub = async () => {};
+  const loginWithUsernameAndPassword = async (data: z.infer<typeof LoginSchema>) => {
+    try {
+      console.log(data);
+      const response = await fetch(`${backendAddress}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams(data as Record<string, string>),
+      });
+
+      if (response.ok) {
+        const { user, token } = await response.json();
+        setUser(user);
+        setToken(token);
+        localStorage.setItem("token", token);
+        navigate("/");
+      } else {
+        const error = await response.json();
+        console.error(error);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const registerWithUsernameAndPassword = async (data: z.infer<typeof RegisterSchema>) => {
+    try {
+      const { confirmPassword, ...registerData } = data;
+      const response = await fetch(`${backendAddress}/api/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams(registerData as Record<string, string>),
+      });
+
+      if (response.ok) {
+        const { user, token } = await response.json();
+        setUser(user);
+        setToken(token);
+        localStorage.setItem("token", token);
+        navigate("/");
+      } else {
+        const error = await response.json();
+        console.error(error);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const loginWithGithub = async () => {
+    try {
+      const response = await fetch(`${backendAddress}/api/auth/github`, {
+        method: "GET",
+      });
+
+      if (response.ok) {
+        const { url } = await response.json();
+        window.location.href = url;
+      } else {
+        const error = await response.json();
+        console.error(error);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const logOut = () => {
     setUser(null);
-    setToken("");
+    setToken(undefined);
     localStorage.removeItem("site");
     navigate("/login");
   };
 
   const checkIfLoggedIn = (): boolean => {
-    // fetch /me and set user if logged in
+    if (token) return true;
     return false;
   }
 
@@ -68,6 +161,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       value={{
         user,
         token,
+        backendAddress,
+        setBackendAddress,
+        registerWithUsernameAndPassword,
         loginWithUsernameAndPassword,
         loginWithGithub,
         logOut,
