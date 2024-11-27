@@ -10,32 +10,22 @@ import { Icons } from "./icons"
 import { Button } from "./button"
 import { Input } from "./input"
 
-import { LoginSchema, RegisterSchema } from "@/contexts/AuthProvider"
-
-interface UserAuthFormState {
-  isLoading: boolean
-  onSuccess: (success: boolean) => void
-  onFail: (error: string) => void
-}
+import { LoginSchema, RegisterSchema, useAuth } from "@/contexts/AuthProvider"
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
   mode: "login" | "register"
-  formState: UserAuthFormState
 }
 
-function UserLoginAuthForm({ formState, className, ...props }: UserAuthFormProps) {
+function UserLoginAuthForm({ className, ...props }: UserAuthFormProps) {
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: { email: "", password: "" },
   })
 
+  const { loginWithUsernameAndPassword } = useAuth();
+
   async function onSubmit(data: z.infer<typeof LoginSchema>) {
-    console.log(data)
-    try {
-      formState.onSuccess(true)
-    } catch (error: any) {
-      formState.onFail(error.message || "Login failed.")
-    }
+    loginWithUsernameAndPassword(data);
   }
 
   return (
@@ -49,7 +39,7 @@ function UserLoginAuthForm({ formState, className, ...props }: UserAuthFormProps
             autoCapitalize="none"
             autoComplete="email"
             autoCorrect="off"
-            disabled={formState.isLoading}
+            disabled={false}
             {...form.register("email")}
           />
           <p className="text-red-600">{form.formState.errors.email?.message}</p>
@@ -60,13 +50,13 @@ function UserLoginAuthForm({ formState, className, ...props }: UserAuthFormProps
             placeholder="Password"
             type="password"
             autoComplete="current-password"
-            disabled={formState.isLoading}
+            disabled={false}
             {...form.register("password")}
           />
           <p className="text-red-600">{form.formState.errors.password?.message}</p>
         </div>
-        <Button disabled={formState.isLoading} className="w-full">
-          {formState.isLoading && (
+        <Button disabled={false} className="w-full">
+          {false && (
             <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
           )}
           Sign In with Email
@@ -76,19 +66,16 @@ function UserLoginAuthForm({ formState, className, ...props }: UserAuthFormProps
   )
 }
 
-function UserRegisterAuthForm({ formState, className, ...props }: UserAuthFormProps) {
+function UserRegisterAuthForm({ className, ...props }: UserAuthFormProps) {
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: { email: "", password: "", confirmPassword: "" },
   })
 
+  const { registerWithUsernameAndPassword } = useAuth();
+
   async function onSubmit(data: z.infer<typeof RegisterSchema>) {
-    console.log(data)
-    try {
-      formState.onSuccess(true)
-    } catch (error: any) {
-      formState.onFail(error.message || "Registration failed.")
-    }
+    registerWithUsernameAndPassword(data);
   }
 
   return (
@@ -102,7 +89,7 @@ function UserRegisterAuthForm({ formState, className, ...props }: UserAuthFormPr
             autoCapitalize="none"
             autoComplete="email"
             autoCorrect="off"
-            disabled={formState.isLoading}
+            disabled={false}
             {...form.register("email")}
           />
           <p className="text-red-600">{form.formState.errors.email?.message}</p>
@@ -113,7 +100,7 @@ function UserRegisterAuthForm({ formState, className, ...props }: UserAuthFormPr
             placeholder="Username"
             type="text"
             autoComplete="username"
-            disabled={formState.isLoading}
+            disabled={false}
             {...form.register("username")}
           />
         </div>
@@ -123,7 +110,7 @@ function UserRegisterAuthForm({ formState, className, ...props }: UserAuthFormPr
             placeholder="Password"
             type="password"
             autoComplete="new-password"
-            disabled={formState.isLoading}
+            disabled={false}
             {...form.register("password")}
           />
           <p className="text-red-600">{form.formState.errors.password?.message}</p>
@@ -134,13 +121,13 @@ function UserRegisterAuthForm({ formState, className, ...props }: UserAuthFormPr
             placeholder="Confirm Password"
             type="password"
             autoComplete="new-password"
-            disabled={formState.isLoading}
+            disabled={false}
             {...form.register("confirmPassword")}
           />
           <p className="text-red-600">{form.formState.errors.confirmPassword?.message?.toString()}</p>
         </div>
-        <Button disabled={formState.isLoading} className="w-full">
-          {formState.isLoading && (
+        <Button disabled={false} className="w-full">
+          {false && (
             <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
           )}
           Register with Email
@@ -150,13 +137,13 @@ function UserRegisterAuthForm({ formState, className, ...props }: UserAuthFormPr
   )
 }
 
-export function UserAuthForm({ mode, formState, className, ...props }: UserAuthFormProps) {
+export function UserAuthForm({ mode, className, ...props }: UserAuthFormProps) {
   return (
     <>
       {mode === "login" ? (
-        <UserLoginAuthForm mode={"login"} formState={formState} className={className} {...props} />
+        <UserLoginAuthForm mode={"login"} className={className} {...props} />
       ) : (
-        <UserRegisterAuthForm mode={"register"} formState={formState} className={className} {...props} />
+        <UserRegisterAuthForm mode={"register"} className={className} {...props} />
       )}
     </>
   )

@@ -3,14 +3,24 @@ import { UserAuthForm } from "@/components/ui/user-auth-form"
 import { Link } from "react-router-dom"
 import { useState } from "react"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { useAuth } from "@/contexts/AuthProvider"
+import { Input } from "@/components/ui/input"
 
 function Login() {
   const [mode, setMode] = useState<"login" | "register">("login")
+  const { backendAddress, setBackendAddress } = useAuth();
 
   return (
     <>
       <div className="container relative h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-        <div className="absolute right-8 top-8 md:right-16 md:top-16 flex items-center space-x-4">
+        <div className="absolute right-8 top-8 md:top-16 flex items-center space-x-4">
+          <Input
+            type="text"
+            placeholder="Backend address"
+            value={backendAddress}
+            onChange={(e) => setBackendAddress(e.target.value)}
+            className="w-40 hidden md:block"
+          />
           <Button
             variant="ghost"
             onClick={() => setMode(mode === "login" ? "register" : "login")}
@@ -50,13 +60,14 @@ function Login() {
                   : "Enter your email below to create your account"}
               </p>
             </div>
-            <UserAuthForm mode={mode} formState={
-              {
-                isLoading: false,
-                onFail: () => {},
-                onSuccess: () => {}
-              }
-            } />
+            <Input
+              type="text"
+              placeholder="Backend address"
+              value={backendAddress}
+              onChange={(e) => setBackendAddress(e.target.value)}
+              className="w-full block md:hidden"
+            />
+            <UserAuthForm mode={mode} />
             <p className="px-8 text-center text-sm text-muted-foreground">
               {mode === "login" ? (
                 <>
