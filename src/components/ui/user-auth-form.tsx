@@ -10,31 +10,7 @@ import { Icons } from "./icons"
 import { Button } from "./button"
 import { Input } from "./input"
 
-const LoginSchema = z.object({
-  email: z.string().email({ message: "Invalid email address." }),
-  password: z.string().min(1, { message: "Password is required." }),
-})
-
-const RegisterSchema = LoginSchema.extend({
-  confirmPassword: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters." })
-    .refine((data) => /[A-Z]/.test(data), {
-      message: "Password must contain at least one uppercase letter.",
-    })
-    .refine((data) => /[a-z]/.test(data), {
-      message: "Password must contain at least one lowercase letter.",
-    })
-    .refine((data) => /[0-9]/.test(data), {
-      message: "Password must contain at least one number.",
-    }),
-}).refine(
-  (data) => data.confirmPassword === data.password,
-  {
-    message: "Passwords must match.",
-    path: ["confirmPassword"],
-  }
-);
+import { LoginSchema, RegisterSchema } from "@/contexts/AuthProvider"
 
 interface UserAuthFormState {
   isLoading: boolean
@@ -130,6 +106,16 @@ function UserRegisterAuthForm({ formState, className, ...props }: UserAuthFormPr
             {...form.register("email")}
           />
           <p className="text-red-600">{form.formState.errors.email?.message}</p>
+        </div>
+        <div className="grid gap-1">
+          <Input
+            id="username"
+            placeholder="Username"
+            type="text"
+            autoComplete="username"
+            disabled={formState.isLoading}
+            {...form.register("username")}
+          />
         </div>
         <div className="grid gap-1">
           <Input
