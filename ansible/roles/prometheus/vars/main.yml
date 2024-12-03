@@ -1,0 +1,2 @@
+# You must use bcrypt to hash the password (https://prometheus.io/docs/guides/basic-auth/)
+hashed_prometheus_password:

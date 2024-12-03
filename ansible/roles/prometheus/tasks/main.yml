@@ -1,10 +1,37 @@
+- name: Create prometheus folder
+  become: true
+  file:
+    path: /etc/prometheus
+    state: directory
+  tags: prometheus
+
+- name: Get docker interface IP
+  shell: "ip -4 addr show docker0 | grep -Po 'inet \\K[\\d.]+'"
+  register: docker0_ip
+  become: true
+
 - name: Copy Prometheus configuration file
+  become: true
   template:
-    src: prometheus.yml
+    src: ../files/prometheus.yml
     dest: /etc/prometheus/prometheus.yml
   tags: prometheus
 
+- name: Copy Prometheus web configuration file
+  become: true
+  template:
+    src: ../files/web.yml
+    dest: /etc/prometheus/web.yml
+  tags: prometheus
+
+- name: Create Prometheus network
+  become: true
+  docker_network:
+    name: prometheus
+    state: present
+
 - name: Start Prometheus Docker container
+  become: true
   docker_container:
     name: prometheus
     image: prom/prometheus
@@ -14,8 +41,11 @@
       - "{{ prometheus_port }}:{{ prometheus_port }}"
     volumes:
       - /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - /etc/prometheus/web.yml:/etc/prometheus/web.yml
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --web.config.file=/etc/prometheus/web.yml
     env:
       PROMETHEUS_CONFIG_FILE: /etc/prometheus/prometheus.yml
     networks:
       - name: prometheus
-    tags: prometheus

@@ -8,5 +8,9 @@ scrape_configs:
       - targets: ['localhost:{{ prometheus_port }}']
 
   - job_name: 'backend'
+    metrics_path: '/api/metrics'
+    scrape_interval: 15s
     static_configs:
-      - targets: ['localhost:{{ backend_port }}/metrics']
+      - targets: ['{{ docker0_ip.stdout }}:{{ backend_port }}']
+        labels:
+          group: 'backend'
