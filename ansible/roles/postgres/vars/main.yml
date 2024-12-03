@@ -1,0 +1,26 @@
+---
+
+pgadmin_version: 8
+
+pgadmin_default_email: CHANGEME!!!!!!
+pgadmin_default_password: CHANGEME!!!!!!
+pgadmin_listen_address: 0.0.0.0
+pgadmin_listen_port: "80"
+pgadmin_server_json_file: "{{ pgadmin_server_dir }}/servers.json"
+
+
+pgadmin_server_dir: /opt/pgadmin4
+
+pgadmin_docker_network:
+  name: pgadmin
+  state: present
+
+pgadmin_docker:
+  name: pgadmin
+  image: dpage/pgadmin4:{{ pgadmin_version }}
+  state: started
+  network: pgadmin
+  ports:
+    - "{{ pgadmin_port }}:80/tcp"
+  volumes:
+    - "{{ pgadmin_server_json_file }}:/pgadmin4/servers.json"

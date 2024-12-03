@@ -1,0 +1,90 @@
+- name: Install gpg and acl
+  become: true
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - gnupg
+    - acl
+
+- name: Import PostgreSQL repository signing key
+  become: true
+  apt_key:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    state: present
+
+- name: Add PostgreSQL apt repository
+  become: true
+  apt_repository:
+    repo: "deb https://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
+    state: present
+    update_cache: yes
+
+- name: Install PostgreSQL 16, psql and psycopg2
+  become: true
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - postgresql-16
+    - postgresql-client-16
+    - python3-psycopg2
+
+- name: Copy pg_hba.conf to remote host
+  become: true
+  template:
+    src: ../files/pg_hba.conf
+    dest: /etc/postgresql/16/main/pg_hba.conf
+    owner: postgres
+    group: postgres
+    mode: 0640
+
+- name: Listen on all interfaces
+  become: true
+  lineinfile:
+    path: /etc/postgresql/16/main/postgresql.conf
+    line: "listen_addresses = '*'"
+    state: present
+
+- name: Set After to network-online.target
+  become: true
+  replace:
+    path: /lib/systemd/system/postgresql@.service
+    regexp: 'After=network.target'
+    replace: 'After=network-online.target'
+    backup: yes
+
+- name: Start PostgreSQL service
+  become: true
+  service:
+    name: postgresql@16-main
+    state: started
+    enabled: yes
+
+- name: Create user '{{ postgres_db }}' on PostgreSQL
+  become: true
+  become_method: sudo
+  become_user: postgres
+  community.general.postgresql_user:
+    name: "{{ postgres_db }}"
+    password: "{{ postgres_password }}"
+
+- name: Create database '{{ postgres_db }}' on PostgreSQL
+  become: true
+  become_method: sudo
+  become_user: postgres
+  community.general.postgresql_db:
+    name: "{{ postgres_db }}"
+    owner: "{{ postgres_db }}"
+    login_host: localhost
+    login_unix_socket: /var/run/postgresql
+    port: 5432
+    encoding: UTF-8
+    state: present
+
+- name: Restart PostgreSQL service and daemon-reload
+  become: true
+  systemd:
+    name: postgresql@16-main
+    state: restarted
+    daemon_reload: yes

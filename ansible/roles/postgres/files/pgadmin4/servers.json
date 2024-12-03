@@ -1,0 +1,22 @@
+{
+  "Servers": {
+      "1": {
+          "Name": "AREA",
+          "Group": "Servers",
+          "Host": "{{ docker0_ip.stdout }}",
+          "Port": 5432,
+          "MaintenanceDB": "{{ postgres_db }}",
+          "Username": "{{ postgres_user }}",
+          "UseSSHTunnel": 0,
+          "TunnelPort": "22",
+          "TunnelAuthentication": 0,
+          "KerberosAuthentication": false,
+          "ConnectionParameters": {
+              "sslmode": "prefer",
+              "connect_timeout": 10,
+              "sslcert": "<STORAGE_DIR>/.postgresql/postgresql.crt",
+              "sslkey": "<STORAGE_DIR>/.postgresql/postgresql.key"
+          }
+      }
+  }
+}

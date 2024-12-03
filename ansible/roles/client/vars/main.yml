@@ -1,0 +1,4 @@
+keystore_password:
+keystore_alias:
+keystore_alias_password:
+keystore_dname: "CN=Equipe, OU=Equipe, O=Epitech, L=Rennes, S=Britany, C=33"

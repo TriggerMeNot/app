@@ -1,0 +1,14 @@
+- name: Install Docker
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - docker.io
+  become: true
+
+- name: Start Docker
+  service:
+    name: docker
+    state: started
+    enabled: yes
+  become: true

@@ -1,0 +1,19 @@
+- name: Install npm dependencies
+  become: true
+  shell: npm ci
+  args:
+    chdir: /opt/area/client
+
+- name: Build the client
+  become: true
+  shell: npm run build
+  args:
+    chdir: /opt/area/client
+  register: client_dir
+
+- name: Move the build to the web server
+  become: true
+  become_user: www-data
+  shell: cp -r dist/* {{ client_folder }}
+  args:
+    chdir: /opt/area/client
