@@ -1,4 +1,5 @@
 - name: Install necessary packages
+  become: true
   apt:
     name: "{{ item }}"
     state: present
@@ -8,58 +9,34 @@
     - wget
 
 - name: Import the Grafana GPG key
+  become: true
   apt_key:
     url: https://apt.grafana.com/gpg.key
     state: present
 
 - name: Add Grafana repository
+  become: true
   apt_repository:
     repo: deb https://packages.grafana.com/oss/deb stable main
     state: present
     filename: grafana
 
 - name: Install Grafana
+  become: true
   apt:
     name: grafana
     state: present
 
 - name: Change the default Grafana port
+  become: true
   lineinfile:
     path: /etc/grafana/grafana.ini
     regexp: '^http_port = 3000'
     line: 'http_port = {{ grafana_port }}'
     state: present
 
-- name: Install PostgreSQL plugin
-  command: grafana-cli plugins install grafana-pgsql-datasource
-
-- name: Add "grafanareader" user to PostgreSQL
-  postgresql_user:
-    db: "{{ postgres_db }}"
-    name: grafanareader
-    password: "{{ grafana_db_password }}"
-    priv: SELECT
-
-- name: Add proper permissions to PostgreSQL
-  postgresql_privs:
-    db: "{{ postgres_db }}"
-    privs: SELECT
-    type: database
-    objs: public
-    roles: grafanareader
-
-- name: Add PostgreSQL datasource
-  uri:
-    url: http://localhost:{{ grafana_port }}/api/datasources
-    method: POST
-    body: '{"name":"{{ postgres_db }}","type":"postgres","url":"localhost:5432","access":"proxy","database":"{{ postgres_db }}","user":"grafanareader","password":"{{ grafana_db_password }}"}'
-    headers:
-      Content-Type: "application/json"
-      Authorization: "Bearer {{ grafana_api_key }}"
-    body_format: json
-    status_code: 200
-
 - name: Start Grafana
+  become: true
   service:
     name: grafana-server
     state: started
