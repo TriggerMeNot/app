@@ -1,0 +1,11 @@
+postgres_user:
+postgres_password:
+postgres_db:
+postgres_host:
+postgres_port:
+
+backend_port:
+grafana_port:
+prometheus_port:
+pgadmin_port:
+client_folder:

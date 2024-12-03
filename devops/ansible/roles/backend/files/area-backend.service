@@ -1,0 +1,34 @@
+[Unit]
+Description=Launch AREA Backend
+After=network-online.target
+
+[Service]
+Type=simple
+User=area-backend
+Group=area-backend
+
+WorkingDirectory=/opt/area/backend
+
+Environment=PORT={{ backend_port }}
+
+Environment=SALT_ROUNDS={{ salt_rounds }}
+Environment=JWT_SECRET={{ jwt_secret }}
+
+Environment=POSTGRES_USER={{ postgres_user }}
+Environment=POSTGRES_PASSWORD={{ postgres_password }}
+Environment=POSTGRES_DB={{ postgres_db }}
+
+Environment=DATABASE_URL=postgresql://{{ postgres_user }}:{{ postgres_password }}@{{ postgres_host }}:{{ postgres_port }}/{{ postgres_db }}
+
+Environment=GITHUB_ID={{ github_id }}
+Environment=GITHUB_SECRET={{ github_secret }}
+
+ExecStartPre=/opt/area/backend/.deno/bin/deno -A npm:drizzle-kit generate
+ExecStartPre=/opt/area/backend/.deno/bin/deno -A npm:drizzle-kit migrate
+
+ExecStart=/opt/area/backend/.deno/bin/deno --allow-env --allow-read --allow-net --allow-ffi /opt/area/backend/app/main.ts
+
+ExecReload=/bin/kill -s HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target

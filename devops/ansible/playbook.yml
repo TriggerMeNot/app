@@ -1,0 +1,47 @@
+- name: Base
+  hosts: all
+  roles:
+    - base
+  tags: base
+
+- name: Docker
+  hosts: all
+  roles:
+    - docker
+  tags: docker
+
+- name: Postgres
+  hosts: area
+  roles:
+    - postgres
+  tags: postgres
+
+- name: Backend
+  hosts: area
+  roles:
+    - backend
+  tags: backend
+
+- name: client
+  hosts: area
+  roles:
+    - client
+  tags: client
+
+- name: Prometheus
+  hosts: area
+  roles:
+    - prometheus
+  tags: prometheus
+
+- name: Grafana
+  hosts: area
+  roles:
+    - grafana
+  tags: grafana
+
+- name: Nginx
+  hosts: area
+  roles:
+    - nginx
+  tags: nginx

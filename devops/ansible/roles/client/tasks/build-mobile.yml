@@ -1,0 +1,72 @@
+- name: Install dependencies
+  become: true
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - default-jdk
+    - default-jre
+    - android-sdk
+    - gradle
+    - sdkmanager
+
+- name: Install NPX
+  become: true
+  shell: npm install -g npx --force
+
+- name: Install Ionic CLI and Capacitor CLI
+  become: true
+  shell: |
+    npm install -g @ionic/cli &&
+    npm install -g @capacitor/cli
+
+- name: Accept the licenses
+  become: true
+  shell: yes | sdkmanager --licenses
+
+- name: Build the project
+  become: true
+  shell: |
+    npm ci &&
+    npm run build
+  args:
+    chdir: /opt/area/client
+
+- name: If the android folder does not exist, create it
+  become: true
+  shell: |
+    if [ ! -d /opt/area/client/android ]; then
+      yes n | npx cap add android
+    fi
+
+- name: Create keyfile if it does not exist
+  become: true
+  shell: |
+    if [ ! -f /opt/area/client/android/keystore ]; then
+      keytool -genkey -v \
+        -keystore /opt/area/client/android/keystore \
+        -keyalg RSA \
+        -keysize 2048 \
+        -validity 10000 \
+        -alias {{ keystore_alias }} \
+        -storepass {{ keystore_password }} \
+        -keypass {{ keystore_alias_password }} \
+        -dname "{{ keystore_dname }}"
+    fi
+
+- name: Build the APK
+  become: true
+  shell: |
+    npx cap sync &&
+    npx cap build android --androidreleasetype APK --keystorepath /opt/area/client/android/keystore --keystorealias {{ keystore_alias }} --keystorepass {{ keystore_password }} --keystorealiaspass {{ keystore_alias_password }} --signing-type apksigner
+  args:
+    chdir: /opt/area/client
+  environment:
+    ANDROID_HOME: /usr/lib/android-sdk
+
+- name: Move the APK
+  become: true
+  shell: |
+    cp /opt/area/client/android/app/build/outputs/apk/release/app-release-signed.apk {{ client_folder }}/client.apk &&
+    rm -rf /opt/area/client/android

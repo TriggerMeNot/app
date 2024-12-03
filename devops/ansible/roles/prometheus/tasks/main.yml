@@ -1,0 +1,21 @@
+- name: Copy Prometheus configuration file
+  template:
+    src: prometheus.yml
+    dest: /etc/prometheus/prometheus.yml
+  tags: prometheus
+
+- name: Start Prometheus Docker container
+  docker_container:
+    name: prometheus
+    image: prom/prometheus
+    state: started
+    restart_policy: always
+    ports:
+      - "{{ prometheus_port }}:{{ prometheus_port }}"
+    volumes:
+      - /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    env:
+      PROMETHEUS_CONFIG_FILE: /etc/prometheus/prometheus.yml
+    networks:
+      - name: prometheus
+    tags: prometheus

@@ -1,0 +1,65 @@
+- name: Create backend user
+  become: true
+  user:
+    name: area-backend
+    shell: /bin/bash
+    home: /opt/area/backend
+    system: yes
+
+- name: Create backend directory
+  become: true
+  file:
+    path: "/opt/area/backend"
+    state: directory
+    owner: area-backend
+    group: area-backend
+    mode: 0755
+
+- name: Extract backend application
+  become: true
+  become_user: area-backend
+  unarchive:
+    src: "backend.tar"
+    dest: "/opt/area/backend"
+    extra_opts: "--strip-components=1"
+
+- name: Install deno
+  become: true
+  become_user: area-backend
+  shell: curl -fsSL https://deno.land/install.sh | sh
+  args:
+    chdir: /opt/area/backend
+
+- name: Get bcrypt version from deno.json
+  become: true
+  become_user: area-backend
+  shell: cat /opt/area/backend/deno.json | jq -r '.imports["bcrypt"]'
+  register: bcrypt_version
+
+- name: Install dependencies
+  become: true
+  become_user: area-backend
+  shell: deno install --allow-scripts={{ bcrypt_version.stdout }}
+  args:
+    chdir: /opt/area/backend
+  environment:
+    PATH: "{{ ansible_env.PATH }}:/opt/area/backend/.deno/bin"
+
+- name: Copy the service file
+  become: true
+  template:
+    src: "../files/area-backend.service"
+    dest: "/etc/systemd/system/backend.service"
+    mode: 0644
+
+- name: Reload systemd
+  become: true
+  systemd:
+    daemon_reload: yes
+
+- name: Start the service
+  become: true
+  service:
+    name: backend
+    state: started
+    enabled: yes

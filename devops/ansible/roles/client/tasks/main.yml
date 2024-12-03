@@ -1,0 +1,43 @@
+- name: Create area-client user
+  become: true
+  user:
+    name: area-client
+    shell: /bin/bash
+    home: /opt/area/client
+    system: yes
+
+- name: Create client directory
+  become: true
+  file:
+    path: "/opt/area/client"
+    owner: area-client
+    group: area-client
+    state: directory
+
+- name: Create client web directory
+  become: true
+  file:
+    path: "{{ client_folder }}"
+    owner: www-data
+    group: www-data
+    state: directory
+
+- name: Extract client application
+  become: true
+  unarchive:
+    src: "client.tar"
+    dest: "/opt/area/client"
+    extra_opts: "--strip-components=1"
+
+- name: Install nodejs
+  become: true
+  apt:
+    name: nodejs
+    state: present
+    update_cache: yes
+
+- name: Build clients
+  include_tasks: "{{ item }}"
+  with_items:
+    # - build-mobile.yml
+    - build-web.yml

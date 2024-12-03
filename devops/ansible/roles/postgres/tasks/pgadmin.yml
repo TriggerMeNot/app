@@ -1,0 +1,70 @@
+- name: PGAdmin Docker | Create directory
+  file:
+    path: "{{ pgadmin_server_dir }}"
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+  become: true
+
+- name: PGAdmin Docker | Make sure docker is running
+  service:
+    name: docker
+    state: started
+    enabled: true
+  become: true
+
+- name: PGAdmin Docker | Create the network
+  docker_network:
+    name: "{{ pgadmin_docker_network.name }}"
+    state: "{{ pgadmin_docker_network.state }}"
+  become: true
+
+- name: Get docker interface IP
+  shell: "ip -4 addr show docker0 | grep -Po 'inet \\K[\\d.]+'"
+  register: docker0_ip
+  become: true
+
+- name: PGAdmin Docker | Configure servers
+  template:
+    src: ../files/pgadmin4/servers.json
+    dest: "{{ pgadmin_server_json_file }}"
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+
+- name: PGAdmin Docker | Deploy the container
+  docker_container:
+    name: "{{ pgadmin_docker.name }}"
+    image: "{{ pgadmin_docker.image }}"
+    state: "{{ pgadmin_docker.state }}"
+    ports: "{{ pgadmin_docker.ports }}"
+    env:
+      PGADMIN_DEFAULT_EMAIL: "{{ pgadmin_default_email }}"
+      PGADMIN_DEFAULT_PASSWORD: "{{ pgadmin_default_password }}"
+      PGADMIN_LISTEN_ADDRESS: "{{ pgadmin_listen_address }}"
+      PGADMIN_LISTEN_PORT: "{{ pgadmin_listen_port }}"
+      PGADMIN_SERVER_JSON_FILE: "{{ pgadmin_server_json_file }}"
+    networks:
+      - name: "{{ pgadmin_docker.network }}"
+    volumes: "{{ pgadmin_docker.volumes }}"
+  become: true
+
+- name: Get docker container IP
+  shell: "docker inspect --format '{''{range .NetworkSettings.Networks}''}''{''{.IPAddress}''}''{''{end}''}' pgadmin"
+  register: pgadmin_ip
+  become: true
+
+- name: Edit pg_hba.conf
+  lineinfile:
+    path: /etc/postgresql/16/main/pg_hba.conf
+    line: "host {{ postgres_db }} {{ postgres_user }} {{ pgadmin_ip.stdout }}/32 md5"
+    state: present
+  become: true
+
+- name: Restart PostgreSQL service
+  service:
+    name: postgresql@16-main
+    state: restarted
+  become: true
