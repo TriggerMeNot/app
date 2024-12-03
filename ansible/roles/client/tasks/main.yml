@@ -39,5 +39,5 @@
 - name: Build clients
   include_tasks: "{{ item }}"
   with_items:
-    # - build-mobile.yml
+    - build-mobile.yml
     - build-web.yml
