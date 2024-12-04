@@ -1,0 +1,40 @@
+title: "Status TriggerMeNot"
+siteName: "TriggerMeNot"
+home: "/"
+logo: "/logo.png"
+siteURL: "https://triggermenot.net"
+favicon: "/logo96.png"
+github:
+    owner: "AREA-equipe"
+    repo: "app"
+    incidentSince: 720
+metaTags:
+    description: "Real-time status and incident communication for TriggerMeNot services."
+    keywords: "status, incident, communication, TriggerMeNot"
+    og:description: "Real-time status and incident communication for TriggerMeNot services."
+    og:title: "TriggerMeNot Status"
+    og:type: "website"
+    og:site_name: "TriggerMeNot"
+nav:
+    - name: "Documentation"
+      url: "https://triggermenot.net/"
+    - name: "Github"
+      iconURL: "/github.svg"
+      url: "https://github.com/AREA-equipe"
+hero:
+    title: TriggerMeNot Status
+    subtitle: "Real-time status and incident communication for TriggerMeNot services."
+i18n:
+    defaultLocale: "en"
+    locales:
+        en: "English"
+        fr: "Français"
+        hi: "हिन्दी"
+        zh-CN: "中文"
+        ja: "日本語"
+        vi: "Tiếng Việt"
+pattern: "squares"
+analytics:
+  - id: "G-Q3MLRXCBFT"
+    type: "GA"
+

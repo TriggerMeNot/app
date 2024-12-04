@@ -7,5 +7,6 @@ postgres_port:
 backend_port:
 grafana_port:
 prometheus_port:
-pgadmin_port:
+pgadmin_port: 5050
+kener_port:
 client_folder:

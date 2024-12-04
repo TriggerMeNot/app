@@ -1,0 +1,14 @@
+- name: Backend
+  description: The backend service of the TriggerMeNot backend
+  tag: "backend"
+  image: "https://upload.wikimedia.org/wikipedia/commons/b/b3/Terminalicon2.png"
+  api:
+      method: GET
+      url: https://backend.triggermenot.net/api
+- name: Client
+  description: The web client of the TriggerMeNot application
+  tag: "client"
+  image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/260px-PNG_transparency_demonstration_1.png"
+  api:
+      method: GET
+      url: https://app.triggermenot.net

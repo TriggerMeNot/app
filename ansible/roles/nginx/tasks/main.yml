@@ -10,18 +10,6 @@
     state: stopped
   become: true
 
-- name: Install Certbot and NGINX Plugin
-  apt:
-    name:
-      - certbot
-      - python3-certbot-nginx
-    state: present
-  become: true
-
-- name: Obtain SSL Certificates
-  command: certbot --nginx --non-interactive --agree-tos --email admin@triggermenot.net -d app.triggermenot.net -d backend.triggermenot.net -d pgadmin.triggermenot.net -d grafana.triggermenot.net
-  become: true
-
 - name: Disable NGINX Default Virtual Host
   file:
     path: "/etc/nginx/sites-enabled/default"
@@ -32,6 +20,25 @@
   copy:
     src: "triggermenot.conf"
     dest: "/etc/nginx/conf.d/default.conf"
+  become: true
+
+- name: Install Certbot and NGINX Plugin
+  apt:
+    name:
+      - certbot
+      - python3-certbot-nginx
+    state: present
+  become: true
+
+- name: Obtain SSL Certificates
+  command: certbot --nginx --non-interactive --agree-tos --email admin@triggermenot.net -d {{ item }}
+  with_items:
+    - triggermenot.net
+    - app.triggermenot.net
+    - backend.triggermenot.net
+    - pgadmin.triggermenot.net
+    - grafana.triggermenot.net
+    - status.triggermenot.net
   become: true
 
 - name: Set Up Auto Renewal for Let's Encrypt
