@@ -3,7 +3,7 @@ import { sign } from "@hono/jwt";
 import { db } from "../db/config.ts";
 import { users as userSchema } from "../schemas/users.ts";
 import { eq } from "drizzle-orm/expressions";
-import bcrypt from "bcrypt";
+import * as bcrypt from "bcrypt";
 
 if (!Deno.env.get("SALT_ROUNDS")) {
   console.error("Please set the SALT_ROUNDS environment variable");
