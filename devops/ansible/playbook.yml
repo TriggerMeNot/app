@@ -28,6 +28,18 @@
     - client
   tags: client
 
+- name: docs
+  hosts: area
+  roles:
+    - docs
+  tags: docs
+
+- name: Status
+  hosts: area
+  roles:
+    - status
+  tags: status
+
 - name: Prometheus
   hosts: area
   roles:

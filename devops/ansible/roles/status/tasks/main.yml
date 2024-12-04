@@ -1,0 +1,49 @@
+- name: Create kener folder
+  become: true
+  file:
+    path: /etc/kener
+    owner: www-data
+    group: www-data
+    mode: '0777'
+    state: directory
+  tags: kener
+
+- name: Create Kener network
+  become: true
+  docker_network:
+    name: kener
+    state: present
+
+- name: Copy config folder
+  become: true
+  copy:
+    src: config/
+    dest: /etc/kener/config/
+    force: yes
+    owner: www-data
+    group: www-data
+    mode: 0777
+
+- name: Create database folder
+  become: true
+  file:
+    path: /etc/kener/database
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0777
+
+- name: Start Kener Docker container
+  become: true
+  docker_container:
+    name: kener-status
+    image: docker.io/rajnandan1/kener:latest
+    state: started
+    restart_policy: always
+    ports:
+      - "{{ kener_port }}:3000"
+    volumes:
+      - '/etc/kener/database:/app/database:rw'
+      - '/etc/kener/config:/app/config'
+    networks:
+      - name: kener
