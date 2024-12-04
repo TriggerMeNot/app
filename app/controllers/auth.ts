@@ -18,7 +18,7 @@ async function login(ctx: Context) {
     eq(userSchema.email, email),
   ).limit(1);
 
-  if (!users.length || !(await bcrypt.compare(password, users[0].password))) {
+  if (!users.length || !(await bcrypt.compare(password, users[0].password!))) {
     return ctx.json({ message: "Invalid email or password" }, 401);
   }
 
@@ -50,7 +50,7 @@ async function register(ctx: Context) {
 
   const hashedPassword = await bcrypt.hash(
     password,
-    parseInt(Deno.env.get("SALT_ROUNDS")!),
+    Deno.env.get("SALT_ROUNDS")!,
   );
 
   const users = await db.insert(userSchema).values({
