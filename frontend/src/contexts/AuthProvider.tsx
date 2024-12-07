@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod"
 import { ReactNode } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID as string;
 
@@ -65,19 +66,28 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [backendAddress, setBackendAddress] = useState<string>(import.meta.env.VITE_BACKEND_DEFAULT_ADDRESS as string || "http://localhost:8080");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const [githubCode, setGithubCode] = useState<string | null>(null);
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get("code");
-    setGithubCode(code);
-    console.log(code);
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }, [navigate]);
+    const fn = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get("code");
+      setGithubCode(code);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    window.addEventListener("load", fn);
+
+    return () => {
+      window.removeEventListener("load", fn);
+    }
+  }, []);
 
   useEffect(() => {
     if (githubCode) {
+      console.log("Logging in with Github code:", githubCode);
       (async () => {
         try {
           setIsLoading(true);
@@ -95,14 +105,15 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
             setToken(token);
             localStorage.setItem("token", token);
             setIsLoading(false);
+            toast({ title: "Success", description: "Successfully logged in using Github." });
             navigate("/");
           } else {
             const error = await response.json();
-            console.error(error);
             setIsLoading(false);
+            toast({ title: "Error", description: error.message });
           }
         } catch (error) {
-          console.error(error);
+          toast({ title: "Error", description: "An error occurred." });
           setIsLoading(false);
         }
       })();
@@ -139,14 +150,15 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         setToken(token);
         localStorage.setItem("token", token);
         setIsLoading(false);
+        toast({ title: "Success", description: "Successfully logged in." });
         navigate("/");
       } else {
         const error = await response.json();
-        console.error(error);
+        toast({ title: "Error", description: error.message });
         setIsLoading(false);
       }
     } catch (error) {
-      console.error(error);
+      toast({ title: "Error", description: "An error occurred." });
       setIsLoading(false);
     }
   };
@@ -169,21 +181,22 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         setToken(token);
         localStorage.setItem("token", token);
         setIsLoading(false);
+        toast({ title: "Success", description: "Successfully registered." });
         navigate("/");
       } else {
         const error = await response.json();
-        console.error(error);
+        toast({ title: "Error", description: error.message });
         setIsLoading(false);
       }
     } catch (error) {
-      console.error(error);
+      toast({ title: "Error", description: "An error occurred." });
       setIsLoading(false);
     }
   }
 
   const loginWithGithub = async () => {
     if (!GITHUB_CLIENT_ID) {
-      console.error("GITHUB_CLIENT_ID is not set.");
+      toast({ title: "Error", description: "Github client ID is not set, please contact the administrator." });
       return;
     }
     setIsLoading(true);
