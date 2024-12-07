@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { z } from "zod"
 import { ReactNode } from "react";
 
+const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID as string;
+
 export const LoginSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
   password: z.string().min(1, { message: "Password is required." }),
@@ -40,6 +42,7 @@ type AuthContextType = {
   loginWithGithub: () => Promise<void>;
   logOut: () => void;
   checkIfLoggedIn: () => boolean;
+  isLoading?: boolean;
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -52,6 +55,7 @@ const AuthContext = createContext<AuthContextType>({
   loginWithGithub: async () => {},
   logOut: () => {},
   checkIfLoggedIn: () => false,
+  isLoading: false,
 });
 
 
@@ -59,7 +63,51 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<any>(null);
   const [token, setToken] = useState<string | undefined>(() => localStorage.getItem("token") || undefined);
   const [backendAddress, setBackendAddress] = useState<string>(import.meta.env.VITE_BACKEND_DEFAULT_ADDRESS as string || "http://localhost:8080");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  const [githubCode, setGithubCode] = useState<string | null>(null);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get("code");
+    setGithubCode(code);
+    console.log(code);
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }, [navigate]);
+
+  useEffect(() => {
+    if (githubCode) {
+      (async () => {
+        try {
+          setIsLoading(true);
+          const response = await fetch(`${backendAddress}/api/auth/github`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ code: githubCode }),
+          });
+
+          if (response.ok) {
+            const { user, token } = await response.json();
+            setUser(user);
+            setToken(token);
+            localStorage.setItem("token", token);
+            setIsLoading(false);
+            navigate("/");
+          } else {
+            const error = await response.json();
+            console.error(error);
+            setIsLoading(false);
+          }
+        } catch (error) {
+          console.error(error);
+          setIsLoading(false);
+        }
+      })();
+    }
+  }, [githubCode]);
 
   useEffect(() => {
     if (backendAddress) {
@@ -76,7 +124,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const loginWithUsernameAndPassword = async (data: z.infer<typeof LoginSchema>) => {
     try {
-      console.log(data);
+      setIsLoading(true);
       const response = await fetch(`${backendAddress}/api/auth/login`, {
         method: "POST",
         headers: {
@@ -90,18 +138,22 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(user);
         setToken(token);
         localStorage.setItem("token", token);
+        setIsLoading(false);
         navigate("/");
       } else {
         const error = await response.json();
         console.error(error);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error(error);
+      setIsLoading(false);
     }
   };
 
   const registerWithUsernameAndPassword = async (data: z.infer<typeof RegisterSchema>) => {
     try {
+      setIsLoading(true);
       const { confirmPassword, ...registerData } = data;
       const response = await fetch(`${backendAddress}/api/auth/register`, {
         method: "POST",
@@ -116,32 +168,27 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(user);
         setToken(token);
         localStorage.setItem("token", token);
+        setIsLoading(false);
         navigate("/");
       } else {
         const error = await response.json();
         console.error(error);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error(error);
+      setIsLoading(false);
     }
   }
 
   const loginWithGithub = async () => {
-    try {
-      const response = await fetch(`${backendAddress}/api/auth/github`, {
-        method: "GET",
-      });
-
-      if (response.ok) {
-        const { url } = await response.json();
-        window.location.href = url;
-      } else {
-        const error = await response.json();
-        console.error(error);
-      }
-    } catch (error) {
-      console.error(error);
+    if (!GITHUB_CLIENT_ID) {
+      console.error("GITHUB_CLIENT_ID is not set.");
+      return;
     }
+    setIsLoading(true);
+    window.location.assign(`https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${window.location.origin}/login`);
+    setIsLoading(false);
   };
 
   const logOut = () => {
@@ -168,6 +215,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         loginWithGithub,
         logOut,
         checkIfLoggedIn,
+        isLoading,
       }}
     >
       {children}
