@@ -113,7 +113,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
             toast({ title: "Error", description: error.message });
           }
         } catch (error) {
-          toast({ title: "Error", description: "An error occurred." });
+          toast({ title: "Error", description: (error instanceof Error) ? error.message : "An unknown error occurred." });
           setIsLoading(false);
         }
       })();
@@ -158,7 +158,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsLoading(false);
       }
     } catch (error) {
-      toast({ title: "Error", description: "An error occurred." });
+      toast({ title: "Error", description: (error instanceof Error) ? error.message : "An unknown error occurred." });
       setIsLoading(false);
     }
   };
@@ -189,7 +189,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsLoading(false);
       }
     } catch (error) {
-      toast({ title: "Error", description: "An error occurred." });
+      toast({ title: "Error", description: (error instanceof Error) ? error.message : "An unknown error occurred." });
       setIsLoading(false);
     }
   }
