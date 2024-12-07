@@ -22,7 +22,7 @@ function UserLoginAuthForm({ className, ...props }: UserAuthFormProps) {
     defaultValues: { email: "", password: "" },
   })
 
-  const { loginWithUsernameAndPassword } = useAuth();
+  const { loginWithUsernameAndPassword, isLoading } = useAuth();
 
   async function onSubmit(data: z.infer<typeof LoginSchema>) {
     loginWithUsernameAndPassword(data);
@@ -39,7 +39,7 @@ function UserLoginAuthForm({ className, ...props }: UserAuthFormProps) {
             autoCapitalize="none"
             autoComplete="email"
             autoCorrect="off"
-            disabled={false}
+            disabled={isLoading}
             {...form.register("email")}
           />
           <p className="text-red-600">{form.formState.errors.email?.message}</p>
@@ -50,13 +50,13 @@ function UserLoginAuthForm({ className, ...props }: UserAuthFormProps) {
             placeholder="Password"
             type="password"
             autoComplete="current-password"
-            disabled={false}
+            disabled={isLoading}
             {...form.register("password")}
           />
           <p className="text-red-600">{form.formState.errors.password?.message}</p>
         </div>
-        <Button disabled={false} className="w-full">
-          {false && (
+        <Button disabled={isLoading} className="w-full">
+          {isLoading && (
             <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
           )}
           Sign In with Email
@@ -72,7 +72,7 @@ function UserRegisterAuthForm({ className, ...props }: UserAuthFormProps) {
     defaultValues: { email: "", password: "", confirmPassword: "" },
   })
 
-  const { registerWithUsernameAndPassword } = useAuth();
+  const { registerWithUsernameAndPassword, isLoading } = useAuth();
 
   async function onSubmit(data: z.infer<typeof RegisterSchema>) {
     registerWithUsernameAndPassword(data);
@@ -89,7 +89,7 @@ function UserRegisterAuthForm({ className, ...props }: UserAuthFormProps) {
             autoCapitalize="none"
             autoComplete="email"
             autoCorrect="off"
-            disabled={false}
+            disabled={isLoading}
             {...form.register("email")}
           />
           <p className="text-red-600">{form.formState.errors.email?.message}</p>
@@ -100,7 +100,7 @@ function UserRegisterAuthForm({ className, ...props }: UserAuthFormProps) {
             placeholder="Username"
             type="text"
             autoComplete="username"
-            disabled={false}
+            disabled={isLoading}
             {...form.register("username")}
           />
         </div>
@@ -110,7 +110,7 @@ function UserRegisterAuthForm({ className, ...props }: UserAuthFormProps) {
             placeholder="Password"
             type="password"
             autoComplete="new-password"
-            disabled={false}
+            disabled={isLoading}
             {...form.register("password")}
           />
           <p className="text-red-600">{form.formState.errors.password?.message}</p>
@@ -121,13 +121,13 @@ function UserRegisterAuthForm({ className, ...props }: UserAuthFormProps) {
             placeholder="Confirm Password"
             type="password"
             autoComplete="new-password"
-            disabled={false}
+            disabled={isLoading}
             {...form.register("confirmPassword")}
           />
           <p className="text-red-600">{form.formState.errors.confirmPassword?.message?.toString()}</p>
         </div>
-        <Button disabled={false} className="w-full">
-          {false && (
+        <Button disabled={isLoading} className="w-full">
+          {isLoading && (
             <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
           )}
           Register with Email
@@ -138,6 +138,8 @@ function UserRegisterAuthForm({ className, ...props }: UserAuthFormProps) {
 }
 
 export function UserAuthForm({ mode, className, ...props }: UserAuthFormProps) {
+  const { isLoading, loginWithGithub } = useAuth();
+
   return (
     <>
       {mode === "login" ? (
@@ -145,6 +147,18 @@ export function UserAuthForm({ mode, className, ...props }: UserAuthFormProps) {
       ) : (
         <UserRegisterAuthForm mode={"register"} className={className} {...props} />
       )}
+      <Button
+        disabled={isLoading}
+        className="w-full"
+        onClick={loginWithGithub}
+      >
+        {isLoading ? (
+          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <Icons.gitHub className="mr-2 h-4 w-4" />
+        )}
+        Sign In with GitHub
+      </Button>
     </>
   )
 }
