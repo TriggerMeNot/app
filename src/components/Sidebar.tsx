@@ -132,7 +132,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
             <SidebarMenuButton size="lg" asChild>
               <a href="#">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground">
-                  <img src="favicon-32x32.png" alt="TriggerMeNot" className="rounded-lg" />
+                  <img src="/favicon-32x32.png" alt="TriggerMeNot" className="rounded-lg" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">TriggerMeNot</span>
