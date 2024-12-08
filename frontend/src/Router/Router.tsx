@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import {
   Login,
-  NotFound
+  NotFound,
+  Home
 } from "@/pages";
 import PrivateRoute from "./PrivateRoute";
 import AuthProvider from "@/contexts/AuthProvider";
@@ -14,7 +15,7 @@ function Router() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Layout><PrivateRoute /></Layout>}>
-              <Route index element={<>HOME (va sur le login steuplé)</>} />
+              <Route index element={<Home />} />
               <Route path="*" element={<NotFound />} />
             </Route>
             <Route path="/" element={<PrivateRoute />}>

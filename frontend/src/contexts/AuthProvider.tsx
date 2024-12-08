@@ -83,7 +83,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           if (response.ok) {
             const user = await response.json();
             setUser(user);
-            console.log("User logged in:", user);
             setIsLoading(false);
           } else {
             const error = await response.json();
