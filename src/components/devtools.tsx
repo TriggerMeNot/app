@@ -1,14 +1,14 @@
 import {
-  useEffect, 
+  useEffect,
   useState,
   type Dispatch,
   type SetStateAction,
   useCallback
 } from 'react';
 
-import { 
-  useNodes, 
-  Panel, 
+import {
+  useNodes,
+  Panel,
   useStore,
   useStoreApi,
   type OnNodesChange,
@@ -223,7 +223,7 @@ export function DevTools() {
   return (
     <>
       <DevToolsToggle tools={tools} />
-      
+
       {/* {changeLoggerActive && (
         <Panel className="text-xs p-5 bg-white rounded shadow-md overflow-y-auto max-h-[50%] mt-20" position="bottom-right">
           <ChangeLogger />
@@ -231,7 +231,7 @@ export function DevTools() {
       )} */}
 
       {nodeInspectorActive && <NodeInspector />}
-      
+
       {viewportLoggerActive && (
         <Panel position="bottom-left" className="text-secondary-foreground">
           <ViewportLogger />

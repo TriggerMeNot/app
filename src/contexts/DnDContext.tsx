@@ -1,6 +1,11 @@
 import React, { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from 'react';
 
-type DnDContextType = [string | null, Dispatch<SetStateAction<string | null>>];
+interface DnDData {
+  payload: any;
+  type: string | null;
+}
+
+type DnDContextType = [DnDData, Dispatch<SetStateAction<DnDData>>];
 
 const DnDContext = createContext<DnDContextType | undefined>(undefined);
 
@@ -9,10 +14,10 @@ interface DnDProviderProps {
 }
 
 export const DnDProvider: React.FC<DnDProviderProps> = ({ children }) => {
-  const [type, setType] = useState<string | null>(null);
+  const [data, setData] = useState<DnDData>({ payload: null, type: null });
 
   return (
-    <DnDContext.Provider value={[type, setType]}>
+    <DnDContext.Provider value={[data, setData]}>
       {children}
     </DnDContext.Provider>
   );
