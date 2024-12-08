@@ -34,7 +34,7 @@ const Home = () => {
               <img
                 src={"https://fastly.picsum.photos/id/1084/536/354.jpg?grayscale&hmac=Ux7nzg19e1q35mlUVZjhCLxqkR30cC-CarVg-nlIf60"}
                 alt={playground.name}
-                className="w-full h-40 object-cover rounded-lg grayscale"
+                className="w-[95%] h-40 object-cover rounded-lg grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer hover:w-full justify-self-center"
                 onClick={() => navigate(`/playground/${playground.id}`)}
               />
             </CardContent>
