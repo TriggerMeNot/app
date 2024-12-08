@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react';
-import { useTheme } from '../../../contexts/theme-provider'
+import { useTheme } from '@/contexts/theme-provider';
 import { Handle, Position } from '@xyflow/react';
 
 import { Button } from "@/components/ui/button";
