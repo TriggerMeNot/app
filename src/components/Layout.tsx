@@ -1,10 +1,10 @@
+import { useLocation, Link } from "react-router-dom"
 import { AppSidebar } from "@/components/Sidebar"
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import {
@@ -14,7 +14,19 @@ import {
 } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
 
+const breadcrumbConfig: Record<string, { name: string; url: string }[]> = {
+  "/": [{ name: "Home", url: "/" }],
+  "/playground": [
+    { name: "Home", url: "/" },
+    { name: "Playground", url: "/playground" },
+  ],
+}
+
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const location = useLocation();
+  const path = location.pathname;
+  const breadcrumbs = breadcrumbConfig[path] || [];
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -25,15 +37,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink>
-                    TriggerMeNot
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Playground</BreadcrumbPage>
-                </BreadcrumbItem>
+                {breadcrumbs.map((breadcrumb, index) => (
+                  <BreadcrumbItem key={breadcrumb.url} className="hidden md:block">
+                    <BreadcrumbLink asChild>
+                      <Link to={breadcrumb.url}>
+                        {breadcrumb.name}
+                      </Link>
+                    </BreadcrumbLink>
+                    {index < breadcrumbs.length - 1 && (
+                      <BreadcrumbSeparator />
+                    )}
+                  </BreadcrumbItem>
+                ))}
               </BreadcrumbList>
             </Breadcrumb>
           </div>
