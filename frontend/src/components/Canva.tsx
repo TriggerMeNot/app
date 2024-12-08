@@ -130,6 +130,7 @@ const DnDFlow = () => {
         onDrop={onDrop}
         onDragOver={onDragOver}
         deleteKeyCode="Delete"
+        colorMode={theme}
       >
         <Background />
         <Controls />
