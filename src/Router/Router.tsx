@@ -4,6 +4,7 @@ import {
   NotFound,
   Home,
   Playground,
+  Canva,
 } from "@/pages";
 import PrivateRoute from "./PrivateRoute";
 import AuthProvider from "@/contexts/AuthProvider";
@@ -20,7 +21,8 @@ function Router() {
               <Route path="/playground/:id" element={<Playground />} />
               <Route path="*" element={<NotFound />} />
             </Route>
-          </Routes>
+            <Route path="/canva" element={<Canva />} />
+            </Routes>
         </AuthProvider>
     </BrowserRouter>
   )
