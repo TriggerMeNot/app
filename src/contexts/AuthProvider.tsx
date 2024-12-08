@@ -71,6 +71,34 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [githubCode, setGithubCode] = useState<string | null>(null);
 
   useEffect(() => {
+    (async () => {
+      if (token) {
+        try {
+          const response = await fetch(`${backendAddress}/api/user`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (response.ok) {
+            const user = await response.json();
+            setUser(user);
+            console.log("User logged in:", user);
+            setIsLoading(false);
+          } else {
+            const error = await response.json();
+            toast({ title: "Error", description: error.message });
+            setIsLoading(false);
+          }
+        } catch (error) {
+          toast({ title: "Error", description: (error instanceof Error) ? error.message : "An unknown error occurred." });
+          setIsLoading(false);
+        }
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
     const fn = async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get("code");
@@ -104,7 +132,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
             setUser(user);
             setToken(token);
             localStorage.setItem("token", token);
-            setIsLoading(false);
             toast({ title: "Success", description: "Successfully logged in using Github." });
             navigate("/");
           } else {
@@ -149,7 +176,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(user);
         setToken(token);
         localStorage.setItem("token", token);
-        setIsLoading(false);
         toast({ title: "Success", description: "Successfully logged in." });
         navigate("/");
       } else {
@@ -180,7 +206,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(user);
         setToken(token);
         localStorage.setItem("token", token);
-        setIsLoading(false);
         toast({ title: "Success", description: "Successfully registered." });
         navigate("/");
       } else {
@@ -211,10 +236,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     navigate("/login");
   };
 
-  const checkIfLoggedIn = (): boolean => {
-    if (token) return true;
-    return false;
-  }
+  const checkIfLoggedIn = () => {
+    return !!token;
+  };
 
   return (
     <AuthContext.Provider
