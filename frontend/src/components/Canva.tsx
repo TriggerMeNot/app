@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import {
   ReactFlow,
-  ReactFlowProvider,
   addEdge,
   useNodesState,
   useEdgesState,
@@ -16,11 +15,11 @@ import {
 import '@xyflow/react/dist/style.css';
 import { DevTools } from "@/components/devtools";
 
-import { DnDProvider, useDnD } from './canva/DnDContext';
+import { useDnD } from '@/contexts/DnDContext';
 
-import Discord from "./canva/CustomNodes/Discord";
-import Git from "./canva/CustomNodes/Git";
-import Microsoft from "./canva/CustomNodes/Microsoft";
+import Discord from "./CustomNodes/Discord";
+import Git from "./CustomNodes/Git";
+import Microsoft from "./CustomNodes/Microsoft";
 
 import { useTheme } from '../contexts/theme-provider'
 
@@ -141,10 +140,4 @@ const DnDFlow = () => {
   );
 };
 
-export default () => (
-  <ReactFlowProvider>
-    <DnDProvider>
-      <DnDFlow />
-    </DnDProvider>
-  </ReactFlowProvider>
-);
+export default DnDFlow;

@@ -23,10 +23,13 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { useAuth } from "@/contexts/AuthProvider"
+import { useLocation, useNavigate } from "react-router-dom"
+import { NavCanva } from "./nav-canva"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
 {
   const { user } = useAuth();
+  const location = useLocation();
 
   const data = React.useMemo(
     () => ({
@@ -124,13 +127,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
     [user]
   );
 
+  const navigate = useNavigate();
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <a onClick={() => navigate("/")}>
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground">
                   <img src="/favicon-32x32.png" alt="TriggerMeNot" className="rounded-lg" />
                 </div>
@@ -144,8 +149,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        {/* <NavProjects projects={data.projects} /> */}
+        {location.pathname.startsWith("/playground/") ? (
+          <NavCanva />
+        ) : (
+          <>
+            <NavMain items={data.navMain} />
+            {/* <NavProjects projects={data.projects} /> */}
+          </>
+        )}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

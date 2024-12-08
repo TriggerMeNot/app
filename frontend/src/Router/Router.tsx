@@ -8,6 +8,8 @@ import {
 import PrivateRoute from "./PrivateRoute";
 import AuthProvider from "@/contexts/AuthProvider";
 import Layout from "@/components/Layout";
+import { ReactFlowProvider } from "@xyflow/react";
+import { DnDProvider } from "@/contexts/DnDContext";
 
 function Router() {
   return (
@@ -17,10 +19,20 @@ function Router() {
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Layout><PrivateRoute /></Layout>}>
               <Route index element={<Home />} />
-              <Route path="/playground/:id" element={<Playground />} />
               <Route path="*" element={<NotFound />} />
             </Route>
-            </Routes>
+            <Route path="/playground/:id" element={
+                <ReactFlowProvider>
+                  <DnDProvider>
+                    <Layout>
+                      <PrivateRoute />
+                    </Layout>
+                  </DnDProvider>
+                </ReactFlowProvider>
+              }>
+              <Route index element={<Playground />} />
+            </Route>
+          </Routes>
         </AuthProvider>
     </BrowserRouter>
   )

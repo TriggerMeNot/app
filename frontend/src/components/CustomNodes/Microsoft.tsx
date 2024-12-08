@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react';
-import { useTheme } from '../../../contexts/theme-provider'
+import { useTheme } from '@/contexts/theme-provider';
 import { Handle, Position } from '@xyflow/react';
 
 import { Button } from "@/components/ui/button";
@@ -13,14 +13,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-interface GitNodeProps {
+interface MicrosoftNodeProps {
   data: {
     onDelete: () => void;
   };
   isConnectable: boolean;
 }
 
-const Git: React.FC<GitNodeProps> = memo(({ data, isConnectable }) => {
+const Git: React.FC<MicrosoftNodeProps> = memo(({ data, isConnectable }) => {
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { theme } = useTheme();
@@ -61,9 +61,9 @@ const Git: React.FC<GitNodeProps> = memo(({ data, isConnectable }) => {
           />
           <div className="text-2xl font-medium">
             <img
-              src="/git_logo.png"
-              alt="Git Logo"
-              className="h-11 w-16"
+              src="/microsoft_logo.png"
+              alt="Microsoft Logo"
+              className="h-9 w-9"
             />
           </div>
           <Handle
@@ -83,11 +83,11 @@ const Git: React.FC<GitNodeProps> = memo(({ data, isConnectable }) => {
 
       <DialogContent>
           <DialogHeader>
-            <DialogTitle>{isConfirmingDelete ? 'Confirm Deletion' : 'This is a Git modal!'}</DialogTitle>
+            <DialogTitle>{isConfirmingDelete ? 'Confirm Deletion' : 'This is a Microsoft modal!'}</DialogTitle>
             <DialogDescription>
               {isConfirmingDelete
                 ? 'Are you sure you want to delete this node? This action cannot be undone.'
-                : 'Manage your Git Node settings here.'}
+                : 'Manage your Microsoft Node settings here.'}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
