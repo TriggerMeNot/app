@@ -10,19 +10,19 @@ import {
   Background,
   MiniMap,
   SelectionMode,
+  Connection,
 } from '@xyflow/react';
 
 import '@xyflow/react/dist/style.css';
 import { DevTools } from "@/components/devtools";
 
-import Sidebar from './Canva/Sidebar';
-import { DnDProvider, useDnD } from './DnDContext';
+import { DnDProvider, useDnD } from './canva/DnDContext';
 
-import Discord from "./Canva/CustomNodes/Discord";
-import Git from "./Canva/CustomNodes/Git";
-import Microsoft from "./Canva/CustomNodes/Microsoft";
+import Discord from "./canva/CustomNodes/Discord";
+import Git from "./canva/CustomNodes/Git";
+import Microsoft from "./canva/CustomNodes/Microsoft";
 
-import { ThemeProvider, useTheme } from '../contexts/theme-provider'
+import { useTheme } from '../contexts/theme-provider'
 
 const nodeColor = (node: any) => {
   switch (node.type) {
@@ -61,7 +61,7 @@ const DnDFlow = () => {
 
   const onConnect = useCallback(
     (params: any) => {
-      const newEdge = {
+      const newEdge : Connection = {
         ...params,
         style: {
           strokeWidth: 2,
@@ -80,7 +80,7 @@ const DnDFlow = () => {
 
   const handleDeleteNode = useCallback(
     (id: string) => {
-      setNodes((nds) => nds.filter((node) => node.id !== id));
+      setNodes((nds) => nds.filter((node) => (node as any)?.id !== id));
     },
     [setNodes]
   );
@@ -100,7 +100,7 @@ const DnDFlow = () => {
 
       const id = getId();
 
-      const newNode = {
+      const newNode: any = {
         id,
         type,
         position,
@@ -116,34 +116,28 @@ const DnDFlow = () => {
   );
 
   return (
-    <ThemeProvider>
-      <div className="flex-row flex grow h-full">
-        <Sidebar />
-        <div className="relative h-screen w-full p-10 text-black lg:flex bg-neutral-100 dark:bg-zinc-900">
-          <ReactFlow
-            nodes={nodes}
-            onNodesChange={onNodesChange}
-            nodeTypes={nodeTypes}
-            edges={edges}
-            onEdgesChange={onEdgesChange}
-            edgeStyle={{ strokeWidth: 3 }}
-            onConnect={onConnect}
-            fitView
-            selectionOnDrag
-            panOnDrag={panOnDrag}
-            selectionMode={SelectionMode.Partial}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            deleteKeyCode="Delete"
-          >
-            <Background />
-            <Controls />
-            <MiniMap nodeColor={nodeColor} nodeStrokeWidth={3} zoomable pannable />
-            <DevTools />
-          </ReactFlow>
-        </div>
-      </div>
-    </ThemeProvider>
+    <div className="relative h-[50rem] w-full lg:flex">
+      <ReactFlow
+        nodes={nodes}
+        onNodesChange={onNodesChange}
+        nodeTypes={nodeTypes}
+        edges={edges}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        fitView
+        selectionOnDrag
+        panOnDrag={panOnDrag}
+        selectionMode={SelectionMode.Partial}
+        onDrop={onDrop}
+        onDragOver={onDragOver}
+        deleteKeyCode="Delete"
+      >
+        <Background />
+        <Controls />
+        <MiniMap nodeColor={nodeColor} nodeStrokeWidth={3} zoomable pannable />
+        <DevTools />
+      </ReactFlow>
+    </div>
   );
 };
 
