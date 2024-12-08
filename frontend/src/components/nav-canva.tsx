@@ -25,65 +25,66 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Webhook } from "lucide-react";
 
 type Panel = {
   id: string;
-  logoSrc: string;
+  icon: React.ElementType | string | null;
   logoAlt: string;
-  logoWidth: number;
-  logoHeight: number;
-  buttons: { label: string; nodeType: string }[];
+  options: {
+    label: string;
+    nodeType: string;
+    nodeCode: string;
+    type?: "action" | "reaction";
+    description?: string;
+  }[];
 };
 
 export function NavCanva({
   ...props
 }: React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
-  const [_, setType] = useDnD();
-
-  const onDragStart = (nodeType: string) => (event: React.DragEvent<HTMLButtonElement>) => {
-    setType(nodeType);
-    event.dataTransfer.effectAllowed = "move";
-  };
+  const [_, setData] = useDnD();
 
   const panels: Panel[] = [
     {
-      id: "discord",
-      logoSrc: "/discord_logo.png",
+      id: "webhook",
+      icon: Webhook,
       logoAlt: "Discord Logo",
-      logoWidth: 20,
-      logoHeight: 20,
-      buttons: [
-        { label: "Receive a message", nodeType: "discord" },
-        { label: "Button 2", nodeType: "discord" },
-        { label: "Button 3", nodeType: "discord" },
+      options: [
+        {
+          label: "Create a TGMN webhook",
+          nodeType: "webhook",
+          nodeCode: "webhook-tgmn-create",
+          type: "action",
+          description: "Is an action that create a webhook under the TGMN platform. This webhook can be used to trigger other nodes."
+        },
+        {
+          label: "Fetch an API",
+          nodeType: "webhook",
+          nodeCode: "webhook-fetch-api",
+          type: "reaction",
+          description: "This node (reaction) fetches an API."
+        },
       ],
-    },
-    {
-      id: "git",
-      logoSrc: "/git_logo.png",
-      logoAlt: "Git Logo",
-      logoWidth: 26,
-      logoHeight: 26,
-      buttons: [
-        { label: "Button 1", nodeType: "git" },
-        { label: "Button 2", nodeType: "git" },
-        { label: "Button 3", nodeType: "git" },
-      ],
-    },
-    {
-      id: "microsoft",
-      logoSrc: "/microsoft_logo.png",
-      logoAlt: "Microsoft Logo",
-      logoWidth: 20,
-      logoHeight: 20,
-      buttons: [
-        { label: "Button 1", nodeType: "microsoft" },
-        { label: "Button 2", nodeType: "microsoft" },
-        { label: "Button 3", nodeType: "microsoft" },
-      ],
-    },
+    }
   ];
+
+  const onDragStart = (button: Panel["options"][0], icon?: Panel["icon"]) => (event: React.DragEvent) => {
+    setData(
+      {
+        payload: {
+          label: button.label,
+          code: button.nodeCode,
+          type: button.nodeType,
+          actionType: button.type,
+          icon: icon,
+          data: {},
+        },
+        type: "node",
+      }
+    );
+    event.dataTransfer.effectAllowed = "move";
+  };
 
   return (
     <SidebarGroup {...props}>
@@ -96,12 +97,20 @@ export function NavCanva({
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
                 <a>
-                  <img
-                    src={panel.logoSrc}
-                    alt={panel.logoAlt}
-                    width={panel.logoWidth}
-                    height={panel.logoHeight}
-                  />
+                  {panel.icon ? (
+                    typeof panel.icon === "string" ? (
+                      <img
+                        src={panel.icon}
+                        alt={panel.logoAlt}
+                        width={20}
+                        height={20}
+                      />
+                    ) : (
+                      <panel.icon size={20} />
+                    )
+                  ) : (
+                    <div className="w-5 h-5" />
+                  )}
                   <span>{panel.id.charAt(0).toUpperCase() + panel.id.slice(1)}</span>
                 </a>
               </SidebarMenuButton>
@@ -114,14 +123,14 @@ export function NavCanva({
             </CollapsibleTrigger>
             <CollapsibleContent>
               <SidebarMenuSub>
-                {panel.buttons.map((button) => (
+                {panel.options.map((button) => (
                   <SidebarMenuSubItem key={button.label}>
                     <SidebarMenuSubButton>
 
                       <Sheet>
                         <SheetTrigger asChild>
                           <button
-                            onDragStart={onDragStart(button.nodeType)}
+                            onDragStart={onDragStart(button, panel.icon)}
                             draggable
                             className="flex items-center space-x-2 w-full"
                           >
@@ -129,10 +138,26 @@ export function NavCanva({
                           </button>
                         </SheetTrigger>
                         <SheetContent>
-                          <SheetHeader>
-                            <SheetTitle>{button.label}</SheetTitle>
+                          <SheetHeader className="flex items-center space-x-2">
+                              {panel.icon ? (
+                                typeof panel.icon === "string" ? (
+                                  <img
+                                    src={panel.icon}
+                                    alt={panel.logoAlt}
+                                    width={20}
+                                    height={20}
+                                  />
+                                ) : (
+                                  <panel.icon size={20} />
+                                )
+                              ) : (
+                                <div className="w-5 h-5" />
+                              )}
+                            <SheetTitle>
+                              {button.label}
+                            </SheetTitle>
                             <SheetDescription>
-                              This is a {button.label} node.
+                              {button.description}
                             </SheetDescription>
                           </SheetHeader>
                         </SheetContent>

@@ -1,4 +1,5 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
+
 import {
   ReactFlow,
   addEdge,
@@ -11,39 +12,16 @@ import {
   SelectionMode,
   Connection,
 } from '@xyflow/react';
-
 import '@xyflow/react/dist/style.css';
-import { DevTools } from "@/components/devtools";
 
 import { useDnD } from '@/contexts/DnDContext';
+import { useTheme } from '@/contexts/theme-provider'
 
-import Discord from "./CustomNodes/Discord";
-import Git from "./CustomNodes/Git";
-import Microsoft from "./CustomNodes/Microsoft";
-
-import { useTheme } from '../contexts/theme-provider'
-
-const nodeColor = (node: any) => {
-  switch (node.type) {
-    case 'input':
-      return '#6ede87';
-    case 'output':
-      return '#6865A5';
-    case 'discord':
-      return '#055dff';
-    case 'git':
-      return '#d6d27a';
-    case 'microsoft':
-      return '#3ba853';
-    default:
-      return '#ff0072';
-  }
-};
+import { DevTools } from "@/components/devtools";
+import { WebHookNode } from '@/components/CustomNodes';
 
 const nodeTypes = {
-  discord: Discord,
-  git: Git,
-  microsoft: Microsoft,
+  webhook: WebHookNode,
 };
 
 const panOnDrag = [1, 2];
@@ -51,12 +29,17 @@ const panOnDrag = [1, 2];
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
-const DnDFlow = () => {
+const DnDFlow = ({ playground }: { playground: any }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const { screenToFlowPosition } = useReactFlow();
   const { theme } = useTheme();
-  const [type] = useDnD();
+  const [data] = useDnD();
+
+  useEffect(() => {
+    console.log(nodes);
+    console.log(edges);
+  }, [nodes, edges]);
 
   const onConnect = useCallback(
     (params: any) => {
@@ -88,7 +71,7 @@ const DnDFlow = () => {
     (event: any) => {
       event.preventDefault();
 
-      if (!type) {
+      if (!data) {
         return;
       }
 
@@ -101,17 +84,17 @@ const DnDFlow = () => {
 
       const newNode: any = {
         id,
-        type,
+        type: data.payload.type,
         position,
         data: {
-          label: `${type} node`,
+          ...data.payload,
           onDelete: () => handleDeleteNode(id),
         },
       };
 
       setNodes((nds) => nds.concat(newNode));
     },
-    [screenToFlowPosition, type, handleDeleteNode]
+    [screenToFlowPosition, data, handleDeleteNode]
   );
 
   return (
@@ -134,7 +117,7 @@ const DnDFlow = () => {
       >
         <Background />
         <Controls />
-        <MiniMap nodeColor={nodeColor} nodeStrokeWidth={3} zoomable pannable />
+        <MiniMap nodeStrokeWidth={3} zoomable pannable />
         <DevTools />
       </ReactFlow>
     </div>

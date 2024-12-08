@@ -6,7 +6,7 @@ import Canva from "@/components/Canva";
 
 function Playground() {
   const { id } = useParams<{ id: string }>();
-  const [, setPlayground] = useState<any>(null);
+  const [playground, setPlayground] = useState<any>(null);
   const { backendAddress, token } = useAuth();
 
   useEffect(() => {
@@ -19,7 +19,7 @@ function Playground() {
 
   return (
     <div>
-      <Canva />
+      <Canva playground={playground} />
     </div>
   );
 }
