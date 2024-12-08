@@ -18,9 +18,6 @@ function Router() {
               <Route index element={<Home />} />
               <Route path="*" element={<NotFound />} />
             </Route>
-            <Route path="/" element={<PrivateRoute />}>
-              <Route path="*" element={<NotFound />} />
-            </Route>
           </Routes>
         </AuthProvider>
     </BrowserRouter>
