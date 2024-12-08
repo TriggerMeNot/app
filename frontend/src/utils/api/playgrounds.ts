@@ -23,4 +23,16 @@ async function createPlayground(apiUrl: string, token: string)
   return data;
 }
 
-export default { getAllPlaygrounds, createPlayground };
+async function getPlaygroundById(apiUrl: string, token: string, id: number)
+{
+  const response = await fetch(`${apiUrl}/api/playground/${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+  return data;
+}
+
+export default { getAllPlaygrounds, createPlayground, getPlaygroundById };
