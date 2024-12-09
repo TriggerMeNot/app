@@ -33,6 +33,29 @@ import {
 import { Button } from './ui/button';
 import { addActionToPlayground, addReactionToPlayground } from '@/utils/api';
 import { useAuth } from '@/contexts/AuthProvider';
+import { Webhook } from 'lucide-react';
+
+const actionIdToData = {
+  1: {
+    id: 1,
+    actionType: 'action',
+    type: 'webhook',
+    description: 'Is an action that create a webhook under the TGMN platform. This webhook can be used to trigger other nodes.',
+    label: 'Create a TGMN webhook',
+    icon: Webhook,
+  },
+};
+
+const reactionIdToData = {
+  1: {
+    id: 1,
+    actionType: 'reaction',
+    type: 'webhook',
+    description: 'This node (reaction) fetches an API.',
+    label: 'Fetch an API',
+    icon: Webhook,
+  },
+};
 
 const nodeTypes = {
   webhook: WebHookNode,
@@ -44,8 +67,6 @@ let id = 0;
 const getId = () => `dndnode_${id++}`;
 
 const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground: (playground: any) => void }) => {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const { screenToFlowPosition } = useReactFlow();
   const { theme } = useTheme();
   const [data] = useDnD();
@@ -54,6 +75,63 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
   const [isDeletionDialogOpen, setIsDeletionDialogOpen] = useState(false);
   const [, setDataToDelete] = useState<{ Nodes: Node[]; Edges: Edge[] } | null>(null);
   const [deletionPromiseResolver, setDeletionPromiseResolver] = useState<((value: boolean) => void) | null>(null);
+
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+
+  useEffect(() => {
+    if (!playground) {
+      return;
+    }
+    const { nodes: generatedNodes, edges: generatedEdges } = generateNodesAndEdges(playground);
+    setNodes(generatedNodes);
+    setEdges(generatedEdges);
+  }, [playground]);
+
+  const generateNodesAndEdges = (playground: any) => {
+    const nodes: any[] = [];
+    const edges: any[] = [];
+    const horizontalSpacing = 200;
+    const verticalSpacing = 100;
+
+    playground.actions.forEach((action: any, index: number) => {
+      nodes.push({
+        id: `action-${action.id}`,
+        type: actionIdToData[action.id as keyof typeof actionIdToData].type,
+        position: { x: 0, y: index * verticalSpacing },
+        playgroundId: playground.id,
+        data: {
+          ...actionIdToData[action.id as keyof typeof actionIdToData],
+          onDelete: () => handleDeleteNode(`action-${action.id}`),
+        },
+      });
+    });
+
+    playground.reactions.forEach((reaction: any, index: number) => {
+      nodes.push({
+        id: `reaction-${reaction.id}`,
+        position: { x: horizontalSpacing, y: index * verticalSpacing },
+        type: reactionIdToData[reaction.id as keyof typeof reactionIdToData].type,
+        playgroundId: playground.id,
+        data: {
+          ...reactionIdToData[reaction.id as keyof typeof reactionIdToData],
+          onDelete: () => handleDeleteNode(`reaction-${reaction.id}`),
+        },
+      });
+    });
+
+    playground.linksActions.forEach((link: any) => {
+      edges.push({
+        id: `link-${link.id}`,
+        source: `action-${link.triggerId}`,
+        target: `reaction-${link.reactionId}`,
+        animated: true,
+        style: { stroke: '#000' },
+      });
+    });
+
+    return { nodes, edges };
+  };
 
   const confirmDeletion = useCallback(() => {
     return new Promise<boolean>((resolve) => {
