@@ -30,12 +30,6 @@
   args:
     chdir: /opt/area/backend
 
-- name: Get bcrypt version from deno.json
-  become: true
-  become_user: area-backend
-  shell: cat /opt/area/backend/deno.json | jq -r '.imports["bcrypt"]'
-  register: bcrypt_version
-
 - name: Copy the service file
   become: true
   template:
