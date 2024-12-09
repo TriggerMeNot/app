@@ -1,0 +1,77 @@
+name: Deploy using Ansible
+
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: production
+      - name: Setup Python
+        uses: actions/setup-python@v5.3.0
+        with:
+          python-version: '3.x'
+      - name: Install pipx
+        run: |
+          python3 -m pip install --user pipx
+          python3 -m pipx ensurepath
+      - name: Install Ansible
+        run: pipx install --include-deps ansible
+      - name: Tar all the project
+        run: |
+          tar -cvf devops/ansible/client.tar frontend/
+          tar -cvf devops/ansible/backend.tar backend/
+          tar -cvf devops/ansible/docs.tar docs/
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.ANSIBLE_PRIVATE_KEY }}" > ~/.ssh/key.pem
+          chmod 600 ~/.ssh/key.pem
+      - name: Setup Hosts
+        run: |
+          echo "[area]" > production/hosts
+          echo "${{ secrets.SERVER_IP }} ansible_ssh_user=${{ secrets.SERVER_USER }} ansible_ssh_private_key_file=~/.ssh/key.pem" >> production/hosts
+      - name: Deploy
+        working-directory: devops/ansible
+        run: |
+          ansible-playbook -i production playbook.yml \
+            -e "postgres_user=${{ secrets.POSTGRES_USER }}" \
+            -e "postgres_password=${{ secrets.POSTGRES_PASSWORD }}" \
+            -e "postgres_db=${{ secrets.POSTGRES_DB }}" \
+            -e "postgres_host=${{ secrets.POSTGRES_HOST }}" \
+            -e "postgres_port=${{ secrets.POSTGRES_PORT }}" \
+            -e "backend_port=${{ secrets.BACKEND_PORT }}" \
+            -e "grafana_port=${{ secrets.GRAFANA_PORT }}" \
+            -e "prometheus_port=${{ secrets.PROMETHEUS_PORT }}" \
+            -e "pgadmin_port=${{ secrets.PGADMIN_PORT }}" \
+            -e "kener_port=${{ secrets.KENER_PORT }}" \
+            -e "client_folder=${{ secrets.CLIENT_FOLDER }}" \
+            -e "docs_folder=${{ secrets.DOCS_FOLDER }}" \
+            -e "github_id=${{ secrets.TGMN_GITHUB_APP_CLIENT_ID }}" \
+            \
+            -e "jwt_secret=${{ secrets.JWT_SECRET }}" \
+            -e "github_secret=${{ secrets.TGMN_GITHUB_APP_SECRET }}" \
+            \
+            -e "keystore_password=${{ secrets.KEYSTORE_PASSWORD }}" \
+            -e "keystore_alias=${{ secrets.KEYSTORE_ALIAS }}" \
+            -e "keystore_alias_password=${{ secrets.KEYSTORE_ALIAS_PASSWORD }}" \
+            -e "backend_default_adress=${{ secrets.BACKEND_DEFAULT_ADRESS }}" \
+            \
+            -e "grafana_db_password=${{ secrets.GRAFANA_DB_PASSWORD }}" \
+            \
+            -e "pgadmin_default_email=${{ secrets.PGADMIN_DEFAULT_EMAIL }}" \
+            -e "pgadmin_default_password=${{ secrets.PGADMIN_DEFAULT_PASSWORD }}"
+            \
+            -e "hashed_prometheus_password=${{ secrets.HASHED_PROMETHEUS_PASSWORD }}"
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False
+          ANSIBLE_LOG_PATH: " " # Needed to avoid logs being printed to stdout
+          # The following are just in case the above isn't enough
+          ANSIBLE_DISPLAY_ARGS_TO_STDOUT: False
+          ANSIBLE_DISPLAY_SKIPPED_HOSTS: False
