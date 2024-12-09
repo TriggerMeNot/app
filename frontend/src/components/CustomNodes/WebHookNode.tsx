@@ -14,11 +14,15 @@ import {
 } from "@/components/ui/dialog";
 
 import { NodeProps } from '@xyflow/react';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { useAuth } from '@/contexts/AuthProvider';
 
 const WebHookNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => {
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { theme } = useTheme();
+  const { backendAddress } = useAuth();
 
   const handleDeleteClick = () => {
     setIsConfirmingDelete(true);
@@ -92,13 +96,21 @@ const WebHookNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => {
 
       <DialogContent>
           <DialogHeader>
-            <DialogTitle>{isConfirmingDelete ? 'Confirm Deletion' : 'This is a Git modal!'}</DialogTitle>
+            <DialogTitle>{isConfirmingDelete ? 'Confirm Deletion' : 'Node Settings'}</DialogTitle>
             <DialogDescription>
               {isConfirmingDelete
-                ? 'Are you sure you want to delete this node? This action cannot be undone.'
-                : 'Manage your Git Node settings here.'}
+                ? 'Are you sure you want to delete this node?'
+                : 'Manage your webhook settings here.'}
             </DialogDescription>
           </DialogHeader>
+          <div className="flex flex-col space-y-4">
+            <div>
+              <Label>Webhook URL</Label>
+              <Input
+                value={`${backendAddress}/api/trigger-me-not/on-fetch/${(data.settings as any).token}`}
+              />
+            </div>
+          </div>
           <DialogFooter>
             {isConfirmingDelete ? (
               <>
