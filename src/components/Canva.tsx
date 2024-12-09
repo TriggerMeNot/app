@@ -102,6 +102,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         playgroundId: playground.id,
         data: {
           ...actionIdToData[action.id as keyof typeof actionIdToData],
+          settings: action.settings,
           onDelete: () => handleDeleteNode(`action-${action.id}`),
         },
       });
@@ -115,6 +116,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         playgroundId: playground.id,
         data: {
           ...reactionIdToData[reaction.id as keyof typeof reactionIdToData],
+          settings: reaction.settings,
           onDelete: () => handleDeleteNode(`reaction-${reaction.id}`),
         },
       });
