@@ -39,6 +39,8 @@
     if [ ! -d /opt/area/client/android ]; then
       yes n | npx cap add android
     fi
+  args:
+    chdir: /opt/area/client
 
 - name: Create keyfile if it does not exist
   become: true
@@ -54,6 +56,8 @@
         -keypass {{ keystore_alias_password }} \
         -dname "{{ keystore_dname }}"
     fi
+  args:
+    chdir: /opt/area/client
 
 - name: Build the APK
   become: true
