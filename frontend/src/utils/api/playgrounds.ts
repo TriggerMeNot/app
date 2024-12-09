@@ -138,6 +138,24 @@ const deleteLink = async (backendAddress: string, token: string, linkId: string)
   }
 };
 
+const editReactionSettings = async (backendAddress: string, token: string, playgroundId: string, reactionId: string, settings: any) => {
+  const response = await fetch(`${backendAddress}/api/playground/${playgroundId}/reaction/${reactionId}/settings`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(settings),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to edit reaction settings.");
+  }
+
+  const data = await response.json();
+  return data;
+}
+
 export default {
   getAllPlaygrounds,
   createPlayground,
@@ -150,4 +168,5 @@ export default {
   addActionToReactionLink,
   addReactionToActionLink,
   deleteLink,
+  editReactionSettings,
 };

@@ -3,6 +3,15 @@ import { useTheme } from '@/contexts/theme-provider';
 import { Handle, Position } from '@xyflow/react';
 
 import { Button } from "@/components/ui/button";
+import { Input } from '@/components/ui/input';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Dialog,
   DialogContent,
@@ -14,10 +23,28 @@ import {
 
 import { NodeProps } from '@xyflow/react';
 
+import {
+  editReactionSettings
+} from '@/utils/api';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
+import { useAuth } from '@/contexts/AuthProvider';
+
+const formSchema = z.object({
+  url: z.string(),
+  method: z.string(),
+  headers: z.string(),
+  body: z.string(),
+})
+
 const WebHookFetchNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => {
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { theme } = useTheme();
+  const { token, backendAddress } = useAuth();
 
   const handleDeleteClick = () => {
     setIsConfirmingDelete(true);
@@ -35,6 +62,16 @@ const WebHookFetchNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => 
   const handleCancelDelete = () => {
     setIsConfirmingDelete(false);
   };
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      url: (data.settings as any)?.url || '',
+      method: (data.settings as any)?.method || '',
+      headers: (data.settings as any)?.headers || '',
+      body: (data.settings as any)?.body || '',
+    },
+  })
 
   return (
     <>
@@ -96,9 +133,67 @@ const WebHookFetchNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => 
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col space-y-4">
-              <div>
-
-              </div>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit((values: z.infer<typeof formSchema>) => {
+                  editReactionSettings(backendAddress, token as string, data.playgroundId as string, data.playgroundReactionId as string, { settings: values });
+                })}>
+                  <FormField
+                    control={form.control}
+                    name="url"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel htmlFor="url">URL</FormLabel>
+                        <FormControl>
+                          <Input {...field} id="url" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="method"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel htmlFor="method">Method</FormLabel>
+                        <FormControl>
+                          <Input {...field} id="method" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="headers"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel htmlFor="headers">Headers</FormLabel>
+                        <FormControl>
+                          <Input {...field} id="headers" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="body"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel htmlFor="body">Body</FormLabel>
+                        <FormControl>
+                          <Input {...field} id="body" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" variant="default">
+                    Save
+                  </Button>
+                </form>
+              </Form>
             </div>
             <DialogFooter>
               {isConfirmingDelete ? (

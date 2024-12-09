@@ -12,4 +12,5 @@ export const {
   addActionToReactionLink,
   addReactionToActionLink,
   deleteLink,
+  editReactionSettings
 } = playgrounds;
