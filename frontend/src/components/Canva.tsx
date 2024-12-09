@@ -20,7 +20,7 @@ import { useDnD } from '@/contexts/DnDContext';
 import { useTheme } from '@/contexts/theme-provider'
 
 import { DevTools } from "@/components/devtools";
-import { WebHookNode } from '@/components/CustomNodes';
+import { WebHookFetchNode, WebHookTGMNCreateNode } from '@/components/CustomNodes';
 
 import {
   Dialog,
@@ -39,7 +39,7 @@ const actionIdToData = {
   1: {
     id: 1,
     actionType: 'action',
-    type: 'webhook',
+    type: 'webhook-create',
     description: 'Is an action that create a webhook under the TGMN platform. This webhook can be used to trigger other nodes.',
     label: 'Create a TGMN webhook',
     icon: Webhook,
@@ -50,7 +50,7 @@ const reactionIdToData = {
   1: {
     id: 1,
     actionType: 'reaction',
-    type: 'webhook',
+    type: 'webhook-fetch',
     description: 'This node (reaction) fetches an API.',
     label: 'Fetch an API',
     icon: Webhook,
@@ -58,7 +58,8 @@ const reactionIdToData = {
 };
 
 const nodeTypes = {
-  webhook: WebHookNode,
+  "webhook-create": WebHookTGMNCreateNode,
+  "webhook-fetch": WebHookFetchNode,
 };
 
 const panOnDrag = [1, 2];
@@ -103,6 +104,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         data: {
           ...actionIdToData[action.id as keyof typeof actionIdToData],
           settings: action.settings,
+          onDelete: () => handleNodeDelete([{ id: `action-${action.id}` } as Node]),
         },
       });
     });
@@ -116,6 +118,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         data: {
           ...reactionIdToData[reaction.id as keyof typeof reactionIdToData],
           settings: reaction.settings,
+          onDelete: () => handleNodeDelete([{ id: `reaction-${reaction.id}` } as Node]),
         },
       });
     });

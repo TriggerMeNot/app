@@ -1,5 +1,7 @@
-import WebHookNode from "./WebHookNode";
+import WebHookTGMNCreateNode from "./WebHookTGMNCreateNode";
+import WebHookFetchNode from "./WebHookFetchNode";
 
 export {
-  WebHookNode,
+  WebHookTGMNCreateNode,
+  WebHookFetchNode,
 }
