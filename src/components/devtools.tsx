@@ -210,7 +210,7 @@ function DevToolsToggle({ tools }: DevToolsToggleProps) {
 
 export function DevTools() {
   const [nodeInspectorActive, setNodeInspectorActive] = useState(false);
-  const [changeLoggerActive, setChangeLoggerActive] = useState(false);
+  // const [changeLoggerActive, setChangeLoggerActive] = useState(false);
   const [viewportLoggerActive, setViewportLoggerActive] = useState(false);
 
 
