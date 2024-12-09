@@ -272,7 +272,7 @@ async function linkReaction(ctx: Context) {
 
   await db.insert(reactionLinkSchema).values({
     triggerId,
-    reactionPlaygroundId,
+    reactionId: reactionPlaygroundId,
   });
 
   return ctx.json({ success: true }, 201);
@@ -309,7 +309,7 @@ async function linkAction(ctx: Context) {
 
   await db.insert(actionLinkSchema).values({
     triggerId,
-    reactionPlaygroundId,
+    reactionId: reactionPlaygroundId,
   });
 
   return ctx.json({ success: true }, 201);
