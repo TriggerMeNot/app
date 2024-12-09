@@ -10,7 +10,7 @@
   args:
     chdir: /opt/area/client
   environment:
-    VITE_GITHUB_CLIENT_ID: "{{ github_client_id }}"
+    VITE_GITHUB_CLIENT_ID: "{{ github_id }}"
     VITE_BACKEND_DEFAULT_ADRESS: "{{ backend_default_adress }}"
   register: client_dir
 
