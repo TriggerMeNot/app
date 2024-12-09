@@ -2,8 +2,8 @@ import { withMermaid } from 'vitepress-plugin-mermaid'
 
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
-  title: "AREA",
-  description: "AREA Documentation",
+  title: "TriggerMeNot",
+  description: "TriggerMeNot Documentation",
   base: '/',
   ignoreDeadLinks: true,
   themeConfig: {
@@ -41,6 +41,15 @@ export default withMermaid({
         items: [
           { text: 'Technical Stack', link: '/client/stack' },
           { text: 'Build', link: '/client/build' },
+        ]
+      },
+      {
+        text: 'User Guide',
+        items: [
+          { text: 'Register/Login', link: '/user-guide/register-login' },
+          { text: 'Create a Playground', link: '/user-guide/create-playground' },
+          { text: 'Create a Node', link: '/user-guide/create-node' },
+          { text: 'Linking Nodes', link: '/user-guide/link-nodes' },
         ]
       }
     ],

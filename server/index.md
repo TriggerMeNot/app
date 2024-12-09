@@ -1,3 +1,3 @@
-# AREA Server
+# TriggerMeNot Server
 
-Area server documentation
+TriggerMeNot server documentation

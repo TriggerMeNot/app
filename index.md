@@ -3,8 +3,8 @@
 layout: home
 
 hero:
-  name: "AREA"
-  text: "AREA Documentation"
+  name: "TriggerMeNot"
+  text: "TriggerMeNot Documentation"
   tagline: Action REAction
   actions:
     - theme: brand
@@ -16,13 +16,16 @@ hero:
 
 features:
   - title: Getting Started
-    details: Explore the basics of AREA
+    details: Explore the basics of TriggerMeNot
     link: /getting-started/
   - title: Server
-    details: AREA server documentation
+    details: TriggerMeNot server documentation
     link: /server/
   - title: Client
-    details: AREA client documentation
+    details: TriggerMeNot client documentation
     link: /client/
+  - title: User guide
+    details: TriggerMeNot User Guide
+    link: /user-guide/
 ---
 

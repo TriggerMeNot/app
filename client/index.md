@@ -1,3 +1,3 @@
 # Client
 
-Area client documentation
+TriggerMeNot client documentation
