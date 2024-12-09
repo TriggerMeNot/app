@@ -8,5 +8,8 @@ export const {
   addReactionToPlayground,
   deleteActionFromPlayground,
   deleteReactionFromPlayground,
-  deletePlayground
+  deletePlayground,
+  addActionToReactionLink,
+  addReactionToActionLink,
+  deleteLink,
 } = playgrounds;

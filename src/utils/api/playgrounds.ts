@@ -99,6 +99,45 @@ async function deletePlayground(apiUrl: string, token: string, id: number)
   return data;
 }
 
+const addActionToReactionLink = async (backendAddress: string, token: string, triggerId: string, reactionPlaygroundId: string) => {
+  const response = await fetch(`${backendAddress}/api/playground/link/action/${triggerId}/reaction/${reactionPlaygroundId}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to create link.");
+  }
+};
+
+const addReactionToActionLink = async (backendAddress: string, token: string, triggerId: string, actionPlaygroundId: string) => {
+  const response = await fetch(`${backendAddress}/api/playground/link/reaction/${triggerId}/action/${actionPlaygroundId}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to create link.");
+  }
+};
+
+const deleteLink = async (backendAddress: string, token: string, linkId: string) => {
+  const response = await fetch(`${backendAddress}/api/playground/link/${linkId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to delete link.");
+  }
+};
+
 export default {
   getAllPlaygrounds,
   createPlayground,
@@ -107,5 +146,8 @@ export default {
   addReactionToPlayground,
   deleteActionFromPlayground,
   deleteReactionFromPlayground,
-  deletePlayground
+  deletePlayground,
+  addActionToReactionLink,
+  addReactionToActionLink,
+  deleteLink,
 };

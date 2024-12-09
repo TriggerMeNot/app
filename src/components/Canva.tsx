@@ -31,7 +31,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from './ui/button';
-import { addActionToPlayground, addReactionToPlayground, deleteActionFromPlayground, deleteReactionFromPlayground } from '@/utils/api';
+import { addActionToPlayground, addActionToReactionLink, addReactionToActionLink, addReactionToPlayground, deleteActionFromPlayground, deleteLink, deleteReactionFromPlayground } from '@/utils/api';
 import { useAuth } from '@/contexts/AuthProvider';
 import { Webhook } from 'lucide-react';
 
@@ -129,7 +129,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         source: `action-${link.triggerId}`,
         target: `reaction-${link.reactionId}`,
         animated: true,
-        style: { stroke: '#000' },
+        style: { strokeWidth: 2 },
       });
     });
 
@@ -165,11 +165,23 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         return false;
       }
 
+      edges.forEach((edge) => {
+        const [sourceType,] = edge.source.split("-");
+        const [targetType,] = edge.target.split("-");
+
+        if (sourceType && targetType) {
+          const linkId = edge.id.replace("link-", "");
+          deleteLink(backendAddress, token as string, linkId).catch((err) =>
+            console.error("Failed to delete link:", err)
+          );
+        }
+      });
+
       setNodes((nds) => nds.filter((node) => !nodes.some((n) => n.id === (node as any).id)));
       setEdges((eds) => eds.filter((edge) => !edges.some((e) => e.id === (edge as any).id)));
       return true;
     },
-    [confirmDeletion, setNodes, setEdges]
+    [confirmDeletion, backendAddress, token, setNodes, setEdges]
   );
 
   const deletedNodeModal = (
@@ -192,17 +204,34 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
   );
 
   const onConnect = useCallback(
-    (params: any) => {
-      const newEdge : Connection = {
-        ...params,
-        style: {
-          strokeWidth: 2,
-          stroke: theme === 'dark' ? 'white' : '#111827',
-        },
-      };
-      setEdges((eds) => addEdge(newEdge, eds));
+    async (params: Connection) => {
+      const { source, target } = params;
+
+      if (!source || !target) return;
+
+      const [sourceType, sourceId] = source.split("-");
+      const [targetType, targetId] = target.split("-");
+
+      try {
+        if (sourceType === "action" && targetType === "reaction") {
+          await addActionToReactionLink(backendAddress, token as string, sourceId, targetId);
+        } else if (sourceType === "reaction" && targetType === "action") {
+          await addReactionToActionLink(backendAddress, token as string, sourceId, targetId);
+        }
+
+        const newEdge: Edge = {
+          ...params,
+          id: `link-${sourceId}-${targetId}`,
+          animated: true,
+          style: { strokeWidth: 2 },
+        };
+
+        setEdges((eds) => addEdge(newEdge, eds));
+      } catch (err) {
+        console.error("Failed to create link:", err);
+      }
     },
-    []
+    [backendAddress, token, theme]
   );
 
   const onDragOver = useCallback((event: any) => {
