@@ -31,7 +31,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from './ui/button';
-import { addActionToPlayground, addActionToReactionLink, addReactionToActionLink, addReactionToPlayground, deleteActionFromPlayground, deleteLink, deleteReactionFromPlayground } from '@/utils/api';
+import { addActionToPlayground, addActionToReactionLink, addReactionToActionLink, addReactionToPlayground, deleteActionFromPlayground, deleteReactionFromPlayground } from '@/utils/api';
 import { useAuth } from '@/contexts/AuthProvider';
 import { Webhook } from 'lucide-react';
 
