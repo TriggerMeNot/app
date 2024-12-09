@@ -19,7 +19,7 @@ function Playground() {
 
   return (
     <div>
-      <Canva playground={playground} />
+      <Canva playground={playground} setPlayground={setPlayground} />
     </div>
   );
 }

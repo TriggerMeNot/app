@@ -34,7 +34,7 @@ type Panel = {
   options: {
     label: string;
     nodeType: string;
-    nodeCode: string;
+    id: number | undefined;
     type?: "action" | "reaction";
     description?: string;
   }[];
@@ -54,14 +54,14 @@ export function NavCanva({
         {
           label: "Create a TGMN webhook",
           nodeType: "webhook",
-          nodeCode: "webhook-tgmn-create",
+          id: 1,
           type: "action",
           description: "Is an action that create a webhook under the TGMN platform. This webhook can be used to trigger other nodes."
         },
         {
           label: "Fetch an API",
           nodeType: "webhook",
-          nodeCode: "webhook-fetch-api",
+          id: 1, // 1 too because it's an reaction and the id counter is not shared between actions and reactions
           type: "reaction",
           description: "This node (reaction) fetches an API."
         },
@@ -74,7 +74,7 @@ export function NavCanva({
       {
         payload: {
           label: button.label,
-          code: button.nodeCode,
+          id: button.id,
           type: button.nodeType,
           actionType: button.type,
           icon: icon,

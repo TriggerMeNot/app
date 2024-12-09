@@ -4,4 +4,8 @@ export const {
   getAllPlaygrounds,
   createPlayground,
   getPlaygroundById,
+  addActionToPlayground,
+  addReactionToPlayground,
+  deleteActionFromPlayground,
+  deleteReactionFromPlayground,
 } = playgrounds;
