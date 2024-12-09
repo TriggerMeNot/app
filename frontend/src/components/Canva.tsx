@@ -31,7 +31,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from './ui/button';
-import { addActionToPlayground, addReactionToPlayground } from '@/utils/api';
+import { addActionToPlayground, addReactionToPlayground, deleteActionFromPlayground, deleteReactionFromPlayground } from '@/utils/api';
 import { useAuth } from '@/contexts/AuthProvider';
 import { Webhook } from 'lucide-react';
 
@@ -103,7 +103,6 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         data: {
           ...actionIdToData[action.id as keyof typeof actionIdToData],
           settings: action.settings,
-          onDelete: () => handleDeleteNode(`action-${action.id}`),
         },
       });
     });
@@ -117,7 +116,6 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         data: {
           ...reactionIdToData[reaction.id as keyof typeof reactionIdToData],
           settings: reaction.settings,
-          onDelete: () => handleDeleteNode(`reaction-${reaction.id}`),
         },
       });
     });
@@ -209,13 +207,6 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
-  const handleDeleteNode = useCallback(
-    (id: string) => {
-      setNodes((nds) => nds.filter((node) => (node as any)?.id !== id));
-    },
-    [setNodes]
-  );
-
   const onDrop = useCallback(
     (event: any) => {
       event.preventDefault();
@@ -238,7 +229,6 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         playgroundId: playground.id,
         data: {
           ...data.payload,
-          onDelete: () => handleDeleteNode(id),
         },
       };
 
@@ -260,7 +250,31 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         });
       }
     },
-    [screenToFlowPosition, data, handleDeleteNode]
+    [screenToFlowPosition, data]
+  );
+
+  const handleNodeDelete = useCallback(
+    (node: Node[]) => {
+      node.forEach((n) => {
+        const [type, id] = (n as any).id.split('-');
+        if (type === 'action') {
+          deleteActionFromPlayground(backendAddress, token as string, playground.id, parseInt(id)).then(() => {
+            setPlayground((pg: any) => ({
+              ...pg,
+              actions: pg.actions.filter((action: any) => action.id !== parseInt(id)),
+            }));
+          });
+        } else {
+          deleteReactionFromPlayground(backendAddress, token as string, playground.id, parseInt(id)).then(() => {
+            setPlayground((pg: any) => ({
+              ...pg,
+              reactions: pg.reactions.filter((reaction: any) => reaction.id !== parseInt(id)),
+            }));
+          });
+        }
+      });
+    },
+    [backendAddress, token, playground]
   );
 
   return (
@@ -281,6 +295,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
           onDragOver={onDragOver}
           deleteKeyCode="Delete"
           onBeforeDelete={onBeforeDelete}
+          onNodesDelete={handleNodeDelete}
           colorMode={theme}
         >
           <Background />
