@@ -100,8 +100,9 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         id: `action-${action.id}`,
         type: actionIdToData[action.actionId as keyof typeof actionIdToData].type,
         position: { x: 0, y: index * verticalSpacing },
-        playgroundId: playground.id,
         data: {
+          playgroundId: playground.id,
+          playgroundActionId: action.id,
           ...actionIdToData[action.actionId as keyof typeof actionIdToData],
           settings: action.settings,
           onDelete: () => handleNodeDelete([{ id: `action-${action.id}` } as Node]),
@@ -114,8 +115,9 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         id: `reaction-${reaction.id}`,
         position: { x: horizontalSpacing, y: index * verticalSpacing },
         type: reactionIdToData[reaction.reactionId as keyof typeof reactionIdToData].type,
-        playgroundId: playground.id,
         data: {
+          playgroundId: playground.id,
+          playgroundReactionId: reaction.id,
           ...reactionIdToData[reaction.reactionId as keyof typeof reactionIdToData],
           settings: reaction.settings,
           onDelete: () => handleNodeDelete([{ id: `reaction-${reaction.id}` } as Node]),
@@ -246,8 +248,8 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         id,
         type: data.payload.type,
         position,
-        playgroundId: playground.id,
         data: {
+          playgroundId: playground.id,
           ...data.payload,
         },
       };
