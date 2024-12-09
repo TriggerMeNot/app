@@ -36,15 +36,6 @@
   shell: cat /opt/area/backend/deno.json | jq -r '.imports["bcrypt"]'
   register: bcrypt_version
 
-- name: Install dependencies
-  become: true
-  become_user: area-backend
-  shell: deno install --allow-scripts={{ bcrypt_version.stdout }}
-  args:
-    chdir: /opt/area/backend
-  environment:
-    PATH: "{{ ansible_env.PATH }}:/opt/area/backend/.deno/bin"
-
 - name: Copy the service file
   become: true
   template:
