@@ -36,6 +36,13 @@
     state: present
     update_cache: yes
 
+- name: Install npm
+  become: true
+  apt:
+    name: npm
+    state: present
+    update_cache: yes
+
 - name: Build clients
   include_tasks: "{{ item }}"
   with_items:
