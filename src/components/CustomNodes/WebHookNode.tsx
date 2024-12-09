@@ -107,7 +107,7 @@ const WebHookNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => {
             <div>
               <Label>Webhook URL</Label>
               <Input
-                value={`${backendAddress}/api/trigger-me-not/on-fetch/${(data.settings as any).token}`}
+                value={`${backendAddress}/api/trigger-me-not/on-fetch/${(data.settings as any)?.token}`}
               />
             </div>
           </div>
