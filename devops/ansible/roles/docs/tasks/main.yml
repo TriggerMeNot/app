@@ -1,0 +1,57 @@
+- name: Create area-docs user
+  become: true
+  user:
+    name: area-docs
+    shell: /bin/bash
+    home: /opt/area/docs
+    system: yes
+
+- name: Create client docs directory
+  become: true
+  file:
+    path: "/opt/area/docs"
+    owner: area-docs
+    group: area-docs
+    state: directory
+
+- name: Create client docs web directory
+  become: true
+  file:
+    path: "{{ docs_folder }}"
+    owner: www-data
+    group: www-data
+    state: directory
+
+- name: Extract docs application
+  become: true
+  unarchive:
+    src: "docs.tar"
+    dest: "/opt/area/docs"
+    extra_opts: "--strip-components=1"
+
+- name: Install nodejs
+  become: true
+  apt:
+    name: nodejs
+    state: present
+    update_cache: yes
+
+- name: Install npm dependencies
+  become: true
+  shell: npm ci
+  args:
+    chdir: /opt/area/docs
+
+- name: Build the docs
+  become: true
+  shell: npm run docs:build
+  args:
+    chdir: /opt/area/docs
+  register: client_dir
+
+- name: Move the build to the web server
+  become: true
+  become_user: www-data
+  shell: cp -r /opt/area/docs/.vitepress/dist/* {{ docs_folder }}
+  args:
+    chdir: /opt/area/docs
