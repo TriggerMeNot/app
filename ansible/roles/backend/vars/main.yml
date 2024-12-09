@@ -1,4 +1,3 @@
 salt_rounds: 10
 jwt_secret:
-github_id:
 github_secret:
