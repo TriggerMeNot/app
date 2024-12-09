@@ -5,11 +5,12 @@
     state: present
     update_cache: yes
   with_items:
-    - default-jdk
-    - default-jre
+    - openjdk-17-jdk
+    - openjdk-17-jre
     - android-sdk
     - gradle
     - sdkmanager
+    - apksigner
 
 - name: Install NPX
   become: true
@@ -21,9 +22,19 @@
     npm install -g @ionic/cli &&
     npm install -g @capacitor/cli
 
-- name: Accept the licenses
+- name: Ensure all SDK licenses are accepted
   become: true
-  shell: yes | sdkmanager --licenses
+  shell: |
+    yes | sdkmanager --licenses
+  environment:
+    ANDROID_HOME: /usr/lib/android-sdk
+
+- name: Install required SDK components
+  become: true
+  shell: |
+    sdkmanager "platforms;android-34" "build-tools;34.0.0"
+  environment:
+    ANDROID_HOME: /usr/lib/android-sdk
 
 - name: Build the project
   become: true
