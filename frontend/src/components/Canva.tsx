@@ -185,7 +185,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
 
   return (
     <>
-      <div className="relative h-[50rem] w-full lg:flex">
+      <div className="relative h-[45rem] w-full lg:flex">
         <ReactFlow
           nodes={nodes}
           onNodesChange={onNodesChange}

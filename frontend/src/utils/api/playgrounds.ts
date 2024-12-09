@@ -87,6 +87,18 @@ async function deleteReactionFromPlayground(apiUrl: string, token: string, playg
   return data;
 }
 
+async function deletePlayground(apiUrl: string, token: string, id: number)
+{
+  const response = await fetch(`${apiUrl}/api/playground/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+  return data;
+}
+
 export default {
   getAllPlaygrounds,
   createPlayground,
@@ -95,4 +107,5 @@ export default {
   addReactionToPlayground,
   deleteActionFromPlayground,
   deleteReactionFromPlayground,
+  deletePlayground
 };
