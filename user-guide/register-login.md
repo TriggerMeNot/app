@@ -3,6 +3,8 @@
 
 There are two ways to create an account or login on TriggerMeNot. TriggerMeNot will open on the Login page by default, but if you don't have an account you can click on the "Register" button on the top right of the website.
 
+![Register Button location](../images/Register_1.png)
+
 ## Using an Email adress
 
 ### Registering
@@ -14,6 +16,8 @@ To create an account using an email adress, get on the Register page and fill th
 - Your password.
 
 You will need to enter your passwork twice to confirm it. Press the "Register with Email" button below the form and voilà !
+
+![Register form](../images/Register_2.png)
 
 You can then go back to the Login page by clicking on the top right "Login" button.
 
@@ -27,5 +31,7 @@ You can then simply fill the form with the relevant informations needed to log i
 - The password you gave when creating your account.
 
 Press the "Sign in with Email" button below the form and you should be taken to your dashboard !
+
+![Login form](../images/Login.png)
 
 ## Using a GitHub account
