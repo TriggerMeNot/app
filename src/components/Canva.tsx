@@ -165,18 +165,6 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         return false;
       }
 
-      edges.forEach((edge) => {
-        const [sourceType,] = edge.source.split("-");
-        const [targetType,] = edge.target.split("-");
-
-        if (sourceType && targetType) {
-          const linkId = edge.id.replace("link-", "");
-          deleteLink(backendAddress, token as string, linkId).catch((err) =>
-            console.error("Failed to delete link:", err)
-          );
-        }
-      });
-
       setNodes((nds) => nds.filter((node) => !nodes.some((n) => n.id === (node as any).id)));
       setEdges((eds) => eds.filter((edge) => !edges.some((e) => e.id === (edge as any).id)));
       return true;
