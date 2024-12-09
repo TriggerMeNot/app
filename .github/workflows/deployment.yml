@@ -1,6 +1,7 @@
 name: Deploy using Ansible
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - production
