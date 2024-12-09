@@ -245,14 +245,14 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
       setNodes((nds) => nds.concat(newNode));
 
       if (data.payload.actionType === 'action') {
-        addActionToPlayground(backendAddress, token as string, playground.id, data.payload.id, {}).then((res) => {
+        addActionToPlayground(backendAddress, token as string, playground.id, data.payload.id, { settings: {} }).then((res) => {
           setPlayground((pg: any) => ({
             ...pg,
             actions: [...pg.actions, res],
           }));
         });
       } else {
-        addReactionToPlayground(backendAddress, token as string, playground.id, data.payload.id, {}).then((res) => {
+        addReactionToPlayground(backendAddress, token as string, playground.id, data.payload.id, { settings: {} }).then((res) => {
           setPlayground((pg: any) => ({
             ...pg,
             reactions: [...pg.reactions, res],
