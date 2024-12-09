@@ -97,28 +97,28 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
 
     playground.actions.forEach((action: any, index: number) => {
       nodes.push({
-        id: `action-${action.actionId}`,
+        id: `action-${action.id}`,
         type: actionIdToData[action.actionId as keyof typeof actionIdToData].type,
         position: { x: 0, y: index * verticalSpacing },
         playgroundId: playground.id,
         data: {
           ...actionIdToData[action.actionId as keyof typeof actionIdToData],
           settings: action.settings,
-          onDelete: () => handleNodeDelete([{ id: `action-${action.actionId}` } as Node]),
+          onDelete: () => handleNodeDelete([{ id: `action-${action.id}` } as Node]),
         },
       });
     });
 
     playground.reactions.forEach((reaction: any, index: number) => {
       nodes.push({
-        id: `reaction-${reaction.reactionId}`,
+        id: `reaction-${reaction.id}`,
         position: { x: horizontalSpacing, y: index * verticalSpacing },
         type: reactionIdToData[reaction.reactionId as keyof typeof reactionIdToData].type,
         playgroundId: playground.id,
         data: {
           ...reactionIdToData[reaction.reactionId as keyof typeof reactionIdToData],
           settings: reaction.settings,
-          onDelete: () => handleNodeDelete([{ id: `reaction-${reaction.reactionId}` } as Node]),
+          onDelete: () => handleNodeDelete([{ id: `reaction-${reaction.id}` } as Node]),
         },
       });
     });
