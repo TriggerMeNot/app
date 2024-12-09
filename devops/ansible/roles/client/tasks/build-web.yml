@@ -9,6 +9,9 @@
   shell: npm run build
   args:
     chdir: /opt/area/client
+  environment:
+    VITE_GITHUB_CLIENT_ID: "{{ github_client_id }}"
+    VITE_BACKEND_DEFAULT_ADRESS: "{{ backend_default_adress }}"
   register: client_dir
 
 - name: Move the build to the web server
