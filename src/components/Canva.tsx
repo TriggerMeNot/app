@@ -97,28 +97,28 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
 
     playground.actions.forEach((action: any, index: number) => {
       nodes.push({
-        id: `action-${action.id}`,
-        type: actionIdToData[action.id as keyof typeof actionIdToData].type,
+        id: `action-${action.actionId}`,
+        type: actionIdToData[action.actionId as keyof typeof actionIdToData].type,
         position: { x: 0, y: index * verticalSpacing },
         playgroundId: playground.id,
         data: {
-          ...actionIdToData[action.id as keyof typeof actionIdToData],
+          ...actionIdToData[action.actionId as keyof typeof actionIdToData],
           settings: action.settings,
-          onDelete: () => handleNodeDelete([{ id: `action-${action.id}` } as Node]),
+          onDelete: () => handleNodeDelete([{ id: `action-${action.actionId}` } as Node]),
         },
       });
     });
 
     playground.reactions.forEach((reaction: any, index: number) => {
       nodes.push({
-        id: `reaction-${reaction.id}`,
+        id: `reaction-${reaction.reactionId}`,
         position: { x: horizontalSpacing, y: index * verticalSpacing },
-        type: reactionIdToData[reaction.id as keyof typeof reactionIdToData].type,
+        type: reactionIdToData[reaction.reactionId as keyof typeof reactionIdToData].type,
         playgroundId: playground.id,
         data: {
-          ...reactionIdToData[reaction.id as keyof typeof reactionIdToData],
+          ...reactionIdToData[reaction.reactionId as keyof typeof reactionIdToData],
           settings: reaction.settings,
-          onDelete: () => handleNodeDelete([{ id: `reaction-${reaction.id}` } as Node]),
+          onDelete: () => handleNodeDelete([{ id: `reaction-${reaction.reactionId}` } as Node]),
         },
       });
     });
