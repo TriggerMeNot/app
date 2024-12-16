@@ -35,7 +35,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from './ui/button';
-import { addActionToPlayground, addActionToReactionLink, addReactionToActionLink, addReactionToPlayground, deleteActionFromPlayground, deleteReactionFromPlayground } from '@/utils/api';
+import { addActionToPlayground, addActionToReactionLink, addReactionToReactionLink, addReactionToPlayground, deleteActionFromPlayground, deleteReactionFromPlayground } from '@/utils/api';
 import { useAuth } from '@/contexts/AuthProvider';
 
 import {
@@ -154,6 +154,16 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
       });
     });
 
+    playground.linksReactions.forEach((link: any) => {
+      edges.push({
+        id: `link:${link.id}`,
+        source: `reaction:${link.triggerId}`,
+        target: `reaction:${link.reactionId}`,
+        animated: true,
+        style: { strokeWidth: 2 },
+      });
+    });
+
     return { nodes, edges };
   };
 
@@ -218,14 +228,16 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
 
       if (!source || !target) return;
 
-      const [sourceType, sourceId] = source.split("-");
-      const [targetType, targetId] = target.split("-");
+      const [sourceType, sourceId] = source.split(":");
+      const [targetType, targetId] = target.split(":");
 
       try {
+        console.log(sourceType, targetType);
+        console.log(sourceId, targetId);
         if (sourceType === "action" && targetType === "reaction") {
           await addActionToReactionLink(backendAddress, token as string, sourceId, targetId);
-        } else if (sourceType === "reaction" && targetType === "action") {
-          await addReactionToActionLink(backendAddress, token as string, sourceId, targetId);
+        } else if (sourceType === "reaction" && targetType === "reaction") {
+          await addReactionToReactionLink(backendAddress, token as string, sourceId, targetId);
         }
 
         const newEdge: Edge = {

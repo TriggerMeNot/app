@@ -10,7 +10,7 @@ export const {
   deleteReactionFromPlayground,
   deletePlayground,
   addActionToReactionLink,
-  addReactionToActionLink,
+  addReactionToReactionLink,
   deleteLink,
   editReactionSettings
 } = playgrounds;

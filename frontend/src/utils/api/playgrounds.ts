@@ -112,8 +112,8 @@ const addActionToReactionLink = async (backendAddress: string, token: string, tr
   }
 };
 
-const addReactionToActionLink = async (backendAddress: string, token: string, triggerId: string, actionPlaygroundId: string) => {
-  const response = await fetch(`${backendAddress}/api/playground/link/reaction/${triggerId}/action/${actionPlaygroundId}`, {
+const addReactionToReactionLink = async (backendAddress: string, token: string, triggerId: string, actionPlaygroundId: string) => {
+  const response = await fetch(`${backendAddress}/api/playground/link/reaction/${triggerId}/reaction/${actionPlaygroundId}`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -166,7 +166,7 @@ export default {
   deleteReactionFromPlayground,
   deletePlayground,
   addActionToReactionLink,
-  addReactionToActionLink,
+  addReactionToReactionLink,
   deleteLink,
   editReactionSettings,
 };
