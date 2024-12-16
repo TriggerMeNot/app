@@ -57,12 +57,12 @@ export default {
 
   PatchAction: {
     Param: z.object({
-      playgroundId: z.string().optional(),
-      actionPlaygroundId: z.string().optional(),
+      playgroundId: z.string(),
+      actionPlaygroundId: z.string(),
     }),
     Body: z.object({
-      x: z.number(),
-      y: z.number(),
+      x: z.number().optional(),
+      y: z.number().optional(),
     }),
   },
 
@@ -87,13 +87,13 @@ export default {
 
   PatchReaction: {
     Param: z.object({
-      playgroundId: z.string().optional(),
-      reactionPlaygroundId: z.string().optional(),
+      playgroundId: z.string(),
+      reactionPlaygroundId: z.string(),
     }),
     Body: z.object({
       settings: z.record(z.any()),
-      x: z.number(),
-      y: z.number(),
+      x: z.number().optional(),
+      y: z.number().optional(),
     }),
   },
 
