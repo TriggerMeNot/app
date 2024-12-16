@@ -5,7 +5,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -16,7 +16,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 import {
   Sheet,
   SheetContent,
@@ -24,65 +24,26 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
-import { ChevronRight, Webhook } from "lucide-react";
-
-type Panel = {
-  id: string;
-  icon: React.ElementType | string | null;
-  logoAlt: string;
-  options: {
-    label: string;
-    code: string;
-    id: number | undefined;
-    type?: "action" | "reaction";
-    description?: string;
-  }[];
-};
+} from "@/components/ui/sheet";
+import { ChevronRight } from "lucide-react";
+import { useAuth } from "@/contexts/AuthProvider";
 
 export function NavCanva({
   ...props
 }: React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   const [_, setData] = useDnD();
+  const { services } = useAuth();
 
-  const panels: Panel[] = [
-    {
-      id: "webhook",
-      icon: Webhook,
-      logoAlt: "Discord Logo",
-      options: [
-        {
-          label: "Create a TGMN webhook",
-          code: "webhook-create",
-          id: 1,
-          type: "action",
-          description: "Is an action that create a webhook under the TGMN platform. This webhook can be used to trigger other nodes."
-        },
-        {
-          label: "Fetch an API",
-          code: "webhook-fetch",
-          id: 1, // 1 too because it's an reaction and the id counter is not shared between actions and reactions
-          type: "reaction",
-          description: "This node (reaction) fetches an API."
-        },
-      ],
-    }
-  ];
-
-  const onDragStart = (button: Panel["options"][0], icon?: Panel["icon"]) => (event: React.DragEvent) => {
-    setData(
-      {
-        payload: {
-          label: button.label,
-          id: button.id,
-          type: button.code,
-          actionType: button.type,
-          icon: icon,
-          data: {},
-        },
-        type: "node",
-      }
-    );
+  const onDragStart = (item: { id: any; name: any; description?: string; }, type: string) => (event: React.DragEvent) => {
+    setData({
+      payload: {
+        label: item.name,
+        id: item.id,
+        type: `${type}:${item.id}`,
+        data: {},
+      },
+      type: `${type}:${item.id}`,
+    });
     event.dataTransfer.effectAllowed = "move";
   };
 
@@ -92,83 +53,70 @@ export function NavCanva({
         Action Reaction Nodes
       </SidebarGroupLabel>
       <SidebarMenu className="space-y-2">
-        {panels.map((panel) => (
-          <Collapsible key={panel.id}>
+        {services.map((service) => (
+          <Collapsible key={service.name}>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <a>
-                  {panel.icon ? (
-                    typeof panel.icon === "string" ? (
-                      <img
-                        src={panel.icon}
-                        alt={panel.logoAlt}
-                        width={20}
-                        height={20}
-                      />
-                    ) : (
-                      <panel.icon size={20} />
-                    )
-                  ) : (
-                    <div className="w-5 h-5" />
-                  )}
-                  <span>{panel.id.charAt(0).toUpperCase() + panel.id.slice(1)}</span>
-                </a>
+              <SidebarMenuButton>
+                {service.name}
               </SidebarMenuButton>
-
-            <CollapsibleTrigger asChild>
-              <SidebarMenuAction className="data-[state=open]:rotate-90">
-                <ChevronRight />
-                <span className="sr-only">Toggle</span>
-              </SidebarMenuAction>
-            </CollapsibleTrigger>
+              <CollapsibleTrigger asChild>
+                <SidebarMenuAction className="data-[state=open]:rotate-90">
+                  <ChevronRight />
+                  <span className="sr-only">Toggle</span>
+                </SidebarMenuAction>
+              </CollapsibleTrigger>
+            </SidebarMenuItem>
             <CollapsibleContent>
               <SidebarMenuSub>
-                {panel.options.map((button) => (
-                  <SidebarMenuSubItem key={button.label}>
+                {service.actions.map((action) => (
+                  <SidebarMenuSubItem key={action.id}>
                     <SidebarMenuSubButton>
-
                       <Sheet>
                         <SheetTrigger asChild>
                           <button
-                            onDragStart={onDragStart(button, panel.icon)}
+                            onDragStart={onDragStart(action, "action")}
                             draggable
                             className="flex items-center space-x-2 w-full"
                           >
-                            {button.label}
+                            {action.name}
                           </button>
                         </SheetTrigger>
                         <SheetContent>
-                          <SheetHeader className="flex items-center space-x-2">
-                              {panel.icon ? (
-                                typeof panel.icon === "string" ? (
-                                  <img
-                                    src={panel.icon}
-                                    alt={panel.logoAlt}
-                                    width={20}
-                                    height={20}
-                                  />
-                                ) : (
-                                  <panel.icon size={20} />
-                                )
-                              ) : (
-                                <div className="w-5 h-5" />
-                              )}
-                            <SheetTitle>
-                              {button.label}
-                            </SheetTitle>
-                            <SheetDescription>
-                              {button.description}
-                            </SheetDescription>
+                          <SheetHeader>
+                            <SheetTitle>{action.name}</SheetTitle>
+                            <SheetDescription>{action.description}</SheetDescription>
                           </SheetHeader>
                         </SheetContent>
                       </Sheet>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                ))}
 
+                {service.reactions.map((reaction) => (
+                  <SidebarMenuSubItem key={reaction.id}>
+                    <SidebarMenuSubButton>
+                      <Sheet>
+                        <SheetTrigger asChild>
+                          <button
+                            onDragStart={onDragStart(reaction, "reaction")}
+                            draggable
+                            className="flex items-center space-x-2 w-full"
+                          >
+                            {reaction.name}
+                          </button>
+                        </SheetTrigger>
+                        <SheetContent>
+                          <SheetHeader>
+                            <SheetTitle>{reaction.name}</SheetTitle>
+                            <SheetDescription>{reaction.description}</SheetDescription>
+                          </SheetHeader>
+                        </SheetContent>
+                      </Sheet>
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>
                 ))}
               </SidebarMenuSub>
             </CollapsibleContent>
-            </SidebarMenuItem>
           </Collapsible>
         ))}
       </SidebarMenu>

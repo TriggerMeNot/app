@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   ReactFlow,
@@ -13,6 +13,7 @@ import {
   Connection,
   Node,
   Edge,
+  NodeTypes,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -33,34 +34,6 @@ import {
 import { Button } from './ui/button';
 import { addActionToPlayground, addActionToReactionLink, addReactionToActionLink, addReactionToPlayground, deleteActionFromPlayground, deleteReactionFromPlayground } from '@/utils/api';
 import { useAuth } from '@/contexts/AuthProvider';
-import { Webhook } from 'lucide-react';
-
-const actionIdToData = {
-  1: {
-    id: 1,
-    actionType: 'action',
-    type: 'webhook-create',
-    description: 'Is an action that create a webhook under the TGMN platform. This webhook can be used to trigger other nodes.',
-    label: 'Create a TGMN webhook',
-    icon: Webhook,
-  },
-};
-
-const reactionIdToData = {
-  1: {
-    id: 1,
-    actionType: 'reaction',
-    type: 'webhook-fetch',
-    description: 'This node (reaction) fetches an API.',
-    label: 'Fetch an API',
-    icon: Webhook,
-  },
-};
-
-const nodeTypes = {
-  "webhook-create": WebHookTGMNCreateNode,
-  "webhook-fetch": WebHookFetchNode,
-};
 
 const panOnDrag = [1, 2];
 
@@ -71,7 +44,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
   const { screenToFlowPosition } = useReactFlow();
   const { theme } = useTheme();
   const [data] = useDnD();
-  const { backendAddress, token } = useAuth();
+  const { backendAddress, token, services } = useAuth();
 
   const [isDeletionDialogOpen, setIsDeletionDialogOpen] = useState(false);
   const [, setDataToDelete] = useState<{ Nodes: Node[]; Edges: Edge[] } | null>(null);
@@ -79,6 +52,19 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
 
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+
+  const nodeTypes = useMemo(() => {
+    const generatedNodeTypes: NodeTypes = {};
+    services.forEach((service) => {
+      service.actions.forEach((action) => {
+        generatedNodeTypes[`action:${action.id}`] = WebHookTGMNCreateNode;
+      });
+      service.reactions.forEach((reaction) => {
+        generatedNodeTypes[`reaction:${reaction.id}`] = WebHookFetchNode;
+      });
+    });
+    return generatedNodeTypes;
+  }, [services]);
 
   useEffect(() => {
     if (!playground) {
@@ -97,39 +83,39 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
 
     playground.actions.forEach((action: any, index: number) => {
       nodes.push({
-        id: `action-${action.id}`,
-        type: actionIdToData[action.actionId as keyof typeof actionIdToData].type,
+        id: `${action.id}`,
+        type: `action:${action.actionId}`,
         position: { x: 0, y: index * verticalSpacing },
         data: {
           playgroundId: playground.id,
           playgroundActionId: action.id,
-          ...actionIdToData[action.actionId as keyof typeof actionIdToData],
           settings: action.settings,
-          onDelete: () => handleNodeDelete([{ id: `action-${action.id}` } as Node]),
+          onDelete: () => handleNodeDelete([{ id: `${action.id}` } as Node]),
+          ...services.find((service) => service.actions.some((a) => a.id === action.actionId))?.actions.find((a) => a.id === action.actionId),
         },
       });
     });
 
     playground.reactions.forEach((reaction: any, index: number) => {
       nodes.push({
-        id: `reaction-${reaction.id}`,
+        id: `${reaction.id}`,
+        type: `reaction:${reaction.reactionId}`,
         position: { x: horizontalSpacing, y: index * verticalSpacing },
-        type: reactionIdToData[reaction.reactionId as keyof typeof reactionIdToData].type,
         data: {
           playgroundId: playground.id,
           playgroundReactionId: reaction.id,
-          ...reactionIdToData[reaction.reactionId as keyof typeof reactionIdToData],
           settings: reaction.settings,
-          onDelete: () => handleNodeDelete([{ id: `reaction-${reaction.id}` } as Node]),
+          onDelete: () => handleNodeDelete([{ id: `${reaction.id}` } as Node]),
+          ...services.find((service) => service.reactions.some((r) => r.id === reaction.reactionId))?.reactions.find((r) => r.id === reaction.reactionId),
         },
       });
     });
 
     playground.linksActions.forEach((link: any) => {
       edges.push({
-        id: `link-${link.id}`,
-        source: `action-${link.triggerId}`,
-        target: `reaction-${link.reactionId}`,
+        id: `link:${link.id}`,
+        source: `${link.triggerId}`,
+        target: `${link.reactionId}`,
         animated: true,
         style: { strokeWidth: 2 },
       });
@@ -210,8 +196,9 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         }
 
         const newEdge: Edge = {
-          ...params,
-          id: `link-${sourceId}-${targetId}`,
+          id: `link-${getId()}`,
+          source,
+          target,
           animated: true,
           style: { strokeWidth: 2 },
         };

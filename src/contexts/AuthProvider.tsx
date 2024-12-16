@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod"
 import { ReactNode } from "react";
@@ -33,6 +33,24 @@ export const RegisterSchema = LoginSchema.extend({
   }
 );
 
+type Action = {
+  id: number;
+  name: string;
+  description: string;
+};
+
+type Reaction = {
+  id: number;
+  name: string;
+  description: string;
+};
+
+type Service = {
+  name: string;
+  actions: Action[];
+  reactions: Reaction[];
+};
+
 type AuthContextType = {
   user: any;
   token: string | undefined;
@@ -43,7 +61,8 @@ type AuthContextType = {
   loginWithGithub: () => Promise<void>;
   logOut: () => void;
   checkIfLoggedIn: () => boolean;
-  isLoading?: boolean;
+  isLoading: boolean;
+  services: Service[];
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -57,18 +76,34 @@ const AuthContext = createContext<AuthContextType>({
   logOut: () => {},
   checkIfLoggedIn: () => false,
   isLoading: false,
+  services: [],
 });
-
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<any>(null);
   const [token, setToken] = useState<string | undefined>(() => localStorage.getItem("token") || undefined);
   const [backendAddress, setBackendAddress] = useState<string>(localStorage.getItem("site") || import.meta.env.VITE_BACKEND_DEFAULT_ADDRESS as string || "http://localhost:8080");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [services, setServices] = useState<Service[]>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const [githubCode, setGithubCode] = useState<string | null>(null);
+
+  const getServices = useCallback(async () => {
+    try {
+      const response = await fetch(`${backendAddress}/about.json`);
+      if (response.ok) {
+        const data = await response.json();
+        setServices(data.server.services);
+      } else {
+        const error = await response.json();
+        toast({ title: "Error", description: error.message });
+      }
+    } catch (error) {
+      toast({ title: "Error", description: (error instanceof Error) ? error.message : "An unknown error occurred." });
+    }
+  }, [backendAddress]);
 
   useEffect(() => {
     (async () => {
@@ -154,6 +189,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       localStorage.setItem("site", sanitizedAddress);
       setBackendAddress(sanitizedAddress);
+      getServices();
     }
   }, [backendAddress]);
 
@@ -251,6 +287,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         logOut,
         checkIfLoggedIn,
         isLoading,
+        services,
       }}
     >
       {children}

@@ -119,7 +119,7 @@ const WebHookFetchNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => 
         />
       </div>
       <p className="text-center text-xs mt-2 font-thin max-w-20">
-        {data?.label as string}
+        {data?.name as string}
       </p>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
