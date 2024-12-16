@@ -17,13 +17,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+
 function Playground() {
   const { id } = useParams<{ id: string }>();
   const [playground, setPlayground] = useState<any>(null);
   const { backendAddress, token } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-
   const [isDeletionDialogOpen, setIsDeletionDialogOpen] = useState(false);
 
   useEffect(() => {

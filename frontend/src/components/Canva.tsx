@@ -38,6 +38,16 @@ import { Button } from './ui/button';
 import { addActionToPlayground, addActionToReactionLink, addReactionToActionLink, addReactionToPlayground, deleteActionFromPlayground, deleteReactionFromPlayground } from '@/utils/api';
 import { useAuth } from '@/contexts/AuthProvider';
 
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "@/components/ui/command"
+
 const panOnDrag = [1, 2];
 
 let id = 0;
@@ -52,6 +62,8 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
   const [isDeletionDialogOpen, setIsDeletionDialogOpen] = useState(false);
   const [, setDataToDelete] = useState<{ Nodes: Node[]; Edges: Edge[] } | null>(null);
   const [deletionPromiseResolver, setDeletionPromiseResolver] = useState<((value: boolean) => void) | null>(null);
+
+  const [open, setOpen] = useState(false);
 
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
@@ -72,6 +84,18 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
 
     return generatedNodeTypes;
   }, [services]);
+
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "s" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        setOpen((open) => !open)
+      }
+    }
+
+    document.addEventListener("keydown", down)
+    return () => document.removeEventListener("keydown", down)
+  }, [])
 
   useEffect(() => {
     if (!playground) {
@@ -323,7 +347,78 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
           <DevTools />
         </ReactFlow>
       </div>
+
       {deletedNodeModal}
+
+      <CommandDialog open={open} onOpenChange={setOpen}>
+        <CommandInput placeholder="Type a action or reaction name" />
+        <CommandList>
+          <CommandEmpty>No results found.</CommandEmpty>
+          {services.map((service) => (
+            <>
+              <CommandGroup key={service.name} heading={service.name}>
+                {service.reactions.map((reaction) => (
+                  <CommandItem key={reaction.id} onSelect={() => {
+                    const id = getId();
+                    const newNode: any = {
+                      id,
+                      type: `reaction:${reaction.id}`,
+                      position: { x: 0, y: 0 },
+                      data: {
+                        playgroundId: playground.id,
+                        ...reaction,
+                        settings: {},
+                        onDelete: () => handleNodeDelete([{ id: `reaction:${reaction.id}` } as Node]),
+                        icon: getIcon(service.name, "Book"),
+                      },
+                    };
+
+                    setNodes((nds) => nds.concat(newNode));
+                    addReactionToPlayground(backendAddress, token as string, playground.id, reaction.id, { settings: {} }).then((res) => {
+                      setPlayground((pg: any) => ({
+                        ...pg,
+                        reactions: [...pg.reactions, res],
+                      }));
+                      setOpen(false);
+                    });
+                  }}>
+                    <span>{reaction.name}</span>
+                  </CommandItem>
+                ))}
+                {service.actions.map((reaction) => (
+                  <CommandItem key={reaction.id} onSelect={() => {
+                    const id = getId();
+                    const newNode: any = {
+                      id,
+                      type: `action:${reaction.id}`,
+                      position: { x: 0, y: 0 },
+                      data: {
+                        playgroundId: playground.id,
+                        ...reaction,
+                        settings: {},
+                        onDelete: () => handleNodeDelete([{ id: `action:${reaction.id}` } as Node]),
+                        icon: getIcon(service.name, "Book"),
+                      },
+                    };
+
+                    setNodes((nds) => nds.concat(newNode));
+                    addActionToPlayground(backendAddress, token as string, playground.id, reaction.id, { settings: {} }).then((res) => {
+                      setPlayground((pg: any) => ({
+                        ...pg,
+                        actions: [...pg.actions, res],
+                      }));
+                      setOpen(false);
+                    });
+                  }}>
+                    <span>{reaction.name}</span>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+              <CommandSeparator />
+            </>
+        ))}
+        </CommandList>
+      </CommandDialog>
     </>
   );
 };
