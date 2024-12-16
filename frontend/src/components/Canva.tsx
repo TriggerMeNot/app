@@ -83,14 +83,14 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
 
     playground.actions.forEach((action: any, index: number) => {
       nodes.push({
-        id: `${action.id}`,
+        id: `action:${action.id}`,
         type: `action:${action.actionId}`,
         position: { x: 0, y: index * verticalSpacing },
         data: {
           playgroundId: playground.id,
           playgroundActionId: action.id,
           settings: action.settings,
-          onDelete: () => handleNodeDelete([{ id: `${action.id}` } as Node]),
+          onDelete: () => handleNodeDelete([{ id: `action:${action.id}` } as Node]),
           ...services.find((service) => service.actions.some((a) => a.id === action.actionId))?.actions.find((a) => a.id === action.actionId),
         },
       });
@@ -98,14 +98,14 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
 
     playground.reactions.forEach((reaction: any, index: number) => {
       nodes.push({
-        id: `${reaction.id}`,
+        id: `reaction:${reaction.id}`,
         type: `reaction:${reaction.reactionId}`,
         position: { x: horizontalSpacing, y: index * verticalSpacing },
         data: {
           playgroundId: playground.id,
           playgroundReactionId: reaction.id,
           settings: reaction.settings,
-          onDelete: () => handleNodeDelete([{ id: `${reaction.id}` } as Node]),
+          onDelete: () => handleNodeDelete([{ id: `reaction:${reaction.id}` } as Node]),
           ...services.find((service) => service.reactions.some((r) => r.id === reaction.reactionId))?.reactions.find((r) => r.id === reaction.reactionId),
         },
       });
@@ -114,8 +114,8 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
     playground.linksActions.forEach((link: any) => {
       edges.push({
         id: `link:${link.id}`,
-        source: `${link.triggerId}`,
-        target: `${link.reactionId}`,
+        source: `action:${link.triggerId}`,
+        target: `reaction:${link.reactionId}`,
         animated: true,
         style: { strokeWidth: 2 },
       });
@@ -265,7 +265,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
   const handleNodeDelete = useCallback(
     (node: Node[]) => {
       node.forEach((n) => {
-        const [type, id] = (n as any).id.split('-');
+        const [type, id] = (n as any).id.split(':');
         if (type === 'action') {
           deleteActionFromPlayground(backendAddress, token as string, playground.id, parseInt(id)).then(() => {
             setPlayground((pg: any) => ({
