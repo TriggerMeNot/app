@@ -36,7 +36,7 @@ function Playground() {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center">
         <Input
           value={playground?.name}
           onChange={(e) => setPlayground({ ...playground, name: e.target.value })}
