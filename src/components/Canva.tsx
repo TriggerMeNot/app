@@ -146,7 +146,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
 
     playground.linksActions.forEach((link: any) => {
       edges.push({
-        id: `link:${link.id}`,
+        id: `link:action:${link.id}`,
         source: `action:${link.triggerId}`,
         target: `reaction:${link.reactionId}`,
         animated: true,
@@ -156,7 +156,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
 
     playground.linksReactions.forEach((link: any) => {
       edges.push({
-        id: `link:${link.id}`,
+        id: `link:reaction:${link.id}`,
         source: `reaction:${link.triggerId}`,
         target: `reaction:${link.reactionId}`,
         animated: true,
@@ -241,7 +241,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         }
 
         const newEdge: Edge = {
-          id: `link-${getId()}`,
+          id: `link:${sourceType}:${sourceId}:${targetType}:${targetId}`,
           source,
           target,
           animated: true,
@@ -288,15 +288,17 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
 
       setNodes((nds) => nds.concat(newNode));
 
-      if (data.payload.actionType === 'action') {
-        addActionToPlayground(backendAddress, token as string, playground.id, data.payload.id, { settings: {} }).then((res) => {
+      const [type] = data.payload.type.split(':');
+
+      if (type === 'action') {
+        addActionToPlayground(backendAddress, token as string, playground.id, data.payload.id, { settings: {} }, position.x, position.y).then((res) => {
           setPlayground((pg: any) => ({
             ...pg,
             actions: [...pg.actions, res],
           }));
         });
       } else {
-        addReactionToPlayground(backendAddress, token as string, playground.id, data.payload.id, { settings: {} }).then((res) => {
+        addReactionToPlayground(backendAddress, token as string, playground.id, data.payload.id, { settings: {} }, position.x, position.y).then((res) => {
           setPlayground((pg: any) => ({
             ...pg,
             reactions: [...pg.reactions, res],
@@ -371,7 +373,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
             <>
               <CommandGroup key={service.name} heading={service.name}>
                 {service.reactions.map((reaction) => (
-                  <CommandItem key={reaction.id} onSelect={() => {
+                  <CommandItem key={`reaction:${reaction.id}`} onSelect={() => {
                     const id = getId();
                     const newNode: any = {
                       id,
@@ -387,7 +389,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
                     };
 
                     setNodes((nds) => nds.concat(newNode));
-                    addReactionToPlayground(backendAddress, token as string, playground.id, reaction.id, { settings: {} }).then((res) => {
+                    addReactionToPlayground(backendAddress, token as string, playground.id, reaction.id, { settings: {} }, 0, 0).then((res) => {
                       setPlayground((pg: any) => ({
                         ...pg,
                         reactions: [...pg.reactions, res],
@@ -399,7 +401,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
                   </CommandItem>
                 ))}
                 {service.actions.map((reaction) => (
-                  <CommandItem key={reaction.id} onSelect={() => {
+                  <CommandItem key={`action:${reaction.id}`} onSelect={() => {
                     const id = getId();
                     const newNode: any = {
                       id,
@@ -415,7 +417,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
                     };
 
                     setNodes((nds) => nds.concat(newNode));
-                    addActionToPlayground(backendAddress, token as string, playground.id, reaction.id, { settings: {} }).then((res) => {
+                    addActionToPlayground(backendAddress, token as string, playground.id, reaction.id, { settings: {} }, 0, 0).then((res) => {
                       setPlayground((pg: any) => ({
                         ...pg,
                         actions: [...pg.actions, res],

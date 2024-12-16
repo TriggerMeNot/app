@@ -24,7 +24,7 @@ import {
 import { NodeProps } from '@xyflow/react';
 
 import {
-  editReactionSettings
+  editReaction,
 } from '@/utils/api';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -133,7 +133,7 @@ const WebHookFetchNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => 
             <div className="flex flex-col space-y-4">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit((values: z.infer<typeof formSchema>) => {
-                  editReactionSettings(backendAddress, token as string, data.playgroundId as string, data.playgroundReactionId as string, { settings: values });
+                  editReaction(backendAddress, token as string, data.playgroundId as string, data.playgroundReactionId as string, values, (data as any).x, (data as any).y);
                 })}>
                   <FormField
                     control={form.control}
