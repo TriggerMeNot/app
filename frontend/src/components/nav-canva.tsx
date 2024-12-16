@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/sheet";
 import { ChevronRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthProvider";
-import * as lucide from "lucide-react";
+import getIcon from '@/utils/getIcon';
 
 export function NavCanva({
   ...props
@@ -36,6 +36,7 @@ export function NavCanva({
   const { services } = useAuth();
 
   const onDragStart = (item: { id: number; name: string; description?: string; }, type: string) => (event: React.DragEvent) => {
+    const serviceName = services.find((service) => service.actions.some((action) => action.id === item.id) || service.reactions.some((reaction) => reaction.id === item.id))?.name || "";
     setData({
       payload: {
         id: item.id,
@@ -43,7 +44,7 @@ export function NavCanva({
         type: `${type}:${item.id}`,
         data: {
           description: item.description,
-          icon: lucide.ChevronRight,
+          icon: getIcon(serviceName, "Book"),
         },
       },
       type: `${type}:${item.id}`,
@@ -61,6 +62,9 @@ export function NavCanva({
           <Collapsible key={service.name}>
             <SidebarMenuItem>
               <SidebarMenuButton>
+                {getIcon(service.name, "") !== undefined && (
+                  React.createElement(getIcon(service.name, "") as React.ComponentType<{ size: number }>, { size: 20 })
+                )}
                 {service.name}
               </SidebarMenuButton>
               <CollapsibleTrigger asChild>

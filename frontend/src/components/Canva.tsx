@@ -23,6 +23,8 @@ import { useTheme } from '@/contexts/theme-provider'
 import { DevTools } from "@/components/devtools";
 import { WebHookFetchNode, WebHookTGMNCreateNode } from '@/components/CustomNodes';
 
+import getIcon from '@/utils/getIcon';
+
 import {
   Dialog,
   DialogContent,
@@ -92,6 +94,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
           settings: action.settings,
           onDelete: () => handleNodeDelete([{ id: `action:${action.id}` } as Node]),
           ...services.find((service) => service.actions.some((a) => a.id === action.actionId))?.actions.find((a) => a.id === action.actionId),
+          icon: getIcon(services.find((service) => service.actions.some((a) => a.id === action.actionId))?.name || "", "Book"),
         },
       });
     });
@@ -107,6 +110,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
           settings: reaction.settings,
           onDelete: () => handleNodeDelete([{ id: `reaction:${reaction.id}` } as Node]),
           ...services.find((service) => service.reactions.some((r) => r.id === reaction.reactionId))?.reactions.find((r) => r.id === reaction.reactionId),
+          icon: getIcon(services.find((service) => service.reactions.some((r) => r.id === reaction.reactionId))?.name || "", "Book"),
         },
       });
     });
