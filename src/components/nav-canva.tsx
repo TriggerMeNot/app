@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/sheet";
 import { ChevronRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthProvider";
+import * as lucide from "lucide-react";
 
 export function NavCanva({
   ...props
@@ -34,13 +35,16 @@ export function NavCanva({
   const [_, setData] = useDnD();
   const { services } = useAuth();
 
-  const onDragStart = (item: { id: any; name: any; description?: string; }, type: string) => (event: React.DragEvent) => {
+  const onDragStart = (item: { id: number; name: string; description?: string; }, type: string) => (event: React.DragEvent) => {
     setData({
       payload: {
-        label: item.name,
         id: item.id,
+        name: item.name,
         type: `${type}:${item.id}`,
-        data: {},
+        data: {
+          description: item.description,
+          icon: lucide.ChevronRight,
+        },
       },
       type: `${type}:${item.id}`,
     });
