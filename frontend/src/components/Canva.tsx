@@ -14,6 +14,7 @@ import {
   Node,
   Edge,
   NodeTypes,
+  NodeProps,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -57,14 +58,18 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
 
   const nodeTypes = useMemo(() => {
     const generatedNodeTypes: NodeTypes = {};
-    services.forEach((service) => {
-      service.actions.forEach((action) => {
-        generatedNodeTypes[`action:${action.id}`] = WebHookTGMNCreateNode;
-      });
-      service.reactions.forEach((reaction) => {
-        generatedNodeTypes[`reaction:${reaction.id}`] = WebHookFetchNode;
-      });
+    const getActionIdByName = (name: string) => services.find((service) => service.actions.some((action) => action.name === name))?.actions.find((action) => action.name === name)?.id;
+    const getReactionIdByName = (name: string) => services.find((service) => service.reactions.some((reaction) => reaction.name === name))?.reactions.find((reaction) => reaction.name === name)?.id;
+
+    const nodeTypeMapping: Record<string, React.FC<NodeProps>> = {
+      [`action:${getActionIdByName('On Fetch')}`]: WebHookTGMNCreateNode,
+      [`reaction:${getReactionIdByName('Fetch Request')}`]: WebHookFetchNode,
+    };
+
+    Object.entries(nodeTypeMapping).forEach(([type, component]) => {
+      generatedNodeTypes[type] = component;
     });
+
     return generatedNodeTypes;
   }, [services]);
 
