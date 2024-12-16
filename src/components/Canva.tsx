@@ -322,6 +322,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
   return (
     <>
       <div className="relative h-[45rem] w-full lg:flex">
+        <Button className='md:hidden mb-4 w-full' onClick={() => setOpen(true)} variant="secondary">Add Node</Button>
         <ReactFlow
           nodes={nodes}
           onNodesChange={onNodesChange}
