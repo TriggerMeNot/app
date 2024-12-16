@@ -63,7 +63,7 @@ const AuthContext = createContext<AuthContextType>({
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<any>(null);
   const [token, setToken] = useState<string | undefined>(() => localStorage.getItem("token") || undefined);
-  const [backendAddress, setBackendAddress] = useState<string>(import.meta.env.VITE_BACKEND_DEFAULT_ADDRESS as string || "http://localhost:8080");
+  const [backendAddress, setBackendAddress] = useState<string>(localStorage.getItem("site") || import.meta.env.VITE_BACKEND_DEFAULT_ADDRESS as string || "http://localhost:8080");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -149,12 +149,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (backendAddress) {
       let sanitizedAddress = backendAddress.trim();
-      if (!sanitizedAddress.startsWith("http")) {
-        sanitizedAddress = `http://${sanitizedAddress}`;
-      }
       if (sanitizedAddress.endsWith("/")) {
         sanitizedAddress = sanitizedAddress.slice(0, -1);
       }
+      localStorage.setItem("site", sanitizedAddress);
       setBackendAddress(sanitizedAddress);
     }
   }, [backendAddress]);
