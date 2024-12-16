@@ -35,7 +35,7 @@ async function getPlaygroundById(apiUrl: string, token: string, id: number)
   return data;
 }
 
-async function addActionToPlayground(apiUrl: string, token: string, playgroundId: number, actionId: number, settings: any)
+async function addActionToPlayground(apiUrl: string, token: string, playgroundId: number, actionId: number, settings: any, x: number, y: number)
 {
   const response = await fetch(`${apiUrl}/api/playground/${playgroundId}/action/${actionId}`, {
     method: "POST",
@@ -43,13 +43,17 @@ async function addActionToPlayground(apiUrl: string, token: string, playgroundId
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(settings),
+    body: JSON.stringify({
+      settings,
+      x,
+      y
+    }),
   });
   const data = await response.json();
   return data;
 }
 
-async function addReactionToPlayground(apiUrl: string, token: string, playgroundId: number, reactionId: number, settings: any)
+async function addReactionToPlayground(apiUrl: string, token: string, playgroundId: number, reactionId: number, settings: any, x: number, y: number)
 {
   const response = await fetch(`${apiUrl}/api/playground/${playgroundId}/reaction/${reactionId}`, {
     method: "POST",
@@ -57,7 +61,11 @@ async function addReactionToPlayground(apiUrl: string, token: string, playground
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(settings),
+    body: JSON.stringify({
+      settings,
+      x,
+      y
+    }),
   });
   const data = await response.json();
   return data;
@@ -138,14 +146,18 @@ const deleteLink = async (backendAddress: string, token: string, linkId: string)
   }
 };
 
-const editReactionSettings = async (backendAddress: string, token: string, playgroundId: string, reactionId: string, settings: any) => {
-  const response = await fetch(`${backendAddress}/api/playground/${playgroundId}/reaction/${reactionId}/settings`, {
+const editReaction = async (backendAddress: string, token: string, playgroundId: string, reactionId: string, settings: any, x: number, y: number) => {
+  const response = await fetch(`${backendAddress}/api/playground/${playgroundId}/reaction/${reactionId}`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(settings),
+    body: JSON.stringify({
+      settings,
+      x,
+      y
+    }),
   });
 
   if (!response.ok) {
@@ -168,5 +180,5 @@ export default {
   addActionToReactionLink,
   addReactionToReactionLink,
   deleteLink,
-  editReactionSettings,
+  editReaction,
 };
