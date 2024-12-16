@@ -315,6 +315,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
           onBeforeDelete={onBeforeDelete}
           onNodesDelete={handleNodeDelete}
           colorMode={theme}
+          className='touch-flow'
         >
           <Background />
           <Controls />
