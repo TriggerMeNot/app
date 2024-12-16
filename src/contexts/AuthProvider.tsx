@@ -149,7 +149,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (githubCode) {
-      console.log("Logging in with Github code:", githubCode);
       (async () => {
         try {
           setIsLoading(true);

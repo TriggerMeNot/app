@@ -28,7 +28,6 @@ const WebHookTGMNCreateNode: React.FC<NodeProps> = memo(({ data, isConnectable }
   };
 
   const handleDelete = useCallback(() => {
-    console.log('Deleting node', data);
     if (data.onDelete && typeof data.onDelete === 'function') {
       data.onDelete();
     }
