@@ -1,14 +1,15 @@
 import ReactionTrigger from "../types/ReactionTrigger.ts";
+import z from "zod";
 
-interface FetchSettings {
-  url: string;
-  method: string;
-  headers?: Record<string, string>;
-  body?: string;
-}
+export const FetchSettings = z.object({
+  url: z.string(),
+  method: z.string(),
+  headers: z.record(z.string()),
+  body: z.string(),
+});
 
 async function fetchRequest(reaction: ReactionTrigger) {
-  const settings = reaction.settings as FetchSettings;
+  const settings = FetchSettings.parse(reaction.settings);
 
   const fetchOptions: RequestInit = {
     method: settings.method,
