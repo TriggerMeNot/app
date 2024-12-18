@@ -3,16 +3,17 @@ import { db } from "../db/config.ts";
 import { and, eq } from "drizzle-orm/expressions";
 import { SERVICES } from "../db/seed.ts";
 import { oauths as oauthSchema } from "../schemas/oauths.ts";
+import z from "zod";
 
-interface GitHubIssueSettings {
-  owner: string;
-  repo: string;
-  title: string;
-  body: string;
-}
+export const GitHubIssueSettings = z.object({
+  owner: z.string(),
+  repo: z.string(),
+  title: z.string(),
+  body: z.string(),
+});
 
 async function createIssue(reaction: ReactionTrigger) {
-  const settings = reaction.settings as GitHubIssueSettings;
+  const settings = GitHubIssueSettings.parse(reaction.settings);
 
   const oauths = await db.select().from(oauthSchema).where(
     and(
