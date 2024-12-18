@@ -5,8 +5,8 @@ import { actions as actionSchema } from "../schemas/actions.ts";
 import { and, eq } from "drizzle-orm/expressions";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
-import { FetchSettings } from "../reactions/triggerMeNot.ts";
-import { GitHubIssueSettings } from "../reactions/github.ts";
+import { FetchSettings } from "../interfaces/triggerMeNot.ts";
+import { GithubIssueSettings } from "../interfaces/github.ts";
 
 interface Element {
   id?: number;
@@ -41,7 +41,7 @@ const SERVICES: Record<string, Service> = {
       "Create Issue": {
         description: "Create an issue in a repository",
         // @ts-ignore type mismatch
-        settings: zodToJsonSchema(GitHubIssueSettings),
+        settings: zodToJsonSchema(GithubIssueSettings),
       },
     },
   },
@@ -75,6 +75,7 @@ async function seedDatabase() {
           serviceId: service.id,
           name: reactionName,
           description: reaction.description,
+          settings: reaction.settings,
         }).onConflictDoNothing().returning();
 
         if (!reactionRecord.length) {
@@ -107,6 +108,7 @@ async function seedDatabase() {
           serviceId: service.id,
           name: actionName,
           description: action.description,
+          settings: action.settings,
         }).onConflictDoNothing().returning();
 
         if (!actionRecord.length) {
