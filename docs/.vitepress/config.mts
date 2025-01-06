@@ -34,6 +34,7 @@ export default withMermaid({
           { text: 'API', link: '/server/api' },
           { text: 'Database', link: '/server/database' },
           { text: 'Build', link: '/server/build' },
+          { text: 'Architecture', link: '/server/architecture' },
         ]
       },
       {
