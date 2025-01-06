@@ -13,7 +13,7 @@ docker compose -f compose.yml up -d
 ```
 
 ```bash
-deno -A npm:drizzle-kit generate
+deno -A --env-file=.env.dev npm:drizzle-kit generate
 ```
 
 ```bash
