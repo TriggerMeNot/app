@@ -152,7 +152,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       (async () => {
         try {
           setIsLoading(true);
-          const response = await fetch(`${backendAddress}/api/auth/github`, {
+          const response = await fetch(`${backendAddress}/api/github/authenticate`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
