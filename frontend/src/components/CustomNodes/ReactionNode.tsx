@@ -201,9 +201,7 @@ const ReactionNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => {
                     token as string,
                     data.playgroundId as string,
                     data.playgroundReactionId as string,
-                    processedValues,
-                    (data as any).x,
-                    (data as any).y
+                    processedValues
                   );
                 })}
               >

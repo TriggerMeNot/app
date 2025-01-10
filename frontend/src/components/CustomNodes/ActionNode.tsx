@@ -23,7 +23,7 @@ import {
 
 import { NodeProps } from '@xyflow/react';
 
-import { editReaction } from '@/utils/api';
+import { editAction } from '@/utils/api';
 
 import { z, ZodRawShape } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -188,14 +188,12 @@ const ActionNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => {
                         : value,
                     ])
                   );
-                  editReaction(
+                  editAction(
                     backendAddress,
                     token as string,
                     data.playgroundId as string,
                     data.playgroundReactionId as string,
-                    processedValues,
-                    (data as any).x,
-                    (data as any).y
+                    processedValues
                   );
                 })}
               >
