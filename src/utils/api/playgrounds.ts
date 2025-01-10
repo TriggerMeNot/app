@@ -146,18 +146,15 @@ const deleteLink = async (backendAddress: string, token: string, linkId: string)
   }
 };
 
-const editReaction = async (backendAddress: string, token: string, playgroundId: string, reactionId: string, settings: any, x: number, y: number) => {
+const editReaction = async (backendAddress: string, token: string, playgroundId: string, reactionId: string, settings?: any, x?: number, y?: number) => {
+  const body = { settings, x, y };
   const response = await fetch(`${backendAddress}/api/playground/${playgroundId}/reaction/${reactionId}`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      settings,
-      x,
-      y
-    }),
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {
@@ -166,7 +163,26 @@ const editReaction = async (backendAddress: string, token: string, playgroundId:
 
   const data = await response.json();
   return data;
-}
+};
+
+const editAction = async (backendAddress: string, token: string, playgroundId: string, actionId: string, settings?: any, x?: number, y?: number) => {
+  const body = { settings, x, y };
+  const response = await fetch(`${backendAddress}/api/playground/${playgroundId}/action/${actionId}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to edit action settings.");
+  }
+
+  const data = await response.json();
+  return data;
+};
 
 export default {
   getAllPlaygrounds,
@@ -181,4 +197,5 @@ export default {
   addReactionToReactionLink,
   deleteLink,
   editReaction,
+  editAction,
 };

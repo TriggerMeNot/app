@@ -34,7 +34,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from './ui/button';
-import { addActionToPlayground, addActionToReactionLink, addReactionToReactionLink, addReactionToPlayground, deleteActionFromPlayground, deleteReactionFromPlayground } from '@/utils/api';
+import { addActionToPlayground, addActionToReactionLink, addReactionToReactionLink, addReactionToPlayground, deleteActionFromPlayground, deleteReactionFromPlayground, editReaction, editAction } from '@/utils/api';
 import { useAuth } from '@/contexts/AuthProvider';
 
 import {
@@ -108,14 +108,12 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
   const generateNodesAndEdges = (playground: any) => {
     const nodes: any[] = [];
     const edges: any[] = [];
-    const horizontalSpacing = 200;
-    const verticalSpacing = 100;
 
-    playground.actions.forEach((action: any, index: number) => {
+    playground.actions.forEach((action: any, _index: number) => {
       nodes.push({
         id: `action:${action.id}`,
         type: `action:${action.actionId}`,
-        position: { x: 0, y: index * verticalSpacing },
+        position: { x: action.x, y: action.y },
         data: {
           playgroundId: playground.id,
           playgroundActionId: action.id,
@@ -128,11 +126,11 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
       });
     });
 
-    playground.reactions.forEach((reaction: any, index: number) => {
+    playground.reactions.forEach((reaction: any, _index: number) => {
       nodes.push({
         id: `reaction:${reaction.id}`,
         type: `reaction:${reaction.reactionId}`,
-        position: { x: horizontalSpacing, y: index * verticalSpacing },
+        position: { x: reaction.x, y: reaction.y },
         data: {
           playgroundId: playground.id,
           playgroundReactionId: reaction.id,
@@ -260,7 +258,31 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
-  const onDrop = useCallback(
+  const onNodeDragStop = useCallback(
+    (_event: any, node: any) => {
+      const [type, id] = node.id.split(':');
+      if (type === 'action') {
+        const action = playground.actions.find((action: any) => action.id === parseInt(id));
+        if (action) {
+            action.x = Math.round(node.position.x);
+            action.y = Math.round(node.position.y);
+
+          editAction(backendAddress, token as string, playground.id, action.id, undefined, Math.round(node.position.x), Math.round(node.position.y));
+        }
+      } else {
+        const reaction = playground.reactions.find((reaction: any) => reaction.id === parseInt(id));
+        if (reaction) {
+            reaction.x = Math.round(node.position.x);
+            reaction.y = Math.round(node.position.y);
+
+          editReaction(backendAddress, token as string, playground.id, reaction.id, undefined, Math.round(node.position.x), Math.round(node.position.y));
+        }
+      }
+    }
+    , [playground, backendAddress, token]
+  );
+
+    const onDrop = useCallback(
     (event: any) => {
       event.preventDefault();
 
@@ -352,6 +374,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
           deleteKeyCode="Delete"
           onBeforeDelete={onBeforeDelete}
           onNodesDelete={handleNodeDelete}
+          onNodeDragStop={onNodeDragStop}
           colorMode={theme}
           className='touch-flow'
         >
