@@ -1,7 +1,7 @@
-import WebHookTGMNCreateNode from "./WebHookTGMNCreateNode";
-import WebHookFetchNode from "./WebHookFetchNode";
+import ReactionNode from "./ReactionNode";
+import ActionNode from "./ActionNode";
 
 export {
-  WebHookTGMNCreateNode,
-  WebHookFetchNode,
+  ReactionNode,
+  ActionNode
 }

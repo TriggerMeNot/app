@@ -14,7 +14,6 @@ import {
   Node,
   Edge,
   NodeTypes,
-  NodeProps,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -22,7 +21,7 @@ import { useDnD } from '@/contexts/DnDContext';
 import { useTheme } from '@/contexts/theme-provider'
 
 import { DevTools } from "@/components/devtools";
-import { WebHookFetchNode, WebHookTGMNCreateNode } from '@/components/CustomNodes';
+import { ActionNode, ReactionNode } from '@/components/CustomNodes';
 
 import getIcon from '@/utils/getIcon';
 
@@ -70,16 +69,16 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
 
   const nodeTypes = useMemo(() => {
     const generatedNodeTypes: NodeTypes = {};
-    const getActionIdByName = (name: string) => services.find((service) => service.actions.some((action) => action.name === name))?.actions.find((action) => action.name === name)?.id;
-    const getReactionIdByName = (name: string) => services.find((service) => service.reactions.some((reaction) => reaction.name === name))?.reactions.find((reaction) => reaction.name === name)?.id;
 
-    const nodeTypeMapping: Record<string, React.FC<NodeProps>> = {
-      [`action:${getActionIdByName('On Fetch')}`]: WebHookTGMNCreateNode,
-      [`reaction:${getReactionIdByName('Fetch Request')}`]: WebHookFetchNode,
-    };
+    const allActionNames = services.flatMap((service) => service.actions.map((action) => action.id));
+    const allReactionNames = services.flatMap((service) => service.reactions.map((reaction) => reaction.id));
 
-    Object.entries(nodeTypeMapping).forEach(([type, component]) => {
-      generatedNodeTypes[type] = component;
+    allActionNames.forEach((actionName) => {
+      generatedNodeTypes[`action:${actionName}`] = ActionNode;
+    });
+
+    allReactionNames.forEach((reactionName) => {
+      generatedNodeTypes[`reaction:${reactionName}`] = ReactionNode;
     });
 
     return generatedNodeTypes;
@@ -120,7 +119,8 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         data: {
           playgroundId: playground.id,
           playgroundActionId: action.id,
-          settings: action.settings,
+          settingsData: action.settings,
+          paramsData: action.params,
           onDelete: () => handleNodeDelete([{ id: `action:${action.id}` } as Node]),
           ...services.find((service) => service.actions.some((a) => a.id === action.actionId))?.actions.find((a) => a.id === action.actionId),
           icon: getIcon(services.find((service) => service.actions.some((a) => a.id === action.actionId))?.name || "", "Book"),
@@ -136,7 +136,8 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         data: {
           playgroundId: playground.id,
           playgroundReactionId: reaction.id,
-          settings: reaction.settings,
+          settingsData: reaction.settings,
+          paramsData: reaction.params,
           onDelete: () => handleNodeDelete([{ id: `reaction:${reaction.id}` } as Node]),
           ...services.find((service) => service.reactions.some((r) => r.id === reaction.reactionId))?.reactions.find((r) => r.id === reaction.reactionId),
           icon: getIcon(services.find((service) => service.reactions.some((r) => r.id === reaction.reactionId))?.name || "", "Book"),
@@ -232,8 +233,6 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
       const [targetType, targetId] = target.split(":");
 
       try {
-        console.log(sourceType, targetType);
-        console.log(sourceId, targetId);
         if (sourceType === "action" && targetType === "reaction") {
           await addActionToReactionLink(backendAddress, token as string, sourceId, targetId);
         } else if (sourceType === "reaction" && targetType === "reaction") {
