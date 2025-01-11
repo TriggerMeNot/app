@@ -145,7 +145,7 @@ async function isAuthorized(ctx: Context) {
 
   const users = await db
     .select()
-    .from(oidcSchema)
+    .from(oauthSchema)
     .where(
       and(
         eq(oidcSchema.userId, userId),
