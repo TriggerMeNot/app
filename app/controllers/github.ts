@@ -148,8 +148,8 @@ async function isAuthorized(ctx: Context) {
     .from(oauthSchema)
     .where(
       and(
-        eq(oidcSchema.userId, userId),
-        eq(oidcSchema.serviceId, SERVICES.GitHub.id!),
+        eq(oauthSchema.userId, userId),
+        eq(oauthSchema.serviceId, SERVICES.GitHub.id!),
       ),
     )
     .limit(1);
