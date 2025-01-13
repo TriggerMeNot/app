@@ -192,7 +192,7 @@ const ActionNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => {
                     backendAddress,
                     token as string,
                     data.playgroundId as string,
-                    data.playgroundReactionId as string,
+                    data.playgroundActionId as string,
                     processedValues
                   );
                 })}
