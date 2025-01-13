@@ -16,7 +16,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -223,28 +222,28 @@ const ReactionNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => {
                     )}
                   />
                 ))}
-                <Button type="submit" variant="default">
-                  Save
-                </Button>
+                <div className="flex justify-between mt-4">
+                  {isConfirmingDelete ? (
+                    <>
+                      <Button onClick={handleDelete} type="button" variant="destructive">
+                        Confirm Delete
+                      </Button>
+                      <Button onClick={handleCancelDelete} variant="outline">
+                        Cancel
+                      </Button>
+                    </>
+                  ) : (
+                    <Button onClick={handleDeleteClick} type="button" variant="destructive">
+                      Delete Node
+                    </Button>
+                  )}
+                  <Button type="submit" variant="default">
+                    Save
+                  </Button>
+                </div>
               </form>
             </Form>
           </div>
-          <DialogFooter>
-            {isConfirmingDelete ? (
-              <>
-                <Button onClick={handleCancelDelete} variant="outline">
-                  Cancel
-                </Button>
-                <Button onClick={handleDelete} type="button" variant="destructive">
-                  Confirm Delete
-                </Button>
-              </>
-            ) : (
-              <Button onClick={handleDeleteClick} type="button" variant="destructive">
-                Delete Node
-              </Button>
-            )}
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>
