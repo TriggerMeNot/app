@@ -1,6 +1,6 @@
 import * as React from "react"
 import {
-  BookOpen,
+  HandPlatter,
   Frame,
   LifeBuoy,
   Map,
@@ -41,46 +41,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
       navMain: [
         {
           title: "Playground",
-          url: "#",
+          url: "/",
           icon: SquareTerminal,
           isActive: true,
-          items: [
-            {
-              title: "History",
-              url: "#",
-            },
-            {
-              title: "Starred",
-              url: "#",
-            },
-            {
-              title: "Settings",
-              url: "#",
-            },
-          ],
         },
         {
-          title: "Documentation",
-          url: "#",
-          icon: BookOpen,
-          items: [
-            {
-              title: "Introduction",
-              url: "#",
-            },
-            {
-              title: "Get Started",
-              url: "#",
-            },
-            {
-              title: "Tutorials",
-              url: "#",
-            },
-            {
-              title: "Changelog",
-              url: "#",
-            },
-          ],
+          title: "Services",
+          url: "/services",
+          icon: HandPlatter,
         },
         {
           title: "Settings",

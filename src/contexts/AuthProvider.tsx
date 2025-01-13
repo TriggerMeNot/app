@@ -136,8 +136,15 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     const fn = async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get("code");
-      setGithubCode(code);
-      window.history.replaceState({}, document.title, window.location.pathname);
+
+      if (!code) return;
+
+      if (urlParams.get("setup_action") === "install") {
+        window.location.assign(`${window.location.origin}/services?code=${code}&setup_action=install`);
+      } else {
+        setGithubCode(code);
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
     }
 
     window.addEventListener("load", fn);

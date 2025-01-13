@@ -4,6 +4,7 @@ import {
   NotFound,
   Home,
   Playground,
+  Services,
 } from "@/pages";
 import PrivateRoute from "./PrivateRoute";
 import AuthProvider from "@/contexts/AuthProvider";
@@ -24,6 +25,7 @@ function Router() {
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Layout><PrivateRoute /></Layout>}>
               <Route index element={<Home />} />
+              <Route path="/services" element={<Services />} />
               <Route path="*" element={<NotFound />} />
             </Route>
             <Route path="/playground/:id" element={

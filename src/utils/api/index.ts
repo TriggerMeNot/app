@@ -1,4 +1,5 @@
 import playgrounds from "./playgrounds";
+import services from "./services";
 
 export const {
   getAllPlaygrounds,
@@ -15,3 +16,8 @@ export const {
   editReaction,
   editAction
 } = playgrounds;
+
+export const {
+  getServiceGithubAuth,
+  sendServiceGithubAuth
+} = services;

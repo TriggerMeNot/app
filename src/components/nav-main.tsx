@@ -17,6 +17,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
+import { useNavigate } from "react-router-dom"
 
 export function NavMain({
   items,
@@ -32,6 +33,8 @@ export function NavMain({
     }[]
   }[]
 }) {
+  const navigate = useNavigate();
+
   return (
     <SidebarGroup>
       <SidebarMenu>
@@ -39,7 +42,7 @@ export function NavMain({
           <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip={item.title}>
-                <a href={item.url}>
+                <a onClick={() => navigate(item.url)} className="cursor-pointer">
                   <item.icon />
                   <span>{item.title}</span>
                 </a>
