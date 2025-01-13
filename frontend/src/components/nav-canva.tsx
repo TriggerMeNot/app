@@ -45,6 +45,11 @@ export function NavCanva({
         data: {
           description: item.description,
           icon: getIcon(serviceName, "Book"),
+          ...(type === "action" ? {
+            ...services.find((service) => service.actions.some((a) => a.id === item.id))?.actions.find((a) => a.id === item.id),
+          } : (type === "reaction" ? {
+            ...(services.find((service) => service.reactions.some((r) => r.id === item.id))?.reactions.find((r) => r.id === item.id) || {}),
+          } : {})),
         },
       },
       type: `${type}:${item.id}`,

@@ -96,7 +96,7 @@ const ActionNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => {
     (values) =>
       settingsSchema.required
         ? settingsSchema.required.every((field: string) => field in values)
-        : true,
+        : false,
     { message: 'Some required fields are missing.' }
   );
 

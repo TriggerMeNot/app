@@ -46,6 +46,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command"
+import NodeSettingsModal from './NodeCreationSettingsModal';
 
 const panOnDrag = [1, 2];
 
@@ -61,6 +62,12 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
   const [isDeletionDialogOpen, setIsDeletionDialogOpen] = useState(false);
   const [, setDataToDelete] = useState<{ Nodes: Node[]; Edges: Edge[] } | null>(null);
   const [deletionPromiseResolver, setDeletionPromiseResolver] = useState<((value: boolean) => void) | null>(null);
+
+  const [nodeSettingsModal, setNodeSettingsModal] = useState({
+    isOpen: false,
+    data: null as any,
+    position: { x: 0, y: 0 }
+  });
 
   const [open, setOpen] = useState(false);
 
@@ -282,7 +289,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
     , [playground, backendAddress, token]
   );
 
-    const onDrop = useCallback(
+  const onDrop = useCallback(
     (event: any) => {
       event.preventDefault();
 
@@ -295,40 +302,67 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         y: event.clientY,
       });
 
-      const id = getId();
-
-      const newNode: any = {
-        id,
-        type: data.payload.type,
-        position,
-        data: {
-          playgroundId: playground.id,
-          ...data.payload,
-        },
-      };
-
-      setNodes((nds) => nds.concat(newNode));
-
-      const [type] = data.payload.type.split(':');
-
-      if (type === 'action') {
-        addActionToPlayground(backendAddress, token as string, playground.id, data.payload.id, { settings: {} }, position.x, position.y).then((res) => {
-          setPlayground((pg: any) => ({
-            ...pg,
-            actions: [...pg.actions, res],
-          }));
-        });
-      } else {
-        addReactionToPlayground(backendAddress, token as string, playground.id, data.payload.id, { settings: {} }, position.x, position.y).then((res) => {
-          setPlayground((pg: any) => ({
-            ...pg,
-            reactions: [...pg.reactions, res],
-          }));
-        });
-      }
+      console.log(data);
+      setNodeSettingsModal({
+        isOpen: true,
+        data: data.payload,
+        position
+      });
     },
     [screenToFlowPosition, data]
   );
+
+  const handleNodeSettingsSubmit = useCallback((values: any) => {
+    const id = getId();
+    const [type] = nodeSettingsModal.data.type.split(':');
+
+    const newNode: any = {
+      id,
+      type: nodeSettingsModal.data.type,
+      position: nodeSettingsModal.position,
+      data: {
+        playgroundId: playground.id,
+        ...nodeSettingsModal.data,
+        settings: values,
+      },
+    };
+
+    setNodes((nds) => nds.concat(newNode));
+
+    if (type === 'action') {
+      addActionToPlayground(
+        backendAddress,
+        token as string,
+        playground.id,
+        nodeSettingsModal.data.id,
+        { settings: values },
+        nodeSettingsModal.position.x,
+        nodeSettingsModal.position.y
+      ).then((res) => {
+        setPlayground((pg: any) => ({
+          ...pg,
+          actions: [...pg.actions, res],
+        }));
+      });
+    } else {
+      addReactionToPlayground(
+        backendAddress,
+        token as string,
+        playground.id,
+        nodeSettingsModal.data.id,
+        { settings: values },
+        nodeSettingsModal.position.x,
+        nodeSettingsModal.position.y
+      ).then((res) => {
+        setPlayground((pg: any) => ({
+          ...pg,
+          reactions: [...pg.reactions, res],
+        }));
+      });
+    }
+
+    setNodeSettingsModal({ isOpen: false, data: null, position: { x: 0, y: 0 } });
+  }, [nodeSettingsModal, backendAddress, token, playground?.id, setNodes, setPlayground]);
 
   const handleNodeDelete = useCallback(
     (node: Node[]) => {
@@ -456,6 +490,13 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         ))}
         </CommandList>
       </CommandDialog>
+
+        <NodeSettingsModal
+          isOpen={nodeSettingsModal.isOpen}
+          onClose={() => setNodeSettingsModal({ isOpen: false, data: null, position: { x: 0, y: 0 } })}
+          nodeData={nodeSettingsModal.data}
+          onSubmit={handleNodeSettingsSubmit}
+        />
     </>
   );
 };
