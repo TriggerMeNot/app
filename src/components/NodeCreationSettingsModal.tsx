@@ -35,51 +35,63 @@ const NodeSettingsModal = ({ isOpen, onClose, nodeData, onSubmit }: NodeSettings
 
   const dynamicSchemaShape: ZodRawShape = {};
 
-  if (settingsSchema && typeof settingsSchema === 'object' && "properties" in settingsSchema) {
+  if (settingsSchema && typeof settingsSchema === "object" && "properties" in settingsSchema) {
     for (const [key, property] of Object.entries(settingsSchema.properties || {})) {
+      const isRequired = settingsSchema.required?.includes(key);
       switch (property.type) {
-        case 'string':
-          dynamicSchemaShape[key] = z.string();
+        case "string":
+          dynamicSchemaShape[key] = isRequired ? z.string() : z.string().optional();
           break;
-        case 'number':
-          dynamicSchemaShape[key] = z.number();
+        case "number":
+          dynamicSchemaShape[key] = isRequired ? z.number() : z.number().optional();
           break;
-        case 'boolean':
-          dynamicSchemaShape[key] = z.boolean();
+        case "boolean":
+          dynamicSchemaShape[key] = isRequired ? z.boolean() : z.boolean().optional();
           break;
-        case 'object':
-          dynamicSchemaShape[key] = z
-            .string()
-            .refine((val) => {
-              try {
-                if (!val) return true;
-                JSON.parse(val);
-                return true;
-              } catch (e) {
-                return false;
-              }
-            }, { message: 'Invalid JSON format.' });
+        case "object":
+          dynamicSchemaShape[key] = isRequired
+            ? z
+                .string()
+                .refine(
+                  (val) => {
+                    try {
+                      if (!val) return false;
+                      JSON.parse(val);
+                      return true;
+                    } catch (e) {
+                      return false;
+                    }
+                  },
+                  { message: "Invalid JSON format." }
+                )
+            : z
+                .string()
+                .optional()
+                .refine(
+                  (val) => {
+                    try {
+                      if (!val) return true;
+                      JSON.parse(val);
+                      return true;
+                    } catch (e) {
+                      return false;
+                    }
+                  },
+                  { message: "Invalid JSON format." }
+                );
           break;
         default:
-          dynamicSchemaShape[key] = z.string();
+          dynamicSchemaShape[key] = isRequired ? z.string() : z.string().optional();
           break;
       }
     }
   }
 
-  const formSchema = z.object(dynamicSchemaShape).refine(
-    (values) =>
-      settingsSchema.required
-        ? settingsSchema.required.every((field: string) => field in values)
-        : false,
-    { message: 'Some required fields are missing.' }
-  );
+  const formSchema = z.object(dynamicSchemaShape);
 
-  type FormValues = z.infer<typeof formSchema>;
-
-  const form = useForm<FormValues>({
+  type FormSchema = z.infer<typeof formSchema>;
+  const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
-    defaultValues: {},
   });
 
   return (
@@ -96,8 +108,10 @@ const NodeSettingsModal = ({ isOpen, onClose, nodeData, onSubmit }: NodeSettings
                 Object.entries(values).map(([key, value]) => [
                   key,
                   dynamicSchemaShape[key] instanceof z.ZodString &&
-                  settingsSchema.properties?.[key]?.type === 'object'
-                    ? JSON.parse(value as string)
+                  settingsSchema.properties?.[key]?.type === "object"
+                    ? value
+                      ? JSON.parse(value as string)
+                      : undefined
                     : value,
                 ])
               );

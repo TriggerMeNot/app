@@ -302,7 +302,6 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         y: event.clientY,
       });
 
-      console.log(data);
       setNodeSettingsModal({
         isOpen: true,
         data: data.payload,
@@ -335,7 +334,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         token as string,
         playground.id,
         nodeSettingsModal.data.id,
-        { settings: values },
+        { ...values },
         nodeSettingsModal.position.x,
         nodeSettingsModal.position.y
       ).then((res) => {
@@ -350,7 +349,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         token as string,
         playground.id,
         nodeSettingsModal.data.id,
-        { settings: values },
+        { ...values },
         nodeSettingsModal.position.x,
         nodeSettingsModal.position.y
       ).then((res) => {
@@ -430,58 +429,36 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
               <CommandGroup key={service.name} heading={service.name}>
                 {service.reactions.map((reaction) => (
                   <CommandItem key={`reaction:${reaction.id}`} onSelect={() => {
-                    const id = getId();
-                    const newNode: any = {
-                      id,
-                      type: `reaction:${reaction.id}`,
-                      position: { x: 0, y: 0 },
+                    setNodeSettingsModal({
+                      isOpen: true,
                       data: {
-                        playgroundId: playground.id,
-                        ...reaction,
-                        settings: {},
-                        onDelete: () => handleNodeDelete([{ id: `reaction:${reaction.id}` } as Node]),
-                        icon: getIcon(service.name, "Book"),
+                        id: reaction.id,
+                        type: `reaction:${reaction.id}`,
+                        data: {
+                          settings: (reaction as any)?.settings,
+                        },
                       },
-                    };
-
-                    setNodes((nds) => nds.concat(newNode));
-                    addReactionToPlayground(backendAddress, token as string, playground.id, reaction.id, { settings: {} }, 0, 0).then((res) => {
-                      setPlayground((pg: any) => ({
-                        ...pg,
-                        reactions: [...pg.reactions, res],
-                      }));
-                      setOpen(false);
+                      position: { x: 0, y: 0 }
                     });
                   }}>
                     <span>{reaction.name}</span>
                   </CommandItem>
                 ))}
-                {service.actions.map((reaction) => (
-                  <CommandItem key={`action:${reaction.id}`} onSelect={() => {
-                    const id = getId();
-                    const newNode: any = {
-                      id,
-                      type: `action:${reaction.id}`,
-                      position: { x: 0, y: 0 },
+                {service.actions.map((action) => (
+                  <CommandItem key={`action:${action.id}`} onSelect={() => {
+                    setNodeSettingsModal({
+                      isOpen: true,
                       data: {
-                        playgroundId: playground.id,
-                        ...reaction,
-                        settings: {},
-                        onDelete: () => handleNodeDelete([{ id: `action:${reaction.id}` } as Node]),
-                        icon: getIcon(service.name, "Book"),
+                        id: action.id,
+                        type: `action:${action.id}`,
+                        data: {
+                          settings: (action as any)?.settings,
+                        },
                       },
-                    };
-
-                    setNodes((nds) => nds.concat(newNode));
-                    addActionToPlayground(backendAddress, token as string, playground.id, reaction.id, { settings: {} }, 0, 0).then((res) => {
-                      setPlayground((pg: any) => ({
-                        ...pg,
-                        actions: [...pg.actions, res],
-                      }));
-                      setOpen(false);
+                      position: { x: 0, y: 0 }
                     });
                   }}>
-                    <span>{reaction.name}</span>
+                    <span>{action.name}</span>
                   </CommandItem>
                 ))}
               </CommandGroup>
