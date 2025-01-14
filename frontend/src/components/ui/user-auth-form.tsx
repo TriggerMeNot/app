@@ -138,7 +138,7 @@ function UserRegisterAuthForm({ className, ...props }: UserAuthFormProps) {
 }
 
 export function UserAuthForm({ mode, className, ...props }: UserAuthFormProps) {
-  const { isLoading, loginWithGithub } = useAuth();
+  const { isLoading, loginWithGithub, loginWithGoogle } = useAuth();
 
   return (
     <>
@@ -158,6 +158,18 @@ export function UserAuthForm({ mode, className, ...props }: UserAuthFormProps) {
           <Icons.gitHub className="mr-2 h-4 w-4" />
         )}
         Sign In with GitHub
+      </Button>
+      <Button
+        disabled={isLoading}
+        className="w-full"
+        onClick={loginWithGoogle}
+      >
+        {isLoading ? (
+          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <Icons.google className="mr-2 h-4 w-4" />
+        )}
+        Sign In with Google
       </Button>
     </>
   )
