@@ -34,9 +34,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
   const data = React.useMemo(
     () => ({
       user: {
-        name: user?.username || "John Doe",
-        email: user?.email || "john.doe@triggermenot.net",
-        avatar: "https://api.dicebear.com/9.x/bottts/svg",
+        name: user?.username,
+        email: user?.email,
+        avatar: `https://api.dicebear.com/9.x/bottts/svg?seed=${user?.username}`,
       },
       navMain: [
         {

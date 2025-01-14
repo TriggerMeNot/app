@@ -21,25 +21,25 @@ function Router() {
         }}
       >
         <AuthProvider>
-          <Routes>
-            <Route path="/login" element={<Login />} />
+            <Routes>
+            <Route path="/login/*" element={<Login />} />
             <Route path="/" element={<Layout><PrivateRoute /></Layout>}>
               <Route index element={<Home />} />
               <Route path="/services" element={<Services />} />
               <Route path="*" element={<NotFound />} />
             </Route>
             <Route path="/playground/:id" element={
-                <ReactFlowProvider>
-                  <DnDProvider>
-                    <Layout>
-                      <PrivateRoute />
-                    </Layout>
-                  </DnDProvider>
-                </ReactFlowProvider>
+              <ReactFlowProvider>
+                <DnDProvider>
+                <Layout>
+                  <PrivateRoute />
+                </Layout>
+                </DnDProvider>
+              </ReactFlowProvider>
               }>
               <Route index element={<Playground />} />
             </Route>
-          </Routes>
+            </Routes>
         </AuthProvider>
     </BrowserRouter>
   )

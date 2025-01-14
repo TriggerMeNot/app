@@ -5,6 +5,7 @@ import { ReactNode } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID as string;
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
 
 export const LoginSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -59,6 +60,7 @@ type AuthContextType = {
   registerWithUsernameAndPassword: (data: z.infer<typeof RegisterSchema>) => Promise<void>;
   loginWithUsernameAndPassword: (data: z.infer<typeof LoginSchema>) => Promise<void>;
   loginWithGithub: () => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   logOut: () => void;
   checkIfLoggedIn: () => boolean;
   isLoading: boolean;
@@ -68,11 +70,12 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType>({
   user: null,
   token: undefined,
-  backendAddress: import.meta.env.VITE_BACKEND_DEFAULT_ADDRESS as string || "http://localhost:8080",
+  backendAddress: localStorage.getItem("site") || import.meta.env.VITE_BACKEND_DEFAULT_ADDRESS as string || "http://localhost:8080",
   setBackendAddress: (_address: string) => {},
   registerWithUsernameAndPassword: async (_data: z.infer<typeof RegisterSchema>) => {},
   loginWithUsernameAndPassword: async (_data: z.infer<typeof LoginSchema>) => {},
   loginWithGithub: async () => {},
+  loginWithGoogle: async () => {},
   logOut: () => {},
   checkIfLoggedIn: () => false,
   isLoading: false,
@@ -80,7 +83,7 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<any>(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null);
   const [token, setToken] = useState<string | undefined>(() => localStorage.getItem("token") || undefined);
   const [backendAddress, setBackendAddress] = useState<string>(localStorage.getItem("site") || import.meta.env.VITE_BACKEND_DEFAULT_ADDRESS as string || "http://localhost:8080");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -89,6 +92,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { toast } = useToast();
 
   const [githubCode, setGithubCode] = useState<string | null>(null);
+  const [googleCode, setGoogleCode] = useState<string | null>(null);
 
   const getServices = useCallback(async () => {
     try {
@@ -106,34 +110,44 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [backendAddress]);
 
   useEffect(() => {
-    (async () => {
-      if (token) {
-        try {
-          const response = await fetch(`${backendAddress}/api/user`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+    const fn = async () => {
+      if (!token) return;
+      try {
+        const response = await fetch(`${backendAddress}/api/user`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-          if (response.ok) {
-            const user = await response.json();
-            setUser(user);
-            setIsLoading(false);
-          } else {
-            const error = await response.json();
-            toast({ title: "Error", description: error.message });
-            setIsLoading(false);
-          }
-        } catch (error) {
-          toast({ title: "Error", description: (error instanceof Error) ? error.message : "An unknown error occurred." });
+        if (response.ok) {
+          const user = await response.json();
+          localStorage.setItem("user", JSON.stringify(user));
+          setUser(user);
           setIsLoading(false);
+        } else {
+          const error = await response.json();
+          toast({ title: "Error", description: error.message });
+          setIsLoading(false);
+          navigate("/login");
         }
+
+      } catch (error) {
+        toast({ title: "Error", description: (error instanceof Error) ? error.message : "An unknown error occurred." });
+        setIsLoading(false);
+        navigate("/login");
       }
-    })();
+    }
+
+    window.addEventListener("load", fn);
+
+    return () => {
+      window.removeEventListener("load", fn);
+    }
   }, []);
 
   useEffect(() => {
     const fn = async () => {
+      if (window.location.pathname !== "/login/github") return;
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get("code");
 
@@ -168,8 +182,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           });
 
           if (response.ok) {
-            const { user, token } = await response.json();
-            setUser(user);
+            const { token } = await response.json();
             setToken(token);
             localStorage.setItem("token", token);
             toast({ title: "Success", description: "Successfully logged in using Github." });
@@ -186,6 +199,57 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       })();
     }
   }, [githubCode]);
+
+  useEffect(() => {
+    const fn = async () => {
+      if (window.location.pathname !== "/login/google") return;
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get("code");
+
+      if (!code) return;
+
+      setGoogleCode(code);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    window.addEventListener("load", fn);
+
+    return () => {
+      window.removeEventListener("load", fn);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (googleCode) {
+      (async () => {
+        try {
+          setIsLoading(true);
+          const response = await fetch(`${backendAddress}/api/google/authenticate`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ code: googleCode }),
+          });
+
+          if (response.ok) {
+            const { token } = await response.json();
+            setToken(token);
+            localStorage.setItem("token", token);
+            toast({ title: "Success", description: "Successfully logged in using Google." });
+            navigate("/");
+          } else {
+            const error = await response.json();
+            setIsLoading(false);
+            toast({ title: "Error", description: error.message });
+          }
+        } catch (error) {
+          toast({ title: "Error", description: (error instanceof Error) ? error.message : "An unknown error occurred." });
+          setIsLoading(false);
+        }
+      })();
+    }
+  }, [googleCode]);
 
   useEffect(() => {
     if (backendAddress) {
@@ -211,8 +275,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (response.ok) {
-        const { user, token } = await response.json();
-        setUser(user);
+        const { token } = await response.json();
         setToken(token);
         localStorage.setItem("token", token);
         toast({ title: "Success", description: "Successfully logged in." });
@@ -241,8 +304,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (response.ok) {
-        const { user, token } = await response.json();
-        setUser(user);
+        const { token } = await response.json();
+        localStorage.setItem("user", JSON.stringify(user));
         setToken(token);
         localStorage.setItem("token", token);
         toast({ title: "Success", description: "Successfully registered." });
@@ -264,15 +327,34 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
     setIsLoading(true);
-    window.location.assign(`https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${window.location.origin}/login`);
+    window.location.assign(`https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${window.location.origin}/login/github`);
     setIsLoading(false);
   };
+
+  const loginWithGoogle = async () => {
+    if (!GOOGLE_CLIENT_ID) {
+      toast({ title: "Error", description: "Google client ID is not set, please contact the administrator." });
+      return;
+    }
+    setIsLoading(true);
+    window.location.assign(
+      `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `redirect_uri=${window.location.origin}/login/google&` +
+      `prompt=consent&` +
+      `response_type=code&` +
+      `client_id=${GOOGLE_CLIENT_ID}&` +
+      `scope=https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile&` +
+      `access_type=offline`
+    );
+    setIsLoading(false);
+  }
 
   const logOut = () => {
     setUser(null);
     setToken(undefined);
     localStorage.removeItem("site");
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     navigate("/login");
   };
 
@@ -290,6 +372,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         registerWithUsernameAndPassword,
         loginWithUsernameAndPassword,
         loginWithGithub,
+        loginWithGoogle,
         logOut,
         checkIfLoggedIn,
         isLoading,
