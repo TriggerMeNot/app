@@ -138,12 +138,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     }
 
-    window.addEventListener("load", fn);
-
-    return () => {
-      window.removeEventListener("load", fn);
-    }
-  }, []);
+    fn();
+  }, [token]);
 
   useEffect(() => {
     const fn = async () => {
