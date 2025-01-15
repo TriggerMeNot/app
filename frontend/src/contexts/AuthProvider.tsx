@@ -7,6 +7,10 @@ import { useToast } from "@/hooks/use-toast";
 const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID as string;
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
 
+const MICROSOFT_TENANT_ID = import.meta.env.VITE_MICROSOFT_TENANT_ID as string;
+const MICROSOFT_CLIENT_ID = import.meta.env.VITE_MICROSOFT_CLIENT_ID as string;
+const MICROSOFT_SCOPE = import.meta.env.VITE_MICROSOFT_SCOPE as string;
+
 export const LoginSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
   password: z.string().min(1, { message: "Password is required." }),
@@ -61,6 +65,7 @@ type AuthContextType = {
   loginWithUsernameAndPassword: (data: z.infer<typeof LoginSchema>) => Promise<void>;
   loginWithGithub: () => Promise<void>;
   loginWithGoogle: () => Promise<void>;
+  loginWithMicrosoft: () => Promise<void>;
   logOut: () => void;
   checkIfLoggedIn: () => boolean;
   isLoading: boolean;
@@ -76,6 +81,7 @@ const AuthContext = createContext<AuthContextType>({
   loginWithUsernameAndPassword: async (_data: z.infer<typeof LoginSchema>) => {},
   loginWithGithub: async () => {},
   loginWithGoogle: async () => {},
+  loginWithMicrosoft: async () => {},
   logOut: () => {},
   checkIfLoggedIn: () => false,
   isLoading: false,
@@ -93,6 +99,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const [githubCode, setGithubCode] = useState<string | null>(null);
   const [googleCode, setGoogleCode] = useState<string | null>(null);
+  const [microsoftCode, setMicrosoftCode] = useState<string | null>(null);
 
   const getServices = useCallback(async () => {
     try {
@@ -248,6 +255,57 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [googleCode]);
 
   useEffect(() => {
+    const fn = async () => {
+      if (window.location.pathname !== "/login/microsoft") return;
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get("code");
+
+      if (!code) return;
+
+      setMicrosoftCode(code);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    };
+
+    window.addEventListener("load", fn);
+
+    return () => {
+      window.removeEventListener("load", fn);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (microsoftCode) {
+      (async () => {
+        try {
+          setIsLoading(true);
+          const response = await fetch(`${backendAddress}/api/microsoft/authenticate`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ code: microsoftCode }),
+          });
+
+          if (response.ok) {
+            const { token } = await response.json();
+            setToken(token);
+            localStorage.setItem("token", token);
+            toast({ title: "Success", description: "Successfully logged in using Microsoft." });
+            navigate("/");
+          } else {
+            const error = await response.json();
+            setIsLoading(false);
+            toast({ title: "Error", description: error.message });
+          }
+        } catch (error) {
+          toast({ title: "Error", description: (error instanceof Error) ? error.message : "An unknown error occurred." });
+          setIsLoading(false);
+        }
+      })();
+    }
+  }, [microsoftCode]);
+
+  useEffect(() => {
     if (backendAddress) {
       let sanitizedAddress = backendAddress.trim();
       if (sanitizedAddress.endsWith("/")) {
@@ -345,6 +403,26 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(false);
   }
 
+  const loginWithMicrosoft = async () => {
+    if (!MICROSOFT_CLIENT_ID) {
+      toast({ title: "Error", description: "Microsoft client ID is not set, please contact the administrator." });
+      return;
+    }
+    setIsLoading(true);
+    console.log(MICROSOFT_TENANT_ID, MICROSOFT_CLIENT_ID, MICROSOFT_SCOPE);
+    window.location.assign(
+      `https://login.microsoftonline.com/${MICROSOFT_TENANT_ID}/oauth2/v2.0/authorize?` +
+      `client_id=${MICROSOFT_CLIENT_ID}&` +
+      `response_type=code&` +
+      `redirect_uri=${window.location.origin}/login/microsoft&` +
+      `response_mode=query&` +
+      `scope=${MICROSOFT_SCOPE}%2f.default&` +
+      `state=12345&` +
+      `sso_reload=true`
+    );
+    setIsLoading(false);
+  }
+
   const logOut = () => {
     setUser(null);
     setToken(undefined);
@@ -369,6 +447,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         loginWithUsernameAndPassword,
         loginWithGithub,
         loginWithGoogle,
+        loginWithMicrosoft,
         logOut,
         checkIfLoggedIn,
         isLoading,

@@ -145,4 +145,9 @@ export const Icons = {
       <path d="M21 12a9 9 0 1 1-6.219-8.56" />
     </svg>
   ),
+  microsoft: (props: IconProps) => (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M0 0v11.408h11.408V0zm12.594 0v11.408H24V0zM0 12.594V24h11.408V12.594zm12.594 0V24H24V12.594z" />
+    </svg>
+  ),
 }
