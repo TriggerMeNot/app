@@ -19,5 +19,11 @@ export const {
 
 export const {
   getServiceGithubAuth,
-  sendServiceGithubAuth
+  sendServiceGithubAuth,
+  getServiceGoogleAuth,
+  sendServiceGoogleAuth,
+  getServiceDiscordAuth,
+  sendServiceDiscordAuth,
+  getServiceMicrosoftAuth,
+  sendServiceMicrosoftAuth,
 } = services;
