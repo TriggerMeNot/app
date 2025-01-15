@@ -157,7 +157,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!code) return;
 
       if (urlParams.get("setup_action") === "install") {
-        window.location.assign(`${window.location.origin}/services?code=${code}&setup_action=install`);
+        window.location.assign(`${window.location.origin}/services/github?code=${code}&setup_action=install`);
       } else {
         setGithubCode(code);
         window.history.replaceState({}, document.title, window.location.pathname);
@@ -413,7 +413,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
     setIsLoading(true);
-    console.log(MICROSOFT_TENANT_ID, MICROSOFT_CLIENT_ID, MICROSOFT_SCOPE);
     window.location.assign(
       `https://login.microsoftonline.com/${MICROSOFT_TENANT_ID}/oauth2/v2.0/authorize?` +
       `client_id=${MICROSOFT_CLIENT_ID}&` +
