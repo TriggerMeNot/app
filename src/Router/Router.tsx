@@ -25,7 +25,7 @@ function Router() {
             <Route path="/login/*" element={<Login />} />
             <Route path="/" element={<Layout><PrivateRoute /></Layout>}>
               <Route index element={<Home />} />
-              <Route path="/services" element={<Services />} />
+              <Route path="/services/*" element={<Services />} />
               <Route path="*" element={<NotFound />} />
             </Route>
             <Route path="/playground/:id" element={
