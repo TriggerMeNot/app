@@ -138,7 +138,7 @@ function UserRegisterAuthForm({ className, ...props }: UserAuthFormProps) {
 }
 
 export function UserAuthForm({ mode, className, ...props }: UserAuthFormProps) {
-  const { isLoading, loginWithGithub, loginWithGoogle } = useAuth();
+  const { isLoading, loginWithGithub, loginWithGoogle, loginWithMicrosoft } = useAuth();
 
   return (
     <>
@@ -170,6 +170,18 @@ export function UserAuthForm({ mode, className, ...props }: UserAuthFormProps) {
           <Icons.google className="mr-2 h-4 w-4" />
         )}
         Sign In with Google
+      </Button>
+      <Button
+        disabled={isLoading}
+        className="w-full"
+        onClick={loginWithMicrosoft}
+      >
+        {isLoading ? (
+          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <Icons.microsoft className="mr-2 h-4 w-4" />
+        )}
+        Sign In with Microsoft
       </Button>
     </>
   )
