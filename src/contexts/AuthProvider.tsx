@@ -11,6 +11,8 @@ const MICROSOFT_TENANT_ID = import.meta.env.VITE_MICROSOFT_TENANT_ID as string;
 const MICROSOFT_CLIENT_ID = import.meta.env.VITE_MICROSOFT_CLIENT_ID as string;
 const MICROSOFT_SCOPE = import.meta.env.VITE_MICROSOFT_SCOPE as string;
 
+const DISCORD_CLIENT_ID = import.meta.env.VITE_DISCORD_CLIENT_ID as string;
+
 export const LoginSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
   password: z.string().min(1, { message: "Password is required." }),
@@ -66,6 +68,7 @@ type AuthContextType = {
   loginWithGithub: () => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   loginWithMicrosoft: () => Promise<void>;
+  loginWithDiscord: () => Promise<void>;
   logOut: () => void;
   checkIfLoggedIn: () => boolean;
   isLoading: boolean;
@@ -82,6 +85,7 @@ const AuthContext = createContext<AuthContextType>({
   loginWithGithub: async () => {},
   loginWithGoogle: async () => {},
   loginWithMicrosoft: async () => {},
+  loginWithDiscord: async () => {},
   logOut: () => {},
   checkIfLoggedIn: () => false,
   isLoading: false,
@@ -100,6 +104,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [githubCode, setGithubCode] = useState<string | null>(null);
   const [googleCode, setGoogleCode] = useState<string | null>(null);
   const [microsoftCode, setMicrosoftCode] = useState<string | null>(null);
+  const [discordCode, setDiscordCode] = useState<string | null>(null);
 
   const getServices = useCallback(async () => {
     try {
@@ -306,6 +311,57 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [microsoftCode]);
 
   useEffect(() => {
+    const fn = async () => {
+      if (window.location.pathname !== "/login/discord") return;
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get("code");
+
+      if (!code) return;
+
+      setDiscordCode(code);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    };
+
+    window.addEventListener("load", fn);
+
+    return () => {
+      window.removeEventListener("load", fn);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (discordCode) {
+      (async () => {
+        try {
+          setIsLoading(true);
+          const response = await fetch(`${backendAddress}/api/discord/authenticate`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ code: discordCode }),
+          });
+
+          if (response.ok) {
+            const { token } = await response.json();
+            setToken(token);
+            localStorage.setItem("token", token);
+            toast({ title: "Success", description: "Successfully logged in using Discord." });
+            navigate("/");
+          } else {
+            const error = await response.json();
+            setIsLoading(false);
+            toast({ title: "Error", description: error.message });
+          }
+        } catch (error) {
+          toast({ title: "Error", description: (error instanceof Error) ? error.message : "An unknown error occurred." });
+          setIsLoading(false);
+        }
+      })();
+    }
+  }, [discordCode]);
+
+  useEffect(() => {
     if (backendAddress) {
       let sanitizedAddress = backendAddress.trim();
       if (sanitizedAddress.endsWith("/")) {
@@ -426,6 +482,18 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(false);
   }
 
+  const loginWithDiscord = async () => {
+    if (!DISCORD_CLIENT_ID) {
+      toast({ title: "Error", description: "Discord client ID is not set, please contact the administrator." });
+      return;
+    }
+    setIsLoading(true);
+    window.location.assign(
+      `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&permissions=562949953427456&response_type=code&redirect_uri=${window.location.origin}/login/discord&integration_type=0&scope=identify+email+bot`
+    );
+    setIsLoading(false);
+  }
+
   const logOut = () => {
     setUser(null);
     setToken(undefined);
@@ -451,6 +519,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         loginWithGithub,
         loginWithGoogle,
         loginWithMicrosoft,
+        loginWithDiscord,
         logOut,
         checkIfLoggedIn,
         isLoading,

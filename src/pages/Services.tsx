@@ -30,7 +30,7 @@ function Services() {
     };
 
     fetchStatus();
-  }, []);
+  }, [window.location.pathname]);
 
   useEffect(() => {
     const fn = async () => {
@@ -171,11 +171,11 @@ function Services() {
         </CardHeader>
         <CardContent>
           {discordStatus?.authorized ? (
-            <Button className="w-full" onClick={() => window.open(`https://discord.com/channels/@me`)}>
+            <Button className="w-full" onClick={() => window.open(`https://discord.com/channels/@me`)} variant={"secondary"}>
               Edit Discord Authorization
             </Button>
           ) : (
-            <Button className="w-full" onClick={() => window.location.assign(`https://discord.com/api/oauth2/authorize?client_id=${import.meta.env.VITE_DISCORD_CLIENT_ID as string}&redirect_uri=${window.location.origin}/services/discord&response_type=code&scope=bot+applications.commands`)}>
+            <Button className="w-full" onClick={() => window.location.assign(`https://discord.com/oauth2/authorize?client_id=${import.meta.env.VITE_DISCORD_CLIENT_ID as string}&response_type=code&redirect_uri=${window.location.origin}/services/discord&integration_type=0&scope=identify+email`)}>
               Authorize with Discord
             </Button>
           )}
@@ -192,7 +192,7 @@ function Services() {
         </CardHeader>
         <CardContent>
           {microsoftStatus?.authorized ? (
-            <Button className="w-full" onClick={() => window.open(`https://account.live.com/consent/Manage`)}>
+            <Button className="w-full" onClick={() => window.open(`https://account.live.com/consent/Manage`)} variant={"secondary"}>
               Edit Microsoft Authorization
             </Button>
           ) : (
