@@ -381,7 +381,11 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
     setIsLoading(true);
-    window.location.assign(`https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${window.location.origin}/login/github`);
+    window.location.assign(
+      `https://github.com/login/oauth/authorize?` +
+      `client_id=${GITHUB_CLIENT_ID}&` +
+      `redirect_uri=${window.location.origin}/login/github`
+    );
     setIsLoading(false);
   };
 
@@ -416,7 +420,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       `response_type=code&` +
       `redirect_uri=${window.location.origin}/login/microsoft&` +
       `response_mode=query&` +
-      `scope=${MICROSOFT_SCOPE}%2f.default&` +
+      `scope=${MICROSOFT_SCOPE}&` +
       `state=12345&` +
       `sso_reload=true`
     );
