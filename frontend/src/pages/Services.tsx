@@ -175,7 +175,7 @@ function Services() {
               Edit Discord Authorization
             </Button>
           ) : (
-            <Button className="w-full" onClick={() => window.location.assign(`https://discord.com/oauth2/authorize?client_id=${import.meta.env.VITE_DISCORD_CLIENT_ID as string}&response_type=code&redirect_uri=${window.location.origin}/services/discord&integration_type=0&scope=identify+email`)}>
+            <Button className="w-full" onClick={() => window.location.assign(`https://discord.com/oauth2/authorize?client_id=${import.meta.env.VITE_DISCORD_CLIENT_ID as string}&response_type=code&redirect_uri=${window.location.origin}/services/discord&integration_type=0&scope=identify+email+bot`)}>
               Authorize with Discord
             </Button>
           )}
