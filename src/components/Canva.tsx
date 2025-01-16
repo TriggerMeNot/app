@@ -410,6 +410,9 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
           onNodeDragStop={onNodeDragStop}
           colorMode={theme}
           className='touch-flow'
+          proOptions={{
+            hideAttribution: true,
+          }}
         >
           <Background />
           <Controls />
