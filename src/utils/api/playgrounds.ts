@@ -7,6 +7,7 @@ async function getAllPlaygrounds(apiUrl: string, token: string)
     },
   });
   const data = await response.json();
+  data.sort((a: any, b: any) => a.id - b.id);
   return data;
 }
 
