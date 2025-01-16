@@ -489,7 +489,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
     setIsLoading(true);
     window.location.assign(
-      `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&permissions=562949953427456&response_type=code&redirect_uri=${window.location.origin}/login/discord&integration_type=0&scope=identify+email+bot`
+      `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&permissions=562949953427456&response_type=code&redirect_uri=${window.location.origin}/login/discord&integration_type=0&scope=identify+email`
     );
     setIsLoading(false);
   }
