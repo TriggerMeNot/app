@@ -30,12 +30,14 @@ import { useForm } from "react-hook-form";
 
 import { useAuth } from '@/contexts/AuthProvider';
 import { Label } from '../ui/label';
+import { useToast } from '@/hooks/use-toast';
 
 const ActionNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => {
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { theme } = useTheme();
   const { token, backendAddress } = useAuth();
+  const { toast } = useToast();
 
   const handleDeleteClick = () => {
     setIsConfirmingDelete(true);
@@ -194,6 +196,11 @@ const ActionNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => {
                     data.playgroundActionId as string,
                     processedValues
                   );
+                  toast({
+                    title: 'Saving...',
+                    description: 'Your changes are being saved.',
+                  });
+                  setIsOpen(false);
                 })}
               >
                 {Object.keys(dynamicSchemaShape).map((fieldKey) => (
@@ -229,9 +236,11 @@ const ActionNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => {
                       Delete Node
                     </Button>
                   )}
-                  <Button type="submit" variant="default">
-                    Save
-                  </Button>
+                    {Object.keys(dynamicSchemaShape).length > 0 && (
+                      <Button type="submit" variant="default">
+                        Save
+                      </Button>
+                    )}
                 </div>
               </form>
             </Form>

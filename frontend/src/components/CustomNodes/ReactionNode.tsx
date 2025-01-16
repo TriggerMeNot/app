@@ -30,12 +30,14 @@ import { useForm } from "react-hook-form";
 
 import { useAuth } from '@/contexts/AuthProvider';
 import { Label } from '@radix-ui/react-dropdown-menu';
+import { useToast } from '@/hooks/use-toast';
 
 const ReactionNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => {
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { theme } = useTheme();
   const { token, backendAddress } = useAuth();
+  const { toast } = useToast();
 
   const handleDeleteClick = () => {
     setIsConfirmingDelete(true);
@@ -202,6 +204,11 @@ const ReactionNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => {
                     data.playgroundReactionId as string,
                     processedValues
                   );
+                  toast({
+                    title: 'Saving...',
+                    description: 'Your changes are being saved.',
+                  });
+                  setIsOpen(false);
                 })}
               >
                 {Object.keys(dynamicSchemaShape).map((fieldKey) => (
