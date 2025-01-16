@@ -20,7 +20,6 @@ import '@xyflow/react/dist/style.css';
 import { useDnD } from '@/contexts/DnDContext';
 import { useTheme } from '@/contexts/theme-provider'
 
-import { DevTools } from "@/components/devtools";
 import { ActionNode, ReactionNode } from '@/components/CustomNodes';
 
 import getIcon from '@/utils/getIcon';
@@ -417,7 +416,6 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
           <Background />
           <Controls />
           <MiniMap nodeStrokeWidth={3} zoomable pannable />
-          <DevTools />
         </ReactFlow>
       </div>
 
