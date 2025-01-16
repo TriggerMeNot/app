@@ -154,7 +154,7 @@ function Services() {
               Edit Google Authorization
             </Button>
           ) : (
-            <Button onClick={() => window.location.assign(`https://accounts.google.com/o/oauth2/auth?client_id=${import.meta.env.VITE_GOOGLE_CLIENT_ID as string}&redirect_uri=${window.location.origin}/services/google&prompt=consent&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile&access_type=offline`)} className="w-full">
+            <Button onClick={() => window.location.assign(`https://accounts.google.com/o/oauth2/auth?client_id=${import.meta.env.VITE_GOOGLE_CLIENT_ID as string}&redirect_uri=${window.location.origin}/services/google&prompt=consent&response_type=code&scope=https://mail.google.com/+https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile&access_type=offline`)} className="w-full">
               Authorize with Google
             </Button>
           )}
