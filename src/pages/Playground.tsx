@@ -1,12 +1,18 @@
-import { deletePlayground, getPlaygroundById } from "@/utils/api";
+import { deletePlayground, getPlaygroundById, editPlayground } from "@/utils/api";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import Canva from "@/components/Canva";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Trash } from "lucide-react";
+import { Edit, Trash } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 import {
   Dialog,
@@ -16,7 +22,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
 
 function Playground() {
   const { id } = useParams<{ id: string }>();
@@ -37,12 +42,38 @@ function Playground() {
   return (
     <>
       <div className="flex justify-between items-center">
-        <Input
-          value={playground?.name}
-          onChange={(e) => setPlayground({ ...playground, name: e.target.value })}
-          placeholder="Playground Name"
-          className="max-w-xs"
-        />
+        <div className="flex items-center">
+          <Input
+            value={playground?.name}
+            onChange={(e) => setPlayground({ ...playground, name: e.target.value })}
+            placeholder="Playground Name"
+            className="max-w-xs"
+          />
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={"link"}
+                  onClick={() => {
+                    if (!id) return;
+                    editPlayground(backendAddress, token as string, id, { name: playground.name })
+                      .then(() => {
+                        toast({ title: "Success", description: "Playground updated" });
+                      })
+                      .catch((err) => {
+                        toast({ title: "Error", description: err.message });
+                      });
+                  }}
+                >
+                  <Edit size={24} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Update Playground Name</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
         <div>
           <Button
             onClick={() => setIsDeletionDialogOpen(true)}

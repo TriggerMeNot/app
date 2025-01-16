@@ -184,6 +184,24 @@ const editAction = async (backendAddress: string, token: string, playgroundId: s
   return data;
 };
 
+const editPlayground = async (backendAddress: string, token: string, playgroundId: string, playground: any) => {
+  const response = await fetch(`${backendAddress}/api/playground/${playgroundId}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(playground),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to edit playground.");
+  }
+
+  const data = await response.json();
+  return data;
+}
+
 export default {
   getAllPlaygrounds,
   createPlayground,
@@ -198,4 +216,5 @@ export default {
   deleteLink,
   editReaction,
   editAction,
+  editPlayground
 };
