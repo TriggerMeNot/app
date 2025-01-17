@@ -34,9 +34,14 @@ function Playground() {
   useEffect(() => {
     if (!id)
       return;
-    getPlaygroundById(backendAddress, token as string, parseInt(id)).then((data) => {
-      setPlayground(data);
-    });
+    getPlaygroundById(backendAddress, token as string, parseInt(id))
+      .then((data) => {
+        setPlayground(data);
+      })
+      .catch(() => {
+        toast({ title: "Error", description: "This playground does not exist" });
+        navigate("/");
+      });
   }, [backendAddress, token]);
 
   return (

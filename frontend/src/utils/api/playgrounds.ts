@@ -32,6 +32,11 @@ async function getPlaygroundById(apiUrl: string, token: string, id: number)
       Authorization: `Bearer ${token}`,
     },
   });
+
+  if (!response.ok) {
+    throw new Error("Failed to get playground.");
+  }
+
   const data = await response.json();
   return data;
 }
