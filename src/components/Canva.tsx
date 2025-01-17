@@ -115,6 +115,10 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
     const nodes: any[] = [];
     const edges: any[] = [];
 
+    if (!playground) {
+      return { nodes, edges };
+    }
+
     playground.actions.forEach((action: any, _index: number) => {
       nodes.push({
         id: `action:${action.id}`,

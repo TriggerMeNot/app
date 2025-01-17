@@ -38,6 +38,7 @@ function Router() {
               <Route path="/services/*" element={<Services />} />
               <Route path="*" element={<NotFound />} />
             </Route>
+            <Route path="/playground/" element={<NotFound />} />
             <Route path="/playground/:id" element={
               <ReactFlowProvider>
                 <DnDProvider>
