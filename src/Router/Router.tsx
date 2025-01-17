@@ -4,6 +4,7 @@ import PrivateRoute from "./PrivateRoute";
 import AuthProvider from "@/contexts/AuthProvider";
 import { ReactFlowProvider } from "@xyflow/react";
 import { DnDProvider } from "@/contexts/DnDContext";
+import { Icons } from "@/components/ui/icons";
 
 const Login = lazy(() => import("@/pages/Login"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
@@ -21,7 +22,13 @@ function Router() {
       }}
     >
       <AuthProvider>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={
+          <Layout>
+            <div className="flex justify-center items-center h-full">
+              <Icons.spinner className="animate-spin h-8 w-8" />
+            </div>
+          </Layout>
+        }>
           <Routes>
             <Route path="/login/*" element={<Login />} />
             <Route path="/" element={<Layout><PrivateRoute /></Layout>}>
