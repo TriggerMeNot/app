@@ -45,26 +45,32 @@ const Home = () => {
     setCurrentPage(page);
   };
 
-  useEffect(() => {
-    const fetchPlaygroundData = async () => {
-      const playgroundsData = await Promise.all(
-        displayedPlaygrounds.map((playground) =>
-          getPlaygroundById(backendAddress, token as string, playground.id)
-        )
-      );
-      setPlaygrounds((prevPlaygrounds) => {
-        const updatedPlaygrounds = [...prevPlaygrounds];
-        playgroundsData.forEach((data) => {
-          const index = updatedPlaygrounds.findIndex((pg) => pg.id === data.id);
-          if (index !== -1) {
-            updatedPlaygrounds[index] = data;
-          }
-        });
-        return updatedPlaygrounds;
+  const fetchPlaygroundData = async () => {
+    const playgroundsData = await Promise.all(
+      displayedPlaygrounds.map(async (playground) => {
+        if (!playground.detailsFetched) {
+          const data = await getPlaygroundById(backendAddress, token as string, playground.id);
+          return { ...playground, ...data, detailsFetched: true };
+        }
+        return playground;
+      })
+    );
+    setPlaygrounds((prevPlaygrounds) => {
+      const updatedPlaygrounds = [...prevPlaygrounds];
+      playgroundsData.forEach((data) => {
+        const index = updatedPlaygrounds.findIndex((pg) => pg.id === data.id);
+        if (index !== -1) {
+          updatedPlaygrounds[index] = data;
+        }
       });
-    };
+      return updatedPlaygrounds;
+    });
+  };
 
-    fetchPlaygroundData();
+  useEffect(() => {
+    if (displayedPlaygrounds.some(pg => !pg.detailsFetched)) {
+      fetchPlaygroundData();
+    }
   }, [displayedPlaygrounds, backendAddress, token]);
 
   return (
