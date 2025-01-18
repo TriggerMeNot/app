@@ -138,7 +138,7 @@ function UserRegisterAuthForm({ className, ...props }: UserAuthFormProps) {
 }
 
 export function UserAuthForm({ mode, className, ...props }: UserAuthFormProps) {
-  const { isLoading, loginWithGithub, loginWithGoogle, loginWithMicrosoft, loginWithDiscord } = useAuth();
+  const { isLoading, services } = useAuth();
 
   return (
     <>
@@ -147,54 +147,30 @@ export function UserAuthForm({ mode, className, ...props }: UserAuthFormProps) {
       ) : (
         <UserRegisterAuthForm mode={"register"} className={className} {...props} />
       )}
-      <Button
-        disabled={isLoading}
-        className="w-full"
-        onClick={loginWithGithub}
-      >
-        {isLoading ? (
-          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <Icons.gitHub className="mr-2 h-4 w-4" />
-        )}
-        Sign In with GitHub
-      </Button>
-      <Button
-        disabled={isLoading}
-        className="w-full"
-        onClick={loginWithGoogle}
-      >
-        {isLoading ? (
-          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <Icons.google className="mr-2 h-4 w-4" />
-        )}
-        Sign In with Google
-      </Button>
-      <Button
-        disabled={isLoading}
-        className="w-full"
-        onClick={loginWithMicrosoft}
-      >
-        {isLoading ? (
-          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <Icons.microsoft className="mr-2 h-4 w-4" />
-        )}
-        Sign In with Microsoft
-      </Button>
-      <Button
-        disabled={isLoading}
-        className="w-full"
-        onClick={loginWithDiscord}
-      >
-        {isLoading ? (
-          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <Icons.discord className="mr-2 h-4 w-4" />
-        )}
-        Sign In with Discord
-      </Button>
+      {services.map((service) => {
+        if (!service?.oauths?.authenticate_uri) return null;
+        return (
+          <Button
+            key={service.name}
+            disabled={isLoading}
+            className="w-full"
+            onClick={() => {
+              if (service.oauths?.authenticate_uri) {
+                window.location.assign(service.oauths.authenticate_uri);
+              }
+            }}
+          >
+            {isLoading ? (
+              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              Icons[service.name.toLowerCase() as keyof typeof Icons]
+                ? React.createElement(Icons[service.name.toLowerCase() as keyof typeof Icons], { className: "mr-2 h-4 w-4" })
+                : null
+            )}
+            Sign In with {service.name}
+          </Button>
+        )
+      })}
     </>
   )
 }

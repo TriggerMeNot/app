@@ -4,15 +4,6 @@ import { z } from "zod"
 import { ReactNode } from "react";
 import { useToast } from "@/hooks/use-toast";
 
-const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID as string;
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
-
-const MICROSOFT_TENANT_ID = import.meta.env.VITE_MICROSOFT_TENANT_ID as string;
-const MICROSOFT_CLIENT_ID = import.meta.env.VITE_MICROSOFT_CLIENT_ID as string;
-const MICROSOFT_SCOPE = import.meta.env.VITE_MICROSOFT_SCOPE as string;
-
-const DISCORD_CLIENT_ID = import.meta.env.VITE_DISCORD_CLIENT_ID as string;
-
 export const LoginSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
   password: z.string().min(1, { message: "Password is required." }),
@@ -53,9 +44,14 @@ type Reaction = {
 };
 
 type Service = {
+  description: ReactNode;
   name: string;
   actions: Action[];
   reactions: Reaction[];
+  oauths?: {
+    authenticate_uri: string;
+    authorization_uri: string;
+  };
 };
 
 type AuthContextType = {
@@ -65,10 +61,6 @@ type AuthContextType = {
   setBackendAddress: (address: string) => void;
   registerWithUsernameAndPassword: (data: z.infer<typeof RegisterSchema>) => Promise<void>;
   loginWithUsernameAndPassword: (data: z.infer<typeof LoginSchema>) => Promise<void>;
-  loginWithGithub: () => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
-  loginWithMicrosoft: () => Promise<void>;
-  loginWithDiscord: () => Promise<void>;
   logOut: () => void;
   checkIfLoggedIn: () => boolean;
   isLoading: boolean;
@@ -82,10 +74,6 @@ const AuthContext = createContext<AuthContextType>({
   setBackendAddress: (_address: string) => {},
   registerWithUsernameAndPassword: async (_data: z.infer<typeof RegisterSchema>) => {},
   loginWithUsernameAndPassword: async (_data: z.infer<typeof LoginSchema>) => {},
-  loginWithGithub: async () => {},
-  loginWithGoogle: async () => {},
-  loginWithMicrosoft: async () => {},
-  loginWithDiscord: async () => {},
   logOut: () => {},
   checkIfLoggedIn: () => false,
   isLoading: false,
@@ -429,70 +417,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       toast({ title: "Error", description: (error instanceof Error) ? error.message : "An unknown error occurred." });
       setIsLoading(false);
     }
-  }
-
-  const loginWithGithub = async () => {
-    if (!GITHUB_CLIENT_ID) {
-      toast({ title: "Error", description: "Github client ID is not set, please contact the administrator." });
-      return;
-    }
-    setIsLoading(true);
-    window.location.assign(
-      `https://github.com/login/oauth/authorize?` +
-      `client_id=${GITHUB_CLIENT_ID}&` +
-      `redirect_uri=${window.location.origin}/login/github`
-    );
-    setIsLoading(false);
   };
-
-  const loginWithGoogle = async () => {
-    if (!GOOGLE_CLIENT_ID) {
-      toast({ title: "Error", description: "Google client ID is not set, please contact the administrator." });
-      return;
-    }
-    setIsLoading(true);
-    window.location.assign(
-      `https://accounts.google.com/o/oauth2/v2/auth?` +
-      `redirect_uri=${window.location.origin}/login/google&` +
-      `prompt=consent&` +
-      `response_type=code&` +
-      `client_id=${GOOGLE_CLIENT_ID}&` +
-      `scope=https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile&` +
-      `access_type=offline`
-    );
-    setIsLoading(false);
-  }
-
-  const loginWithMicrosoft = async () => {
-    if (!MICROSOFT_CLIENT_ID) {
-      toast({ title: "Error", description: "Microsoft client ID is not set, please contact the administrator." });
-      return;
-    }
-    setIsLoading(true);
-    window.location.assign(
-      `https://login.microsoftonline.com/${MICROSOFT_TENANT_ID}/oauth2/v2.0/authorize?` +
-      `client_id=${MICROSOFT_CLIENT_ID}&` +
-      `response_type=code&` +
-      `redirect_uri=${window.location.origin}/login/microsoft&` +
-      `response_mode=query&` +
-      `scope=${MICROSOFT_SCOPE}&` +
-      `state=12345&` +
-      `sso_reload=true`
-    );
-    setIsLoading(false);
-  }
-
-  const loginWithDiscord = async () => {
-    if (!DISCORD_CLIENT_ID) {
-      toast({ title: "Error", description: "Discord client ID is not set, please contact the administrator." });
-      return;
-    }
-    setIsLoading(true);
-    window.location.assign(
-      `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&permissions=562949953427456&response_type=code&redirect_uri=${window.location.origin}/login/discord&integration_type=0&scope=identify+email`
-    );
-    setIsLoading(false);
-  }
 
   const logOut = () => {
     setUser(null);
@@ -516,10 +441,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         setBackendAddress,
         registerWithUsernameAndPassword,
         loginWithUsernameAndPassword,
-        loginWithGithub,
-        loginWithGoogle,
-        loginWithMicrosoft,
-        loginWithDiscord,
         logOut,
         checkIfLoggedIn,
         isLoading,

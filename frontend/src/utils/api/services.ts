@@ -110,6 +110,34 @@ async function sendServiceMicrosoftAuth(backendAddress: string, token: string, c
   return data;
 }
 
+async function getServiceServiceAuth(backendAddress: string, token: string, service: string)
+{
+  const response = await fetch(`${backendAddress}/api/${service.toLowerCase()}/authorize`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+  return data;
+}
+
+async function sendServiceServiceAuth(backendAddress: string, token: string, service: string, code: string)
+{
+  const response = await fetch(`${backendAddress}/api/${service.toLowerCase()}/authorize`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ code }),
+  });
+
+  const data = await response.json();
+  return data;
+}
+
 export default {
   getServiceGithubAuth,
   sendServiceGithubAuth,
@@ -119,4 +147,6 @@ export default {
   sendServiceDiscordAuth,
   getServiceMicrosoftAuth,
   sendServiceMicrosoftAuth,
+  getServiceServiceAuth,
+  sendServiceServiceAuth,
 };

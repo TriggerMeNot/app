@@ -23,13 +23,9 @@ function Router() {
     >
       <AuthProvider>
         <Suspense fallback={
-          <DnDProvider>
-            <Layout>
               <div className="flex justify-center items-center h-full">
                 <Icons.spinner className="animate-spin h-8 w-8" />
               </div>
-            </Layout>
-          </DnDProvider>
         }>
           <Routes>
             <Route path="/login/*" element={<Login />} />
