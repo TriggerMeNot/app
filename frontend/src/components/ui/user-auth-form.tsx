@@ -141,11 +141,10 @@ function UserRegisterAuthForm({ className, ...props }: UserAuthFormProps) {
 }
 
 export function UserAuthForm({ mode, className, ...props }: UserAuthFormProps) {
-  const { backendAddress, isLoading, services } = useAuth();
+  const { isLoading, services } = useAuth();
 
   return (
     <>
-      {backendAddress}
       {mode === "login" ? (
         <UserLoginAuthForm mode={"login"} className={className} {...props} />
       ) : (
