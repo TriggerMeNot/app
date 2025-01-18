@@ -8,7 +8,10 @@ const config: CapacitorConfig = {
     androidScheme: 'http',
     iosScheme: 'http',
     hostname: 'localhost:8081',
-    cleartext: true
+    cleartext: true,
+    allowNavigation: [
+      "*"
+    ]
   },
   plugins: {
     App: {
