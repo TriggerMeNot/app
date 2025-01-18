@@ -164,7 +164,7 @@ export function UserAuthForm({ mode, className, ...props }: UserAuthFormProps) {
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             ) : (
               Icons[service.name.toLowerCase() as keyof typeof Icons]
-                ? React.createElement(Icons[service.name.toLowerCase() as keyof typeof Icons], { className: "mr-2 h-4 w-4" })
+                ? React.createElement(Icons[service.name.toLowerCase() as keyof typeof Icons || Icons["default"]], { className: "mr-2 h-4 w-4" })
                 : null
             )}
             Sign In with {service.name}

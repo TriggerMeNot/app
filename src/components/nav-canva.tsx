@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/sheet";
 import { ChevronRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthProvider";
-import getIcon from '@/utils/getIcon';
+import { Icons } from "./ui/icons";
 
 export function NavCanva({
   ...props
@@ -44,7 +44,7 @@ export function NavCanva({
         type: `${type}:${item.id}`,
         data: {
           description: item.description,
-          icon: getIcon(serviceName, "Book"),
+          icon: React.createElement(Icons[serviceName.toLowerCase() as keyof typeof Icons] || Icons["default"]),
           ...(type === "action" ? {
             ...services.find((service) => service.actions.some((a) => a.id === item.id))?.actions.find((a) => a.id === item.id),
           } : (type === "reaction" ? {
@@ -67,9 +67,7 @@ export function NavCanva({
           <Collapsible key={service.name}>
             <SidebarMenuItem>
               <SidebarMenuButton>
-                {getIcon(service.name, "") !== undefined && (
-                  React.createElement(getIcon(service.name, "") as React.ComponentType<{ size: number }>, { size: 20 })
-                )}
+                {React.createElement(Icons[service.name.toLowerCase() as keyof typeof Icons] || Icons["default"])}
                 {service.name}
               </SidebarMenuButton>
               <CollapsibleTrigger asChild>
