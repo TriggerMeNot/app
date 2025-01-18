@@ -99,15 +99,15 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [microsoftCode, setMicrosoftCode] = useState<string | null>(null);
   const [discordCode, setDiscordCode] = useState<string | null>(null);
 
-  useEffect(() => {
-    App.addListener("appUrlOpen", async (event) => {
-      if (event.url.startsWith(about.client.redirect_uri)) {
-        const slug = event.url.split(about.client.redirect_uri)[1];
-        Browser.close();
-        navigate(slug);
-      }
-    });
-  }, [about]);
+  // useEffect(() => {
+  //   App.addListener("appUrlOpen", async (event) => {
+  //     if (event.url.startsWith(about.client.redirect_uri)) {
+  //       const slug = event.url.split(about.client.redirect_uri)[1];
+  //       Browser.close();
+  //       navigate(slug);
+  //     }
+  //   });
+  // }, [about]);
 
   const getServices = useCallback(async () => {
     try {
@@ -158,26 +158,23 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [token]);
 
   useEffect(() => {
-    const fn = async () => {
-      if (window.location.pathname !== "/login/github") return;
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get("code");
+    const fn = async (event: any) => {
+      if (event.url.endsWith("/login/github")) {
+        const url = new URL(event.url);
+        const code = url.searchParams.get("code");
 
-      if (!code) return;
+        if (!code) return;
 
-      if (urlParams.get("setup_action") === "install") {
-        navigate(`/services/github?code=${code}&setup_action=install`);
-      } else {
-        setGithubCode(code);
-        window.history.replaceState({}, document.title, window.location.pathname);
+        if (url.searchParams.get("setup_action") === "install") {
+          navigate(`/services/github?code=${code}&setup_action=install`);
+        } else {
+          setGithubCode(code);
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
       }
-    }
+    };
 
-    window.addEventListener("load", fn);
-
-    return () => {
-      window.removeEventListener("load", fn);
-    }
+    App.addListener("appUrlOpen", fn);
   }, []);
 
   useEffect(() => {
@@ -213,22 +210,19 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [githubCode]);
 
   useEffect(() => {
-    const fn = async () => {
-      if (window.location.pathname !== "/login/google") return;
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get("code");
+    const fn = async (event: any) => {
+      if (event.url.endsWith("/login/google")) {
+        const url = new URL(event.url);
+        const code = url.searchParams.get("code");
 
-      if (!code) return;
+        if (!code) return;
 
-      setGoogleCode(code);
-      window.history.replaceState({}, document.title, window.location.pathname);
+        setGoogleCode(code);
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
     }
 
-    window.addEventListener("load", fn);
-
-    return () => {
-      window.removeEventListener("load", fn);
-    }
+    App.addListener("appUrlOpen", fn);
   }, []);
 
   useEffect(() => {
@@ -264,22 +258,19 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [googleCode]);
 
   useEffect(() => {
-    const fn = async () => {
-      if (window.location.pathname !== "/login/microsoft") return;
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get("code");
+    const fn = async (event: any) => {
+      if (event.url.endsWith("/login/microsoft")) {
+        const url = new URL(event.url);
+        const code = url.searchParams.get("code");
 
-      if (!code) return;
+        if (!code) return;
 
-      setMicrosoftCode(code);
-      window.history.replaceState({}, document.title, window.location.pathname);
-    };
-
-    window.addEventListener("load", fn);
-
-    return () => {
-      window.removeEventListener("load", fn);
+        setMicrosoftCode(code);
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
     }
+
+    App.addListener("appUrlOpen", fn);
   }, []);
 
   useEffect(() => {
@@ -315,22 +306,19 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [microsoftCode]);
 
   useEffect(() => {
-    const fn = async () => {
-      if (window.location.pathname !== "/login/discord") return;
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get("code");
+    const fn = async (event: any) => {
+      if (event.url.endsWith("/login/discord")) {
+        const url = new URL(event.url);
+        const code = url.searchParams.get("code");
 
-      if (!code) return;
+        if (!code) return;
 
-      setDiscordCode(code);
-      window.history.replaceState({}, document.title, window.location.pathname);
-    };
-
-    window.addEventListener("load", fn);
-
-    return () => {
-      window.removeEventListener("load", fn);
+        setDiscordCode(code);
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
     }
+
+    App.addListener("appUrlOpen", fn);
   }, []);
 
   useEffect(() => {
