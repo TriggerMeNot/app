@@ -58,6 +58,9 @@ const PreviewFlow = ({ playground }: { playground: any }) => {
             service.actions.some((a) => a.id === action.actionId)
           )?.actions.find((a) => a.id === action.actionId),
           icon: React.createElement(Icons[services.find((service) => service.actions.some((a) => a.id === action.actionId))?.name.toLowerCase() as keyof typeof Icons] || Icons["default"]),
+          serviceName: services.find((service) =>
+            service.actions.some((a) => a.id === action.actionId)
+          )?.name,
         },
       });
     });
@@ -76,6 +79,9 @@ const PreviewFlow = ({ playground }: { playground: any }) => {
             service.reactions.some((r) => r.id === reaction.reactionId)
           )?.reactions.find((r) => r.id === reaction.reactionId),
           icon: React.createElement(Icons[services.find((service) => service.reactions.some((r) => r.id === reaction.reactionId))?.name.toLowerCase() as keyof typeof Icons] || Icons["default"]),
+          serviceName: services.find((service) =>
+            service.reactions.some((r) => r.id === reaction.reactionId)
+          )?.name,
         },
       });
     });
