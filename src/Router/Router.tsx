@@ -12,6 +12,7 @@ const Home = lazy(() => import("@/pages/Home"));
 const Playground = lazy(() => import("@/pages/Playground"));
 const Services = lazy(() => import("@/pages/Services"));
 const Layout = lazy(() => import("@/components/Layout"));
+const ToS = lazy(() => import("@/pages/ToS"));
 
 function Router() {
   return (
@@ -29,6 +30,7 @@ function Router() {
         }>
           <Routes>
             <Route path="/login/*" element={<Login />} />
+            <Route path="/terms" element={<ToS />} />
             <Route path="/" element={<Layout><PrivateRoute /></Layout>}>
               <Route index element={<Home />} />
               <Route path="/services/*" element={<Services />} />
