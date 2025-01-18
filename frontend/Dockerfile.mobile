@@ -87,6 +87,7 @@ RUN npm run build
 # Build the APK
 RUN npx cap add android
 RUN npx cap sync
+COPY /workdir/AndroidManifest.xml /workdir/android/app/src/main/AndroidManifest.xml
 RUN keytool -genkey -v \
     -keystore /workdir/android/keystore \
     -keyalg RSA \

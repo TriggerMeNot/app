@@ -13,7 +13,23 @@ const config: CapacitorConfig = {
   plugins: {
     App: {
       domain: 'localhost:8081',
-      paths: ['/login', '/terms', '/reset-password', '/services', '/settings', '/playground', '/playground/:id']
+      paths: [
+        '/login/',
+        '/login/google/',
+        '/login/github/',
+        '/login/microsoft/',
+        '/login/discord/',
+        '/terms/',
+        '/reset-password/',
+        '/services/',
+        '/services/google/',
+        '/services/github/',
+        '/services/microsoft/',
+        '/services/discord/',
+        '/settings/',
+        '/playground/',
+        '/playground/:id/'
+      ]
     }
   },
   ios: {
