@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { z } from "zod"
 import { ReactNode } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { App } from '@capacitor/app';
+import { Browser } from '@capacitor/browser';
 
 export const LoginSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -56,6 +58,7 @@ type Service = {
 
 type AuthContextType = {
   user: any;
+  about: any;
   token: string | undefined;
   backendAddress: string;
   setBackendAddress: (address: string) => void;
@@ -69,6 +72,7 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  about: null,
   token: undefined,
   backendAddress: localStorage.getItem("site") || import.meta.env.VITE_BACKEND_DEFAULT_ADDRESS as string || "http://localhost:8080",
   setBackendAddress: (_address: string) => {},
@@ -86,6 +90,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [backendAddress, setBackendAddress] = useState<string>(localStorage.getItem("site") || import.meta.env.VITE_BACKEND_DEFAULT_ADDRESS as string || "http://localhost:8080");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [services, setServices] = useState<Service[]>([]);
+  const [about, setAbout] = useState<any>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -94,11 +99,22 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [microsoftCode, setMicrosoftCode] = useState<string | null>(null);
   const [discordCode, setDiscordCode] = useState<string | null>(null);
 
+  useEffect(() => {
+    App.addListener("appUrlOpen", async (event) => {
+      if (event.url.startsWith(about.client.redirect_uri)) {
+        const slug = event.url.split(about.client.redirect_uri)[1];
+        Browser.close();
+        navigate(slug);
+      }
+    });
+  }, [about]);
+
   const getServices = useCallback(async () => {
     try {
       const response = await fetch(`${backendAddress}/about.json`);
       if (response.ok) {
         const data = await response.json();
+        setAbout(data);
         setServices(data.server.services);
       } else {
         const error = await response.json();
@@ -436,6 +452,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider
       value={{
         user,
+        about,
         token,
         backendAddress,
         setBackendAddress,
