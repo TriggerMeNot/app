@@ -1,6 +1,7 @@
 import playgrounds from "./playgrounds";
 import services from "./services";
 import auth from "./auth";
+import user from "./user";
 
 export const {
   getAllPlaygrounds,
@@ -36,3 +37,7 @@ export const {
   forgotPassword,
   resetPassword,
 } = auth;
+
+export const {
+  changeUserName,
+} = user;
