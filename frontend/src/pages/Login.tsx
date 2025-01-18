@@ -94,6 +94,14 @@ function Login() {
               )}
             </p>
             <p className="px-8 text-center text-sm text-muted-foreground">
+              <Link
+                to="/reset-password"
+                className="hover:text-primary"
+              >
+                Forgot password?
+              </Link>
+            </p>
+            <p className="px-8 text-center text-sm text-muted-foreground">
               By clicking continue, you agree to our{" "}
               <Link
                 to="/terms"
