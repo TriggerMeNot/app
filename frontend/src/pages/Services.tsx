@@ -7,6 +7,7 @@ import {
 } from "@/utils/api";
 import { useAuth } from "@/contexts/AuthProvider";
 import { Browser } from "@capacitor/browser";
+import { Capacitor } from '@capacitor/core';
 
 function Services() {
   const { backendAddress, token, services } = useAuth();
@@ -72,7 +73,11 @@ function Services() {
                 <Button
                   onClick={async () => {
                     if (service.oauths?.authorization_uri) {
-                      await Browser.open({ url: service.oauths.authorization_uri });
+                      if (Capacitor.isNativePlatform()) {
+                        await Browser.open({ url: service.oauths.authorization_uri });
+                      } else {
+                        window.location.assign(service.oauths.authorization_uri);
+                      }
                     }
                   }}
                   className="w-full"
