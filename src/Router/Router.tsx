@@ -13,6 +13,7 @@ const Playground = lazy(() => import("@/pages/Playground"));
 const Services = lazy(() => import("@/pages/Services"));
 const Layout = lazy(() => import("@/components/Layout"));
 const ToS = lazy(() => import("@/pages/ToS"));
+const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
 
 function Router() {
   return (
@@ -31,6 +32,7 @@ function Router() {
           <Routes>
             <Route path="/login/*" element={<Login />} />
             <Route path="/terms" element={<ToS />} />
+            <Route path="/reset-password" element={<ForgotPassword />} />
             <Route path="/" element={<Layout><PrivateRoute /></Layout>}>
               <Route index element={<Home />} />
               <Route path="/services/*" element={<Services />} />
