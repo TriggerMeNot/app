@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
   ReactFlow,
   Background,
@@ -10,9 +10,10 @@ import {
 import '@xyflow/react/dist/style.css';
 
 import { ActionNode, ReactionNode } from '@/components/CustomNodes';
-import getIcon from '@/utils/getIcon';
 import { useTheme } from '@/contexts/theme-provider';
 import { useAuth } from '@/contexts/AuthProvider';
+
+import { Icons } from './ui/icons';
 
 const PreviewFlow = ({ playground }: { playground: any }) => {
   const { theme } = useTheme();
@@ -56,12 +57,7 @@ const PreviewFlow = ({ playground }: { playground: any }) => {
           ...services.find((service) =>
             service.actions.some((a) => a.id === action.actionId)
           )?.actions.find((a) => a.id === action.actionId),
-          icon: getIcon(
-            services.find((service) =>
-              service.actions.some((a) => a.id === action.actionId)
-            )?.name || "",
-            "Book"
-          ),
+          icon: React.createElement(Icons[services.find((service) => service.actions.some((a) => a.id === action.actionId))?.name.toLowerCase() as keyof typeof Icons] || Icons["default"]),
         },
       });
     });
@@ -79,12 +75,7 @@ const PreviewFlow = ({ playground }: { playground: any }) => {
           ...services.find((service) =>
             service.reactions.some((r) => r.id === reaction.reactionId)
           )?.reactions.find((r) => r.id === reaction.reactionId),
-          icon: getIcon(
-            services.find((service) =>
-              service.reactions.some((r) => r.id === reaction.reactionId)
-            )?.name || "",
-            "Book"
-          ),
+          icon: React.createElement(Icons[services.find((service) => service.reactions.some((r) => r.id === reaction.reactionId))?.name.toLowerCase() as keyof typeof Icons] || Icons["default"]),
         },
       });
     });

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   ReactFlow,
@@ -22,7 +22,7 @@ import { useTheme } from '@/contexts/theme-provider'
 
 import { ActionNode, ReactionNode } from '@/components/CustomNodes';
 
-import getIcon from '@/utils/getIcon';
+import { Icons } from './ui/icons';
 
 import {
   Dialog,
@@ -131,7 +131,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
           paramsData: action.params,
           onDelete: () => handleNodeDelete([{ id: `action:${action.id}` } as Node]),
           ...services.find((service) => service.actions.some((a) => a.id === action.actionId))?.actions.find((a) => a.id === action.actionId),
-          icon: getIcon(services.find((service) => service.actions.some((a) => a.id === action.actionId))?.name || "", "Book"),
+          icon: React.createElement(Icons[services.find((service) => service.actions.some((a) => a.id === action.actionId))?.name.toLowerCase() as keyof typeof Icons] || Icons["default"]),
         },
       });
     });
@@ -148,7 +148,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
           paramsData: reaction.params,
           onDelete: () => handleNodeDelete([{ id: `reaction:${reaction.id}` } as Node]),
           ...services.find((service) => service.reactions.some((r) => r.id === reaction.reactionId))?.reactions.find((r) => r.id === reaction.reactionId),
-          icon: getIcon(services.find((service) => service.reactions.some((r) => r.id === reaction.reactionId))?.name || "", "Book"),
+          icon: React.createElement(Icons[services.find((service) => service.reactions.some((r) => r.id === reaction.reactionId))?.name.toLowerCase() as keyof typeof Icons] || Icons["default"]),
         },
       });
     });
