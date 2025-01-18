@@ -21,15 +21,8 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
 
-                <data android:pathPrefix="/login/google" />
-                <data android:pathPrefix="/login/microsoft" />
-                <data android:pathPrefix="/login/discord" />
-                <data android:pathPrefix="/login/github" />
-
-                <data android:pathPrefix="/services/google" />
-                <data android:pathPrefix="/services/microsoft" />
-                <data android:pathPrefix="/services/discord" />
-                <data android:pathPrefix="/services/github" />
+                <data android:pathPrefix="/login/" />
+                <data android:pathPrefix="/services/" />
             </intent-filter>
 
         </activity>

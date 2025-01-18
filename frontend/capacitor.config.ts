@@ -10,7 +10,8 @@ const config: CapacitorConfig = {
     hostname: 'localhost:8081',
     cleartext: true,
     allowNavigation: [
-      "*"
+      "/login/*",
+      "/services/*",
     ]
   },
   plugins: {
@@ -18,17 +19,9 @@ const config: CapacitorConfig = {
       domain: 'localhost:8081',
       paths: [
         '/login/',
-        '/login/google/',
-        '/login/github/',
-        '/login/microsoft/',
-        '/login/discord/',
         '/terms/',
         '/reset-password/',
         '/services/',
-        '/services/google/',
-        '/services/github/',
-        '/services/microsoft/',
-        '/services/discord/',
         '/settings/',
         '/playground/',
         '/playground/:id/'
