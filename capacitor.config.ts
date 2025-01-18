@@ -14,7 +14,14 @@ const config: CapacitorConfig = {
     App: {
       domain: 'localhost:8081',
       paths: [
-        '*'
+        '/login/google',
+        '/login/github',
+        '/login/microsoft',
+        '/login/discord',
+        '/services/google',
+        '/services/github',
+        '/services/microsoft',
+        '/services/discord',
       ]
     }
   },
