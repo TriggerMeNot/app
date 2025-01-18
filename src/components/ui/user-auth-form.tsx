@@ -13,6 +13,7 @@ import { Input } from "./input"
 import { LoginSchema, RegisterSchema, useAuth } from "@/contexts/AuthProvider"
 
 import { Browser } from '@capacitor/browser';
+import { Capacitor } from '@capacitor/core';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
   mode: "login" | "register"
@@ -158,7 +159,11 @@ export function UserAuthForm({ mode, className, ...props }: UserAuthFormProps) {
             className="w-full"
             onClick={async () => {
               if (service.oauths?.authenticate_uri) {
-                await Browser.open({ url: service.oauths.authenticate_uri });
+                if (Capacitor.isNativePlatform()) {
+                  await Browser.open({ url: service.oauths.authenticate_uri });
+                } else {
+                  window.location.assign(service.oauths.authenticate_uri);
+                }
               }
             }}
           >
