@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { z } from "zod"
 import { ReactNode } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { App } from '@capacitor/app';
-import { Browser } from '@capacitor/browser';
+// import { App } from '@capacitor/app';
+// import { Browser } from '@capacitor/browser';
 import { Capacitor } from '@capacitor/core';
 
 export const LoginSchema = z.object({
@@ -164,24 +164,24 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
-    const capacitorListener = async (event: any) => {
-      if (!event.url.startWith(about.client.redirect_uri + "/login/github")) return;
-      const url = new URL(event.url);
-      const code = url.searchParams.get("code");
+    // const capacitorListener = async (event: any) => {
+    //   if (!event.url.startWith(about.client.redirect_uri + "/login/github")) return;
+    //   const url = new URL(event.url);
+    //   const code = url.searchParams.get("code");
 
-      if (!code) return;
+    //   if (!code) return;
 
-      if (url.searchParams.get("setup_action") === "install") {
-        navigate(`/services/github?code=${code}&setup_action=install`);
-      } else {
-        setGithubCode(code);
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }
-      await Browser.close();
-    };
+    //   if (url.searchParams.get("setup_action") === "install") {
+    //     navigate(`/services/github?code=${code}&setup_action=install`);
+    //   } else {
+    //     setGithubCode(code);
+    //     window.history.replaceState({}, document.title, window.location.pathname);
+    //   }
+    //   await Browser.close();
+    // };
 
     if (Capacitor.isNativePlatform()) {
-      App.addListener("appUrlOpen", capacitorListener);
+      // App.addListener("appUrlOpen", capacitorListener);
     } else {
       window.addEventListener("load", fn);
     }
@@ -237,20 +237,20 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       window.history.replaceState({}, document.title, window.location.pathname);
     }
 
-    const capacitorListener = async (event: any) => {
-      if (!event.url.startWith(about.client.redirect_uri + "/login/google")) return;
-      const url = new URL(event.url);
-      const code = url.searchParams.get("code");
+    // const capacitorListener = async (event: any) => {
+    //   if (!event.url.startWith(about.client.redirect_uri + "/login/google")) return;
+    //   const url = new URL(event.url);
+    //   const code = url.searchParams.get("code");
 
-      if (!code) return;
+    //   if (!code) return;
 
-      setGoogleCode(code);
-      window.history.replaceState({}, document.title, window.location.pathname);
-      await Browser.close();
-    }
+    //   setGoogleCode(code);
+    //   window.history.replaceState({}, document.title, window.location.pathname);
+    //   await Browser.close();
+    // }
 
     if (Capacitor.isNativePlatform()) {
-      App.addListener("appUrlOpen", capacitorListener);
+      // App.addListener("appUrlOpen", capacitorListener);
     } else {
       window.addEventListener("load", fn);
     }
@@ -306,20 +306,20 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       window.history.replaceState({}, document.title, window.location.pathname);
     };
 
-    const capacitorListener = async (event: any) => {
-      if (!event.url.startWith(about.client.redirect_uri + "/login/microsoft")) return;
-      const url = new URL(event.url);
-      const code = url.searchParams.get("code");
+    // const capacitorListener = async (event: any) => {
+    //   if (!event.url.startWith(about.client.redirect_uri + "/login/microsoft")) return;
+    //   const url = new URL(event.url);
+    //   const code = url.searchParams.get("code");
 
-      if (!code) return;
+    //   if (!code) return;
 
-      setMicrosoftCode(code);
-      window.history.replaceState({}, document.title, window.location.pathname);
-      await Browser.close();
-    }
+    //   setMicrosoftCode(code);
+    //   window.history.replaceState({}, document.title, window.location.pathname);
+    //   await Browser.close();
+    // }
 
     if (Capacitor.isNativePlatform()) {
-      App.addListener("appUrlOpen", capacitorListener);
+      // App.addListener("appUrlOpen", capacitorListener);
     } else {
       window.addEventListener("load", fn);
     }
@@ -375,20 +375,20 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       window.history.replaceState({}, document.title, window.location.pathname);
     };
 
-    const capacitorListener = async (event: any) => {
-      if (!event.url.startWith(about.client.redirect_uri + "/login/discord")) return;
-      const url = new URL(event.url);
-      const code = url.searchParams.get("code");
+    // const capacitorListener = async (event: any) => {
+    //   if (!event.url.startWith(about.client.redirect_uri + "/login/discord")) return;
+    //   const url = new URL(event.url);
+    //   const code = url.searchParams.get("code");
 
-      if (!code) return;
+    //   if (!code) return;
 
-      setDiscordCode(code);
-      window.history.replaceState({}, document.title, window.location.pathname);
-      await Browser.close();
-    }
+    //   setDiscordCode(code);
+    //   window.history.replaceState({}, document.title, window.location.pathname);
+    //   await Browser.close();
+    // }
 
     if (Capacitor.isNativePlatform()) {
-      App.addListener("appUrlOpen", capacitorListener);
+      // App.addListener("appUrlOpen", capacitorListener);
     } else {
       window.addEventListener("load", fn);
     }
