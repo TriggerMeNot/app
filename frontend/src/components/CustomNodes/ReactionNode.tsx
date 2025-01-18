@@ -31,6 +31,7 @@ import { useForm } from "react-hook-form";
 import { useAuth } from '@/contexts/AuthProvider';
 import { Label } from '@radix-ui/react-dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
+import { Icons } from '../ui/icons';
 
 const ReactionNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => {
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
@@ -134,15 +135,7 @@ const ReactionNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => {
           }}
         />
         <a className="text-2xl font-medium" onClick={() => setIsOpen(true)}>
-          {data.icon ? (
-            typeof data.icon === 'string' ? (
-              <img src={data.icon} alt={`${data.label} icon`} width={20} height={20} />
-            ) : (
-              React.createElement(data.icon as React.ComponentType<{ size: number }>, { size: 20 })
-            )
-          ) : (
-            <div className="w-5 h-5" />
-          )}
+          {React.createElement(Icons[(data?.serviceName as string).toLowerCase() as keyof typeof Icons] || Icons["default"], { className: 'w-6 h-6' })}
         </a>
         <Handle
           type="source"

@@ -45,6 +45,7 @@ export function NavCanva({
         data: {
           description: item.description,
           icon: React.createElement(Icons[serviceName.toLowerCase() as keyof typeof Icons] || Icons["default"]),
+          serviceName: serviceName,
           ...(type === "action" ? {
             ...services.find((service) => service.actions.some((a) => a.id === item.id))?.actions.find((a) => a.id === item.id),
           } : (type === "reaction" ? {

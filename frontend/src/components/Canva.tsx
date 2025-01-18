@@ -132,6 +132,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
           onDelete: () => handleNodeDelete([{ id: `action:${action.id}` } as Node]),
           ...services.find((service) => service.actions.some((a) => a.id === action.actionId))?.actions.find((a) => a.id === action.actionId),
           icon: React.createElement(Icons[services.find((service) => service.actions.some((a) => a.id === action.actionId))?.name.toLowerCase() as keyof typeof Icons] || Icons["default"]),
+          serviceName: services.find((service) => service.actions.some((a) => a.id === action.actionId))?.name,
         },
       });
     });
@@ -149,6 +150,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
           onDelete: () => handleNodeDelete([{ id: `reaction:${reaction.id}` } as Node]),
           ...services.find((service) => service.reactions.some((r) => r.id === reaction.reactionId))?.reactions.find((r) => r.id === reaction.reactionId),
           icon: React.createElement(Icons[services.find((service) => service.reactions.some((r) => r.id === reaction.reactionId))?.name.toLowerCase() as keyof typeof Icons] || Icons["default"]),
+          serviceName: services.find((service) => service.reactions.some((r) => r.id === reaction.reactionId))?.name,
         },
       });
     });
