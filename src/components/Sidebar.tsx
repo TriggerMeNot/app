@@ -52,14 +52,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
         },
         {
           title: "Settings",
-          url: "#",
-          icon: Settings2,
-          items: [
-            {
-              title: "General",
-              url: "#",
-            }
-          ],
+          url: "/settings",
+          icon: Settings2
         },
       ],
       navSecondary: [

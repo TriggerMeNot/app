@@ -5,6 +5,7 @@ import Playground from "./Playground";
 import Services from "./Services";
 import ToS from "./ToS";
 import ForgotPassword from "./ForgotPassword";
+import Settings from "./Settings";
 
 export {
   Login,
@@ -14,4 +15,5 @@ export {
   Services,
   ToS,
   ForgotPassword,
+  Settings,
 };

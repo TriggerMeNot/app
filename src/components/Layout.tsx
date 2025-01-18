@@ -26,6 +26,10 @@ const breadcrumbConfig: Record<string, { name: string; url: string }[]> = {
     { name: "Home", url: "/" },
     { name: "Services", url: "/services" }
   ],
+  "/settings": [
+    { name: "Home", url: "/" },
+    { name: "Settings", url: "/settings" }
+  ],
 };
 
 function findMatchingBreadcrumbs(
