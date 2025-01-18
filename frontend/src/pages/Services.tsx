@@ -14,35 +14,42 @@ function Services() {
 
   useEffect(() => {
     const fetchStatus = async () => {
-      services.forEach(async (service) => {
-        if (!service?.oauths?.authorization_uri) return;
-        setServiceStatus({
-          ...serviceStatus,
-          [service.name]: await getServiceServiceAuth(backendAddress, token as string, service.name.toLowerCase()),
-        });
+      const statusPromises = services.map(async (service) => {
+        if (!service?.oauths?.authorization_uri) return null;
+        const status = await getServiceServiceAuth(backendAddress, token as string, service.name.toLowerCase());
+        return { [service.name]: status };
       });
+
+      const statuses = await Promise.all(statusPromises);
+      const statusObject = statuses.reduce((acc, status) => ({ ...acc, ...status }), {});
+      if (statusObject) {
+        setServiceStatus(statusObject);
+      }
     };
 
     fetchStatus();
-  }, [window.location.pathname]);
+  }, [services, backendAddress, token]);
 
   useEffect(() => {
-    services.forEach(async (service) => {
-      if (window.location.pathname !== `/services/${service.name.toLowerCase()}`) return;
+    const handleAuth = async () => {
+      const service = services.find(service => window.location.pathname === `/services/${service.name.toLowerCase()}`);
+      if (!service) return;
 
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get("code");
 
       if (code) {
         const data = await sendServiceServiceAuth(backendAddress, token as string, service.name.toLowerCase(), code);
-        setServiceStatus({
-          ...serviceStatus,
+        setServiceStatus((prevStatus) => ({
+          ...prevStatus,
           [service.name]: data,
-        });
+        }));
         window.history.replaceState({}, document.title, "/services");
       }
-    });
-  }, [window.location.pathname]);
+    };
+
+    handleAuth();
+  }, [services, backendAddress, token]);
 
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
