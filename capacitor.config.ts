@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'eu.jeffroy.area',
-  appName: 'AREA',
+  appId: 'net.triggermenot.app',
+  appName: 'TriggerMeNot',
   webDir: 'dist'
 };
 
