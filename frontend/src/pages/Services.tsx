@@ -6,6 +6,7 @@ import {
   sendServiceServiceAuth,
 } from "@/utils/api";
 import { useAuth } from "@/contexts/AuthProvider";
+import { Browser } from "@capacitor/browser";
 
 function Services() {
   const { backendAddress, token, services } = useAuth();
@@ -69,9 +70,9 @@ function Services() {
                 </Button>
               ) : (
                 <Button
-                  onClick={() => {
+                  onClick={async () => {
                     if (service.oauths?.authorization_uri) {
-                      window.location.assign(service.oauths.authorization_uri);
+                      await Browser.open({ url: service.oauths.authorization_uri });
                     }
                   }}
                   className="w-full"

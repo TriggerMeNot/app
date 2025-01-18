@@ -12,6 +12,8 @@ import { Input } from "./input"
 
 import { LoginSchema, RegisterSchema, useAuth } from "@/contexts/AuthProvider"
 
+import { Browser } from '@capacitor/browser';
+
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
   mode: "login" | "register"
 }
@@ -154,9 +156,9 @@ export function UserAuthForm({ mode, className, ...props }: UserAuthFormProps) {
             key={service.name}
             disabled={isLoading}
             className="w-full"
-            onClick={() => {
+            onClick={async () => {
               if (service.oauths?.authenticate_uri) {
-                window.location.assign(service.oauths.authenticate_uri);
+                await Browser.open({ url: service.oauths.authenticate_uri });
               }
             }}
           >

@@ -150,7 +150,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!code) return;
 
       if (urlParams.get("setup_action") === "install") {
-        window.location.assign(`${window.location.origin}/services/github?code=${code}&setup_action=install`);
+        navigate(`/services/github?code=${code}&setup_action=install`);
       } else {
         setGithubCode(code);
         window.history.replaceState({}, document.title, window.location.pathname);
