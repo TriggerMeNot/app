@@ -27,4 +27,6 @@ export const {
   sendServiceDiscordAuth,
   getServiceMicrosoftAuth,
   sendServiceMicrosoftAuth,
+  getServiceServiceAuth,
+  sendServiceServiceAuth,
 } = services;
