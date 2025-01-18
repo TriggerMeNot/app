@@ -5,7 +5,6 @@ import AuthProvider from "@/contexts/AuthProvider";
 import { ReactFlowProvider } from "@xyflow/react";
 import { DnDProvider } from "@/contexts/DnDContext";
 import { Icons } from "@/components/ui/icons";
-import AppUrlListener from "./AppUrlListener";
 
 const Login = lazy(() => import("@/pages/Login"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
@@ -25,7 +24,6 @@ function Router() {
         v7_startTransition: true,
       }}
     >
-      <AppUrlListener />
       <AuthProvider>
         <Suspense fallback={
               <div className="flex justify-center items-center h-full">
