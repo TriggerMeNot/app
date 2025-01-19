@@ -5,7 +5,7 @@ To install with docker, you'll need **docker compose**.
 ## Step 1: Clone the repository
 
 ```bash
-git clone https://github.com/AREA-equipe/app.git
+git clone https://github.com/TriggerMeNot/app.git
 ```
 
 ## Step 2: Go to the project directory

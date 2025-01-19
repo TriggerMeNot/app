@@ -33,5 +33,3 @@ You can then simply fill the form with the relevant informations needed to log i
 Press the "Sign in with Email" button below the form and you should be taken to your dashboard !
 
 ![Login form](../images/Login.png)
-
-## Using a GitHub account

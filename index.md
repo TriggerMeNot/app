@@ -9,7 +9,7 @@ hero:
   actions:
     - theme: brand
       text: Contribute
-      link: http://github.com/AREA-equipe/app
+      link: https://github.com/TriggerMeNot/
     - theme: alt
       text: Getting started
       link: /getting-started/
