@@ -1,0 +1,5 @@
+services:
+  client_web:
+    depends_on:
+      - server
+      - client_mobile
