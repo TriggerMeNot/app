@@ -1,7 +1,7 @@
 
 # Create a Node
 
-## How to create a Node
+## How to create a Node on desktop
 
 There should be a sidebar on the right of your screen containing a list of all the services you can creates nodes for. If you don't have the sidebar, click on the little square on the top left of your screen (to the left of the "Home > Playground" text) to open it.
 
@@ -18,6 +18,16 @@ Put your mouse on top of the action you desire to use, click and drag your mouse
 To get more informations about an action, you can click on its name. It will open a panel on the right of your screen with a description of the Node.
 
 ![Action info](../images/Action_info.png)
+
+## How to create a Node on mobile
+
+To create a Node on the mobile version, press the "Add Node" button at the top of the website.
+
+![Create Node Mobile](../images/Create_node_mobile.png)
+
+It will open a list of all available services and corresponding actions/reactions.
+
+Click on the action/reaction that you want to add to your canvas. Then, fill the relevant informations and click the "Create" button. The node should appear on your canvas.
 
 ## A little Node guide
 
