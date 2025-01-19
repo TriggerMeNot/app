@@ -171,23 +171,22 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (!code) return;
 
+      await Browser.close();
       if (url.searchParams.get("setup_action") === "install") {
         navigate(`/services/github?code=${code}&setup_action=install`);
       } else {
         setGithubCode(code);
-        window.history.replaceState({}, document.title, window.location.pathname);
       }
-      await Browser.close();
     };
 
-    if (Capacitor.isNativePlatform()) {
-      App.addListener("appUrlOpen", capacitorListener);
-    } else {
+    if (Capacitor.getPlatform() === "web") {
       window.addEventListener("load", fn);
+    } else {
+      App.addListener("appUrlOpen", capacitorListener);
     }
 
     return () => {
-      if (!Capacitor.isNativePlatform()) {
+      if (Capacitor.getPlatform() === "web") {
         window.removeEventListener("load", fn);
       }
     }
@@ -244,19 +243,18 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (!code) return;
 
-      setGoogleCode(code);
-      window.history.replaceState({}, document.title, window.location.pathname);
       await Browser.close();
+      setGoogleCode(code);
     }
 
-    if (Capacitor.isNativePlatform()) {
-      App.addListener("appUrlOpen", capacitorListener);
-    } else {
+    if (Capacitor.getPlatform() === "web") {
       window.addEventListener("load", fn);
+    } else {
+      App.addListener("appUrlOpen", capacitorListener);
     }
 
     return () => {
-      if (!Capacitor.isNativePlatform()) {
+      if (Capacitor.getPlatform() === "web") {
         window.removeEventListener("load", fn);
       }
     }
@@ -313,19 +311,18 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (!code) return;
 
-      setMicrosoftCode(code);
-      window.history.replaceState({}, document.title, window.location.pathname);
       await Browser.close();
+      setMicrosoftCode(code);
     }
 
-    if (Capacitor.isNativePlatform()) {
-      App.addListener("appUrlOpen", capacitorListener);
-    } else {
+    if (Capacitor.getPlatform() === "web") {
       window.addEventListener("load", fn);
+    } else {
+      App.addListener("appUrlOpen", capacitorListener);
     }
 
     return () => {
-      if (!Capacitor.isNativePlatform()) {
+      if (Capacitor.getPlatform() === "web") {
         window.removeEventListener("load", fn);
       }
     }
@@ -382,19 +379,18 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (!code) return;
 
-      setDiscordCode(code);
-      window.history.replaceState({}, document.title, window.location.pathname);
       await Browser.close();
+      setDiscordCode(code);
     }
 
-    if (Capacitor.isNativePlatform()) {
-      App.addListener("appUrlOpen", capacitorListener);
-    } else {
+    if (Capacitor.getPlatform() === "web") {
       window.addEventListener("load", fn);
+    } else {
+      App.addListener("appUrlOpen", capacitorListener);
     }
 
     return () => {
-      if (!Capacitor.isNativePlatform()) {
+      if (Capacitor.getPlatform() === "web") {
         window.removeEventListener("load", fn);
       }
     }
