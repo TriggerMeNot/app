@@ -4,6 +4,8 @@ services:
       dockerfile: Dockerfile.web
     volumes:
       - shared-volume:/app/dist
+    depends_on:
+      - client_mobile
 
   client_mobile:
     build:
@@ -11,8 +13,6 @@ services:
     command: cp /workdir/android/app/build/outputs/apk/release/app-release-signed.apk /static/client.apk
     volumes:
       - shared-volume:/static
-    depends_on:
-      - client_web
 
 volumes:
   shared-volume:
