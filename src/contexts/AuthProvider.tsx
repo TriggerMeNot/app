@@ -165,7 +165,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const capacitorListener = async (event: any) => {
-      if (!event.url.startWith(about.client.redirect_uri + "/login/github")) return;
+      if (!event.url.includes("/login/github")) return;
       const url = new URL(event.url);
       const code = url.searchParams.get("code");
 
@@ -237,7 +237,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const capacitorListener = async (event: any) => {
-      if (!event.url.startWith(about.client.redirect_uri + "/login/google")) return;
+      if (!event.url.includes("/login/google")) return;
       const url = new URL(event.url);
       const code = url.searchParams.get("code");
 
@@ -305,7 +305,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const capacitorListener = async (event: any) => {
-      if (!event.url.startWith(about.client.redirect_uri + "/login/microsoft")) return;
+      if (!event.url.includes("/login/microsoft")) return;
       const url = new URL(event.url);
       const code = url.searchParams.get("code");
 
@@ -373,7 +373,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const capacitorListener = async (event: any) => {
-      if (!event.url.startWith(about.client.redirect_uri + "/login/discord")) return;
+      if (!event.url.includes("/login/discord")) return;
       const url = new URL(event.url);
       const code = url.searchParams.get("code");
 
