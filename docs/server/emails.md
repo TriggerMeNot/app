@@ -30,6 +30,6 @@ RESEND_DOMAIN=your-domain
 
 Now TriggerMeNot is ready to send emails!
 
-::: note
+::: tip
 DMARC is optional but recommended, it helps to prevent email spoofing.
 :::
