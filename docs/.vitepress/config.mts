@@ -40,7 +40,8 @@ export default withMermaid({
             { text: 'Google', link: '/server/services/google' },
             { text: 'Microsoft', link: '/server/services/microsoft' },
             { text: 'Discord', link: '/server/services/discord' },
-          ] }
+          ] },
+          { text: 'Emails', link: '/server/emails' },
         ]
       },
       {
