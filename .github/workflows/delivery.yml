@@ -18,15 +18,15 @@ jobs:
 
     - name: Clone the central repository
       run: |
-        git clone https://neo-jgrec:${{ secrets.APP_GITHUB_PAT_TOKEN }}@github.com/AREA-equipe/app.git _app_tek
+        git clone https://neo-jgrec:${{ secrets.APP_GITHUB_PAT_TOKEN }}@github.com/TriggerMeNot/app.git _app_tek
 
     - name: Pull/Add Docs repository as a subtree
       working-directory: _app_tek
       run: |
         if [ -d "docs" ]; then
-          git subtree pull --prefix=docs https://neo-jgrec:${{ secrets.APP_GITHUB_PAT_TOKEN }}@github.com/AREA-equipe/docs.git main --squash
+          git subtree pull --prefix=docs https://neo-jgrec:${{ secrets.APP_GITHUB_PAT_TOKEN }}@github.com/TriggerMeNot/docs.git main --squash
         else
-          git subtree add --prefix=docs https://neo-jgrec:${{ secrets.APP_GITHUB_PAT_TOKEN }}@github.com/AREA-equipe/docs.git main --squash
+          git subtree add --prefix=docs https://neo-jgrec:${{ secrets.APP_GITHUB_PAT_TOKEN }}@github.com/TriggerMeNot/docs.git main --squash
         fi
 
     - name: Push to central repository
