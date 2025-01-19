@@ -20,16 +20,13 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
-                <data android:pathPrefix="/login/google/" />
-                <data android:pathPrefix="/login/microsoft/" />
-                <data android:pathPrefix="/login/discord/" />
-                <data android:pathPrefix="/login/github/" />
-
-                <data android:pathPrefix="/services/google/" />
-                <data android:pathPrefix="/services/microsoft/" />
-                <data android:pathPrefix="/services/discord/" />
-                <data android:pathPrefix="/services/github/" />
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="localhost" />
             </intent-filter>
 
         </activity>
