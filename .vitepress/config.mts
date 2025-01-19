@@ -33,6 +33,7 @@ export default withMermaid({
           { text: 'API', link: '/server/api' },
           { text: 'Database', link: '/server/database' },
           { text: 'Build', link: '/server/build' },
+          { text: 'Environment', link: '/server/environment' },
           { text: 'Architecture', link: '/server/architecture' },
           { text: 'Services', items: [
             { text: 'Github', link: '/server/services/github' },

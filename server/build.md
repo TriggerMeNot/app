@@ -1,4 +1,7 @@
 # Build
+::: tip
+For the environment variables see [Environment Variables](/server/environment).
+:::
 
 ## Development
 
@@ -13,11 +16,7 @@ docker compose -f compose.yml up -d
 ```
 
 ```bash
-deno -A --env-file=.env.dev npm:drizzle-kit generate
-```
-
-```bash
-deno -A --env-file=.env.dev npm:drizzle-kit migrate
+deno -A --env-file=.env.dev npm:drizzle-kit push
 ```
 
 ```bash
