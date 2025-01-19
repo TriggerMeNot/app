@@ -1,3 +1,9 @@
+---
+next:
+  text: 'API'
+  link: '/server/api'
+---
+
 # Server
 
 > [!IMPORTANT]
