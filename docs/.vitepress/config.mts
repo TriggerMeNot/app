@@ -35,6 +35,12 @@ export default withMermaid({
           { text: 'Database', link: '/server/database' },
           { text: 'Build', link: '/server/build' },
           { text: 'Architecture', link: '/server/architecture' },
+          { text: 'Services', items: [
+            { text: 'Github', link: '/server/services/github' },
+            { text: 'Google', link: '/server/services/google' },
+            { text: 'Microsoft', link: '/server/services/microsoft' },
+            { text: 'Discord', link: '/server/services/discord' },
+          ] }
         ]
       },
       {
