@@ -17,7 +17,7 @@ cd app
 ## Step 3: Execute the docker-compose
 
 ```bash
-docker-compose up
+docker compose up
 ```
 
 ::: tip

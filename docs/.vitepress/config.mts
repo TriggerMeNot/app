@@ -22,7 +22,6 @@ export default withMermaid({
             text: 'Installation',
             items: [
               { text: 'Docker', link: '/installation/docker' },
-              { text: 'From Source', link: '/installation/source' }
             ],
             link: '/installation'
           }
