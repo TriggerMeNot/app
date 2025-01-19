@@ -22,8 +22,9 @@ touch .env
 ```
 
 ::: tip
-You can copy the content of the `.env.example` file and paste it into the `.env` file.  
-You need to fill the environment variables with your own values, or the application won't run.
+You can copy the content of the `.env.example` file and paste it into the `.env` file. \
+You need to fill the environment variables with your own values, or the application won't run. \
+For more information about the environment variables see [Environment Variables](/server/environment).
 :::
 
 ## Step 4: Run the docker-compose
