@@ -4,6 +4,7 @@ const config: CapacitorConfig = {
   appId: 'net.triggermenot.app',
   appName: 'TriggerMeNot',
   webDir: 'dist',
+  bundledWebRuntime: false,
   server: {
     androidScheme: 'http',
     iosScheme: 'http',
@@ -13,6 +14,16 @@ const config: CapacitorConfig = {
   plugins: {
     App: {
       domain: 'localhost:8081',
+      paths: [
+        "login/*",
+        "services/*",
+      ]
+    },
+    CapacitorHttp: {
+      enabled: true
+    },
+    CapacitorBrowser: {
+      enabled: true
     }
   },
   ios: {
