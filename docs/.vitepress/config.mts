@@ -23,12 +23,12 @@ export default withMermaid({
             items: [
               { text: 'Docker', link: '/installation/docker' },
             ],
-            link: '/installation'
           }
         ]
       },
       {
         text: 'Server',
+        link: '/server',
         items: [
           { text: 'API', link: '/server/api' },
           { text: 'Database', link: '/server/database' },
@@ -45,6 +45,7 @@ export default withMermaid({
       },
       {
         text: 'Client',
+        link: '/client',
         items: [
           { text: 'Technical Stack', link: '/client/stack' },
           { text: 'Build', link: '/client/build' },
@@ -52,6 +53,7 @@ export default withMermaid({
       },
       {
         text: 'User Guide',
+        link: '/user-guide',
         items: [
           { text: 'Register/Login', link: '/user-guide/register-login' },
           { text: 'Create a Playground', link: '/user-guide/create-playground' },
@@ -62,7 +64,7 @@ export default withMermaid({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'http://github.com/AREA-equipe' }
+      { icon: 'github', link: 'https://github.com/TriggerMeNot/' }
     ]
   }
 })
