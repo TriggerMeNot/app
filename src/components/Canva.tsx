@@ -441,11 +441,15 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
                       data: {
                         id: reaction.id,
                         type: `reaction:${reaction.id}`,
+                        serviceName: service.name,
                         data: {
                           settings: (reaction as any)?.settings,
                         },
                       },
-                      position: { x: 0, y: 0 }
+                      position: screenToFlowPosition({
+                        x: window.innerWidth / 2,
+                        y: window.innerHeight / 2,
+                      })
                     });
                   }}>
                     <span>{reaction.name}</span>
@@ -458,11 +462,15 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
                       data: {
                         id: action.id,
                         type: `action:${action.id}`,
+                        serviceName: service.name,
                         data: {
                           settings: (action as any)?.settings,
                         },
                       },
-                      position: { x: 0, y: 0 }
+                      position: screenToFlowPosition({
+                        x: window.innerWidth / 2,
+                        y: window.innerHeight / 2,
+                      })
                     });
                   }}>
                     <span>{action.name}</span>
