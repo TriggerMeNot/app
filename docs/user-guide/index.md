@@ -1,3 +1,9 @@
+---
+next:
+  text: 'Create a Playground'
+  link: '/user-guide/create-playground'
+---
+
 # TriggerMeNot User Guide
 
 TriggerMeNot user guide

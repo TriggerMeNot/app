@@ -1,3 +1,9 @@
+---
+next:
+  text: 'Technical Stack'
+  link: '/client/stack'
+---
+
 # Client
 
 > [!IMPORTANT]
