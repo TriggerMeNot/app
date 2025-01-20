@@ -13,6 +13,11 @@ Environment=PORT={{ backend_port }}
 
 Environment=SALT_ROUNDS={{ salt_rounds }}
 Environment=JWT_SECRET={{ jwt_secret }}
+Environment=JWT_FORGOT_PASSWORD_SECRET={{ jwt_forgot_password_secret }}
+Environment=RESEND_API_KEY={{ resend_api_key }}
+Environment=RESEND_DOMAIN={{ resend_domain }}
+
+Environment=REDIRECT_URI={{ redirect_uri }}
 
 Environment=POSTGRES_USER={{ postgres_user }}
 Environment=POSTGRES_PASSWORD={{ postgres_password }}
@@ -22,6 +27,18 @@ Environment=DATABASE_URL=postgresql://{{ postgres_user }}:{{ postgres_password }
 
 Environment=GITHUB_ID={{ github_id }}
 Environment=GITHUB_SECRET={{ github_secret }}
+Environment=GITHUB_APP={{ github_app }}
+
+Environment=GOOGLE_ID={{ google_id }}
+Environment=GOOGLE_SECRET={{ google_secret }}
+
+Environment=DISCORD_ID={{ discord_id }}
+Environment=DISCORD_SECRET={{ discord_secret }}
+Environment=DISCORD_BOT_TOKEN={{ discord_bot_token }}
+
+Environment=MICROSOFT_TENANT={{ microsoft_tenant }}
+Environment=MICROSOFT_ID={{ microsoft_id }}
+Environment=MICROSOFT_SECRET={{ microsoft_secret }}
 
 ExecStartPre=/opt/area/backend/.deno/bin/deno -A npm:drizzle-kit generate
 ExecStartPre=/opt/area/backend/.deno/bin/deno -A npm:drizzle-kit migrate
