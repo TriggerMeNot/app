@@ -135,7 +135,7 @@ const ReactionNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => {
           }}
         />
         <a className="text-2xl font-medium" onClick={() => setIsOpen(true)}>
-          {React.createElement(Icons[(data?.serviceName as string).toLowerCase() as keyof typeof Icons] || Icons["default"], { className: 'w-6 h-6' })}
+          {React.createElement(Icons[(data?.serviceName as string)?.toLowerCase() as keyof typeof Icons] || Icons["default"], { className: 'w-6 h-6' })}
         </a>
         <Handle
           type="source"
