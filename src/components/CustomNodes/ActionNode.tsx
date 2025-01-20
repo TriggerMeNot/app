@@ -120,7 +120,7 @@ const ActionNode: React.FC<NodeProps> = memo(({ data, isConnectable }) => {
     <>
       <div className="w-20 h-20 z-10 relative flex items-center justify-center px-4 py-2 border-dashed border-2 border-gray-900 dark:border-white rounded-xl cursor-grab bg-neutral-50 dark:bg-gray-900 text-xs" onClick={() => setIsOpen(true)}>
         <a className="text-2xl font-medium">
-          {React.createElement(Icons[(data?.serviceName as string).toLowerCase() as keyof typeof Icons] || Icons["default"], { className: 'w-6 h-6' })}
+          {React.createElement(Icons[(data?.serviceName as string)?.toLowerCase() as keyof typeof Icons] || Icons["default"], { className: 'w-6 h-6' })}
         </a>
         <Handle
           type="source"
