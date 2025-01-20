@@ -4,7 +4,7 @@
   image: "https://upload.wikimedia.org/wikipedia/commons/b/b3/Terminalicon2.png"
   api:
       method: GET
-      url: https://backend.triggermenot.net/api
+      url: https://backend.triggermenot.net/
 - name: Client
   description: The web client of the TriggerMeNot application
   tag: "client"
