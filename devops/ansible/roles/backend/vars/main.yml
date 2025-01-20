@@ -1,3 +1,22 @@
 salt_rounds: 10
 jwt_secret:
+jwt_forgot_password_secret:
+resend_api_key:
+resend_domain:
+
+redirect_uri:
+
+github_id:
 github_secret:
+github_app:
+
+google_id:
+google_secret:
+
+discord_id:
+discord_secret:
+discord_bot_token:
+
+microsoft_tenant:
+microsoft_id:
+microsoft_secret:
